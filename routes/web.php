@@ -57,6 +57,11 @@ Route::get('/config-cache', function() {
     return '<h1>Clear Config cleared</h1>';
 });
 
+//To create symbolic link
+Route::get('/sym-link', function () {
+    Artisan::call('storage:link');
+});
+
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/', [SiteController::class, 'index']);
 Route::get('/home', [SiteController::class, 'index']);
