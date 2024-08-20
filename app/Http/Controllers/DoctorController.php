@@ -82,11 +82,11 @@ class DoctorController extends Controller
                 'languages' => ['required'],
                 'profile_pic' => [],
             ]);
-            // print_r($credentials);exit;
             $credentials['docId'] = Session::get('userDoctorData')->id;
-            $file = $request->file('profile_pic');
-            $credentials['profile_pic'] = 'storage/'.$file->store('uploads', 'public');
-            // echo '<pre>';print_r($credentials);exit;
+            if(!empty($credentials['profile_pic'])){
+                $file = $request->file('profile_pic');
+                $credentials['profile_pic'] = 'storage/'.$file->store('uploads', 'public');
+            }
             $res = $doc->updateDoctorData($credentials);
             if($res){
                 return Redirect::to('/doctor/profile');
