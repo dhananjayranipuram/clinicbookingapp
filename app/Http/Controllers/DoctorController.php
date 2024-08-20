@@ -83,14 +83,14 @@ class DoctorController extends Controller
                 'profile_pic' => [],
             ]);
             $credentials['docId'] = Session::get('userDoctorData')->id;
-            if(!empty($credentials['profile_pic'])){
+            if(!empty($_FILE['profile_pic'])){
                 $file = $request->file('profile_pic');
                 $credentials['profile_pic'] = 'storage/'.$file->store('uploads', 'public');
             }
             $res = $doc->updateDoctorData($credentials);
-            if($res){
+            // if($res){
                 return Redirect::to('/doctor/profile');
-            }
+            // }
         }
         
     }
