@@ -217,8 +217,10 @@ class SiteController extends Controller
                     // print_r($appointments);exit;
                     $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                     $t1 = $duration+ $t1;
-                    if(in_array($timeSlot,$appointments[$value->id])){
-                        continue;
+                    if(!empty($appointments[$value->id])){
+                        if(in_array($timeSlot,$appointments[$value->id])){
+                            continue;
+                        }
                     }
                     $slotStr .= '<option value="'.$timeSlot.'">'.$timeSlot.'</option>';
                 }
