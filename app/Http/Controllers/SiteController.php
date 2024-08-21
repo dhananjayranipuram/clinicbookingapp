@@ -71,7 +71,7 @@ class SiteController extends Controller
 
             $credentials = $request->validate([
                 'email' => ['required'],
-                'pword' => ['required'],
+                'password' => ['required'],
             ]);
             $res = $site->getUserLoginCheck($credentials);
             if(!empty($res)){
