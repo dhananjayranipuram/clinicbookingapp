@@ -32,7 +32,7 @@ Route::any('/get-calendar', [SiteController::class, 'getCalendar']);
 Route::any('/get-appointments', [SiteController::class, 'getAppointments']);
 Route::any('/make-appointment', [SiteController::class, 'makeAppointments']);
 Route::any('/registration', [SiteController::class, 'registerEndUser']);
-Route::any('/login', [SiteController::class, 'loginEndUser']);
+Route::any('/user-login', [SiteController::class, 'loginEndUser']);
 Route::any('/logout', [SiteController::class, 'logOutEndUser']);
 Route::any('/check-user', [SiteController::class, 'checkUser']);
 Route::any('/calendar', [SiteController::class, 'getSelectDocCalendar']);

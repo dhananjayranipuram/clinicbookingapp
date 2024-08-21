@@ -654,7 +654,7 @@
                 'password': $("#loginPassword").val()
             };
             $.ajax({
-                url: baseUrl + '/login',
+                url: baseUrl + '/user-login',
                 type: 'post',
                 data: datas,
                 dataType: "json",
