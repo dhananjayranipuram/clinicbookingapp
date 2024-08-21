@@ -68,10 +68,12 @@ class SiteController extends Controller
     public function loginEndUser(Request $request){
         $site = new Site();
         if(!empty($request->post())){
-            $input = [];
-            $input['email'] = $request->post('email');
-            $input['password'] = $request->post('password');
-            $res = $site->getUserAuthenticate($input);
+
+            $credentials = $request->validate([
+                'email' => ['required'],
+                'pword' => ['required'],
+            ]);
+            $res = $site->getUserLoginCheck($credentials);
             if(!empty($res)){
                 $response['status'] = '200';
                 $response['message'] = 'Success.';
