@@ -60,8 +60,8 @@ class Site extends Model
         return DB::select("SELECT COUNT(*) cnt FROM enduser WHERE email='$data[emailAddress]';");
     }
 
-    public function getUserAuthenticate($data){
-        return DB::select("SELECT CONCAT(first_name,' ',last_name) user_name,id FROM enduser WHERE email='$data[email]' AND pword='$data[pword]';");
+    public function getUserLoginCheck($data){
+        return DB::select("SELECT CONCAT(first_name,' ',last_name) user_name,id FROM enduser WHERE email='$data[email]' AND pword='$data[password]';");
     }
 
     public function saveAppointments($data){
