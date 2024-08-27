@@ -333,7 +333,7 @@
                 <a href="{{ url('/home') }}" class="nav-item nav-link active">Home</a>
                 <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link">About</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Get Appointment</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Book Appointment</a>
                     <div class="dropdown-menu m-0">
                         <a href="{{ url('/doctors') }}" class="dropdown-item">Search by Doctor</a>
                         <a href="{{ url('/calendar') }}" class="dropdown-item">Search by Day</a>

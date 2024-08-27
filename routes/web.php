@@ -37,6 +37,7 @@ Route::any('/logout', [SiteController::class, 'logOutEndUser']);
 Route::any('/check-user', [SiteController::class, 'checkUser']);
 Route::any('/calendar', [SiteController::class, 'getSelectDocCalendar']);
 Route::any('/get-doctor-apointment', [SiteController::class, 'getDoctorAppointments']);
+Route::any('/speciality', [SiteController::class, 'speciality']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);
 Route::any('/doctor/dashboard', [DoctorController::class, 'dashboard']);

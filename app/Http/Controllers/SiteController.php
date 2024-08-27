@@ -9,14 +9,19 @@ use Storage;
 
 class SiteController extends Controller
 {
-    // public function index(string $id){
-    //     return view('site/home',['id'=>$id]);
-    // }
+    
 
     public function index(){
         return view('site/home');
     }
 
+    public function speciality(){
+        $site = new Site();
+        $data['speciality'] = $site->getSpeciality();
+        
+        return view('site/speciality');
+    }
+    
     public function doctors(Request $request){
         $site = new Site();
         $data['languages'] = $site->getLanguages();

@@ -8,20 +8,8 @@
 					<div class="col-lg-12">
 						<div class="model-search-content">
 							<div class="row" style="padding-left: 50px;">
-								<div class="col-lg-offset-1 col-lg-3 col-sm-12">
-									<div class="single-model-search">
-										<h2>select Language</h2>
-										<div class="model-select-icon">
-											<select class="form-control" name="language">  
-                                                <option value="0">Select Language</option>
-                                                @foreach($languages as $key => $value)
-                                                    <option value="{{$value->id}}" @if(old('language') == $value->id) selected @endif>{{$value->name}}</option>
-                                                @endforeach
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-offset-1 col-lg-3 col-sm-12">
+								
+                                <div class="col-lg-offset-1 col-lg-3 col-sm-12">
 									<div class="single-model-search">
 										<h2>select Speciality</h2>
 										<div class="model-select-icon">
@@ -34,6 +22,21 @@
 										</div>
 									</div>
 								</div>
+
+                                <div class="col-lg-offset-1 col-lg-3 col-sm-12">
+									<div class="single-model-search">
+										<h2>select Language</h2>
+										<div class="model-select-icon">
+											<select class="form-control" name="language">  
+                                                <option value="0">Select Language</option>
+                                                @foreach($languages as $key => $value)
+                                                    <option value="{{$value->id}}" @if(old('language') == $value->id) selected @endif>{{$value->name}}</option>
+                                                @endforeach
+											</select>
+										</div>
+									</div>
+								</div>
+								
 								<div class="col-lg-offset-1 col-lg-3 col-sm-12">
 									<div class="single-model-search">
 										<h2>select Gender</h2>
@@ -46,14 +49,7 @@
 										</div>
 									</div>
 								</div>
-                                <!-- <div class="col-lg-offset-1 col-lg-2 col-sm-12">
-									<div class="single-model-search">
-										<h2>select Date</h2>
-										<div class="model-select-icon">
-											<input class="form-control" type="date"  name="date">
-										</div>
-									</div>
-								</div> -->
+                                
 								<div class="col-lg-3 col-sm-12">
 									<div class="single-model-search text-center">
                                         <h2>&nbsp;</h2>
@@ -95,61 +91,6 @@
                 </a>
             </div>
             @endforeach
-            <!-- <div class="col-lg-3 wow slideInUp" data-wow-delay="0.3s">
-                <div class="team-item">
-                    <div class="position-relative rounded-top" style="z-index: 1;">
-                        <img class="img-fluid rounded-top w-100" src="{{asset('assets/img/team-1.jpg')}}" alt="">
-                    </div>
-                    <div class="team-text position-relative bg-light text-center rounded-bottom p-4">
-                        <h4 class="mb-2">Dr. John Doe</h4>
-                        <p class="text-primary mb-0">Implant Surgeon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 wow slideInUp" data-wow-delay="0.6s">
-                <div class="team-item">
-                    <div class="position-relative rounded-top" style="z-index: 1;">
-                        <img class="img-fluid rounded-top w-100" src="{{asset('assets/img/team-2.jpg')}}" alt="">
-                    </div>
-                    <div class="team-text position-relative bg-light text-center rounded-bottom p-4">
-                        <h4 class="mb-2">Dr. John Doe</h4>
-                        <p class="text-primary mb-0">Implant Surgeon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 wow slideInUp" data-wow-delay="0.1s">
-                <div class="team-item">
-                    <div class="position-relative rounded-top" style="z-index: 1;">
-                        <img class="img-fluid rounded-top w-100" src="{{asset('assets/img/team-3.jpg')}}" alt="">
-                    </div>
-                    <div class="team-text position-relative bg-light text-center rounded-bottom p-4">
-                        <h4 class="mb-2">Dr. John Doe</h4>
-                        <p class="text-primary mb-0">Implant Surgeon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 wow slideInUp" data-wow-delay="0.3s">
-                <div class="team-item">
-                    <div class="position-relative rounded-top" style="z-index: 1;">
-                        <img class="img-fluid rounded-top w-100" src="{{asset('assets/img/team-4.jpg')}}" alt="">
-                    </div>
-                    <div class="team-text position-relative bg-light text-center rounded-bottom p-4">
-                        <h4 class="mb-2">Dr. John Doe</h4>
-                        <p class="text-primary mb-0">Implant Surgeon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 wow slideInUp" data-wow-delay="0.6s">
-                <div class="team-item">
-                    <div class="position-relative rounded-top" style="z-index: 1;">
-                        <img class="img-fluid rounded-top w-100" src="{{asset('assets/img/team-5.jpg')}}" alt="">
-                    </div>
-                    <div class="team-text position-relative bg-light text-center rounded-bottom p-4">
-                        <h4 class="mb-2">Dr. John Doe</h4>
-                        <p class="text-primary mb-0">Implant Surgeon</p>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 </div>
