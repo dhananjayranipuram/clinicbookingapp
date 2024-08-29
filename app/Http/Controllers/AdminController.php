@@ -22,7 +22,9 @@ class AdminController extends Controller
 
     public function dashboard(){
         if(Session::get('userAdminData')){
-            return view('admin/dashboard');
+            $admin = new Admin();
+            $data['list'] = $admin->getLatestAppointmentData();
+            return view('admin/dashboard',$data);
         }else{
             return view('admin/pagenotfound');
         }

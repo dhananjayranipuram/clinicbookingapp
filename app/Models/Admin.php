@@ -14,6 +14,14 @@ class Admin extends Model
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id;");
     }
 
+    public function getLatestAppointmentData(){
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
+                        LEFT JOIN doctor dc ON dc.id=ap.doc_id
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id
+                        ORDER BY ap.id DESC
+                        LIMIT 5;");
+    }
+
     public function getAllSpeciality(){
         return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM speciality ORDER BY name;");
     }
