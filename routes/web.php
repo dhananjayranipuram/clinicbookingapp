@@ -39,7 +39,7 @@ Route::any('/calendar', [SiteController::class, 'getSelectDocCalendar']);
 Route::any('/get-doctor-apointment', [SiteController::class, 'getDoctorAppointments']);
 Route::any('/speciality', [SiteController::class, 'speciality']);
 Route::any('/speciality-doctors', [SiteController::class, 'specDoctors']);
-Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
+// Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);
 Route::any('/doctor/dashboard', [DoctorController::class, 'dashboard']);

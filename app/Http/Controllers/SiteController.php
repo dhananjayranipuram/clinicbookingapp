@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Mail\AppointmentRequest;
+use App\Mail\AppointmentConfirmed;
 use Illuminate\Http\Request;
 use App\Models\Site;
 use Session;
@@ -10,14 +10,15 @@ use Mail;
 
 class SiteController extends Controller
 {
-    
-    public function sendTestEmail(){
-        // echo 123;exit;
-       
-       Mail::to('dhananjayranipuram@gmail.com')->send(new AppointmentRequest([
-        'name' => 'Demo',
-        ]));
-    }
+    // public function sendTestEmail(){
+    //     $input = [];
+    //     $input['time'] = "10:20";
+    //     $input['date'] = "29-08-2024";
+    //     $input['doctor'] = "1";
+    //     $input['id'] = "10000";
+    //     $input['userName'] = "Dhananjay";
+    //     Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
+    // }
 
     public function index(){
         return view('site/home');
@@ -176,7 +177,9 @@ class SiteController extends Controller
         $input['user'] = $userData->id;
         // print_r($input);exit;
         $res = $site->saveAppointments($input);
-        $data['id'] = $res;
+        $input['id'] = $data['id'] = $res;
+        $input['userName'] = Session::get('userName');
+        Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
         $data['date'] = $input['date'];
         $data['time'] = $input['time'];
         return view('site/confirm-appoitment',$data);
