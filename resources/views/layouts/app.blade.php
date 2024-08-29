@@ -330,16 +330,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{{ url('/home') }}" class="nav-item nav-link active">Home</a>
-                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link">About</a>
-                <div class="nav-item dropdown">
+                <a href="{{ url('/home') }}" class="nav-item nav-link @if(Request::path() === 'home') active @endif">Home</a>
+                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link @if(Request::path() === 'home') active @endif">About</a>
+                <a href="{{ url('/speciality') }}" class="nav-item nav-link @if(Request::path() === 'speciality') active @endif">Book Appointment</a>
+                <!-- <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Book Appointment</a>
                     <div class="dropdown-menu m-0">
                         <a href="{{ url('/doctors') }}" class="dropdown-item">Search by Doctor</a>
                         <a href="{{ url('/calendar') }}" class="dropdown-item">Search by Day</a>
                     </div>
-                </div>
-                <a href="{{ url('/contact-us') }}" class="nav-item nav-link">Contact</a>
+                </div> -->
+                <a href="{{ url('/contact-us') }}" class="nav-item nav-link @if(Request::path() === 'contact-us') active @endif">Contact</a>
                 
                 
             </div>
@@ -358,14 +359,14 @@
                         <a href="#">My profile</a>
                     </li>
                     <li>
-                        <a onclick="logout();">Logout</a>
+                        <a href="{{ url('/logout') }}">Logout</a>
                     </li>
                     </ul>
                 </div>
                 </div>
                 @else 
-                    <a onclick="toggleRegistration();" class="nav-item nav-link" style="cursor:pointer;">Register</a>
-                    <a onclick="toggleLogin();" class="nav-item nav-link" style="cursor:pointer;">Login</a>
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
                 @endif
     </nav>
     <!-- Navbar End -->

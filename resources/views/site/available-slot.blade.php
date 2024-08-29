@@ -33,17 +33,45 @@
         <input type="hidden" id="appointmentDoctor" name="doctor" value="{{$docId}}">
     </form>
       <div class="container" style="margin-bottom: 50px;">
-      <div class="section-title mb-4">
-                    <h5 class="position-relative d-inline-block text-primary text-uppercase">Select the Time-slot</h5>
-                    
-                </div>
-                <div class="booked-calendar-wrap large" id="calendar-body">
-            
-                {!!$calendarStr!!}
-                
-                </div>
-        </div>
-        </div>
+         <div class="row">
+            <div class="col-lg-6">
+               <div class="section-title mb-4">
+                  <h5 class="position-relative d-inline-block text-primary text-uppercase">Doctor Details</h5>  
+                  <!-- <div class="section-title mb-4">
+                     <h5 class="position-relative d-inline-block text-primary text-uppercase">About Us</h5>
+                     <h1 class="display-5 mb-0">The World's Best Dental Clinic That You Can Trust</h1>
+                  </div> -->
+                  <div class="position-relative rounded-top" style="z-index: 1;">
+                     <img class="img-fluid rounded-top" style="width: 50%;" src="{{asset($docData[0]->profile_pic)}}" alt="">
+                  </div>
+                  <h1 class="display-5 mb-0"> {{$docData[0]->name}} </h1>
+                  <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus clita duo justo et tempor eirmod magna dolore erat amet</p>
+                  <div class="row g-3">
+                     <div class="col-sm-6 wow zoomIn" data-wow-delay="0.3s" style="visibility: visible; animation-delay: 0.3s; animation-name: zoomIn;">
+                           <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Award Winning</h5>
+                           <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Professional Staff</h5>
+                     </div>
+                     <div class="col-sm-6 wow zoomIn" data-wow-delay="0.6s" style="visibility: visible; animation-delay: 0.6s; animation-name: zoomIn;">
+                           <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>24/7 Opened</h5>
+                           <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Fair Prices</h5>
+                     </div>
+                  </div>
+                  <a class="btn btn-primary py-3 px-5 mt-4 wow zoomIn" data-wow-delay="0.6s" style="visibility: visible; animation-delay: 0.6s; animation-name: zoomIn;">Select a Date &nbsp;<i class="booked-icon booked-icon-arrow-right"></i></a>         
+               </div>
+            </div>
+            <div class="col-lg-6">
+               <div class="section-title mb-4">
+                  <h5 class="position-relative d-inline-block text-primary text-uppercase">Select the Time-slot</h5>           
+               </div>
+               <div class="booked-calendar-wrap large" id="calendar-body">
+                  {!!$calendarStr!!} 
+               </div>
+            </div>
+         </div>
+      </div>
+
+         
+      </div>
       <div id="yith-quick-view-modal">
          <div class="yith-quick-view-overlay"></div>
          <div class="yith-wcqv-wrapper">

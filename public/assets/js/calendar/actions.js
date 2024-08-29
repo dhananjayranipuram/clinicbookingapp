@@ -15,7 +15,7 @@
                     if(html=='true'){
                         $("#appointmentForm").submit();
                     }else{
-                        toggleLogin();
+                        toggleRegistration();
                     }
                 }
             });

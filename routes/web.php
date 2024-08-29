@@ -38,6 +38,8 @@ Route::any('/check-user', [SiteController::class, 'checkUser']);
 Route::any('/calendar', [SiteController::class, 'getSelectDocCalendar']);
 Route::any('/get-doctor-apointment', [SiteController::class, 'getDoctorAppointments']);
 Route::any('/speciality', [SiteController::class, 'speciality']);
+Route::any('/speciality-doctors', [SiteController::class, 'specDoctors']);
+Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);
 Route::any('/doctor/dashboard', [DoctorController::class, 'dashboard']);
@@ -51,6 +53,7 @@ Route::get('/doctor/logout', [DoctorController::class, 'logout']);
 Route::get('/admin/login', [AdminController::class, 'login']);
 Route::any('/admin/auth', [AdminController::class, 'authenticateAdmin']);
 Route::any('/admin/dashboard', [AdminController::class, 'dashboard']);
+Route::any('/admin/appointments', [AdminController::class, 'getAppointments']);
 Route::any('/admin/doctor-list', [AdminController::class, 'showDoctorList']);
 Route::any('/admin/add-doctor', [AdminController::class, 'addDoctor']);
 Route::any('/admin/edit-doctor', [AdminController::class, 'editDoctor']);

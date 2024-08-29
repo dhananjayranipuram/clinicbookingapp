@@ -90,4 +90,15 @@ class Site extends Model
             LEFT JOIN doctor doc ON slab.doc_id=doc.id
             WHERE slab.working_days=$dayofweek");
     }
+
+    public function getDoctorDetains($data){
+        return DB::select("SELECT d.id,CONCAT(d.honor,d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
+                            FROM doctor d
+                            LEFT JOIN speciality sp ON d.specialization = sp.id
+                            LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
+                            LEFT JOIN languages l ON dl.lang_id = l.id
+                            WHERE d.active=1 AND d.id='$data[docId]'
+                            GROUP BY d.id
+                            ORDER BY d.first_name,d.last_name;");
+    }
 }

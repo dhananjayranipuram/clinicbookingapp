@@ -1,15 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Mail\AppointmentRequest;
 use Illuminate\Http\Request;
 use App\Models\Site;
 use Session;
 use Storage;
+use Mail;
 
 class SiteController extends Controller
 {
     
+    public function sendTestEmail(){
+        // echo 123;exit;
+       
+       Mail::to('dhananjayranipuram@gmail.com')->send(new AppointmentRequest([
+        'name' => 'Demo',
+        ]));
+    }
 
     public function index(){
         return view('site/home');
@@ -19,7 +27,26 @@ class SiteController extends Controller
         $site = new Site();
         $data['speciality'] = $site->getSpeciality();
         
-        return view('site/speciality');
+        return view('site/speciality',$data);
+    }
+
+    public function specDoctors(Request $request){
+        $queries = [];
+        parse_str($_SERVER['QUERY_STRING'], $queries);
+        $site = new Site();
+        $data['languages'] = $site->getLanguages();
+        $request->flash();
+        if(!empty($request->post())){
+            $input = [];
+            $input['lang'] = $request->post('language');
+            $data['spec'] = $input['spec'] = $request->post('speciality');
+            $input['gender'] = $request->post('gender');
+            $data['doctors'] = $site->getDoctorsFilter($input);
+        }else{
+            $data['spec'] = $input['spec'] = $queries['id'];
+            $data['doctors'] = $site->getDoctorsFilter($input);
+        }
+        return view('site/spec-doctors',$data);
     }
     
     public function doctors(Request $request){
@@ -97,11 +124,12 @@ class SiteController extends Controller
 
     public function logOutEndUser(){
         Session::flush();
-        if(Session::get('userName')){
-            return 'false';
-        }else{
-            return 'true';
-        }
+        return redirect()->back();
+        // if(Session::get('userName')){
+        //     return 'false';
+        // }else{
+        //     return 'true';
+        // }
     }
 
     public function checkUser(){
@@ -117,11 +145,13 @@ class SiteController extends Controller
     }
 
     public function availableSlot(Request $request){
+        $site = new Site();
         $queries = [];
         parse_str($_SERVER['QUERY_STRING'], $queries);
         $temp = ['gotoMonth' => date('Y-m-01')];
+        $data['docId'] = $input['docId'] = $queries['id'];
+        $data['docData'] = $site->getDoctorDetains($input);
         $data['calendarStr'] = $this->generateCalendar($temp);
-        $data['docId'] = $queries['id'];
         return view('site/available-slot',$data);
     }
 
@@ -435,4 +465,6 @@ class SiteController extends Controller
             </table>';
         return $str;
     }
+
+    
 }

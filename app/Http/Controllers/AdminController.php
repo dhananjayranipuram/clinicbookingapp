@@ -28,6 +28,14 @@ class AdminController extends Controller
         }
     }
 
+    public function getAppointments(){
+        
+        $admin = new Admin();
+        $data['list'] = $admin->getAppointmentData();
+        return view('admin/appointments',$data);
+        
+    }
+
     public function showDoctorList(){
         if(Session::get('userAdminData')){
             $admin = new Admin();

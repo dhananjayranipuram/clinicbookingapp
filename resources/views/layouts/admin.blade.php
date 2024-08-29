@@ -187,6 +187,13 @@
       </li><!-- End Dashboard Nav -->
 
       <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url('/admin/appointments') }}">
+          <i class="bi bi-menu-button-wide"></i>
+          <span>Appointments</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url('/admin/doctor-list') }}">
           <i class="bi bi-menu-button-wide"></i>
           <span>Doctors</span>
