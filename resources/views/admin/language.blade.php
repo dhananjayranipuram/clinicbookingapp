@@ -32,7 +32,7 @@
                             <td>{{$value->activeName}}</td>
                             <td><div >
                               <a class="btn btn-default editLang" data-active="{{$value->active}}" data-id="{{$value->id}}" data-value="{{$value->name}}"><i class="fa fa-edit"></i></a>
-                              <a class="btn btn-default"><i class="fa fa-trash"></i></a>
+                              <a class="btn btn-default deleteLang" data-id="{{$value->id}}"><i class="fa fa-trash"></i></a>
                           </div></td>
                         </tr>
                     @endforeach
@@ -127,6 +127,22 @@ $(document).ready(function () {
         }
         $("#add").hide();
         $("#edit").show();
+    });
+
+    $('.deleteLang').click(function(){
+        if(confirm("Do you want to delete this Speciality?")){
+            $.ajax({
+                url: baseUrl + '/admin/delete-lang',
+                type: 'post',
+                data: {'id':$(this).attr("data-id")},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function( html ) {
+                    if(html=='1'){
+                        location.reload();
+                    }
+                }
+            });
+        }
     });
 });
 </script>

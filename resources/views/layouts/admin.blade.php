@@ -202,7 +202,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url('/admin/add-specialization') }}">
           <i class="bi bi-menu-button-wide"></i>
-          <span>Specialization</span>
+          <span>Specialities</span>
         </a>
       </li>
       <li class="nav-item">
@@ -243,7 +243,9 @@
   </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
+  <script>
+    var baseUrl = "{{ url('/') }}";
+  </script>
   <!-- Vendor JS Files -->
   <script src="{{asset('admin_assets/vendor/apexcharts/apexcharts.min.js')}}"></script>
   <script src="{{asset('admin_assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>

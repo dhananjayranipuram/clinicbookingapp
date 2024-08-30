@@ -220,6 +220,13 @@ class AdminController extends Controller
         }
     }
 
+    public function deleteSpecialization(){
+        $input['specializationId'] = $_POST['id'];
+        $admin = new Admin();
+        $data = $admin->deleteSpecialization($input);
+        return json_encode($data);
+    }
+
     public function addLanguages(Request $request){
         $admin = new Admin();
         if($request->method() == 'POST'){
@@ -263,5 +270,12 @@ class AdminController extends Controller
                 return back()->withErrors(["error" => $data]);
             }
         }
+    }
+
+    public function deleteLanguages(){
+        $input['languageId'] = $_POST['id'];
+        $admin = new Admin();
+        $data = $admin->deleteLanguage($input);
+        return json_encode($data);
     }
 }

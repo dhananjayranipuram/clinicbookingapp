@@ -30,8 +30,8 @@
                     <div class="p-3" style="max-width: 900px;">
                         <h5 class="text-white text-uppercase mb-3 animated slideInDown">Book your appointments</h5>
                         <h1 class="display-1 text-white mb-md-4 animated zoomIn">Take The Best Quality Treatment</h1>
-                        <a href="{{ url('/doctors') }}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Search by Doctor</a>
-                        <a href="{{ url('/calendar') }}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Search by Day</a>
+                        <a href="{{ url('/speciality') }}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Book an Appointment</a>
+                        <!-- <a href="{{ url('/calendar') }}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Search by Day</a> -->
                     </div>
                 </div>
             </div>
@@ -41,8 +41,8 @@
                     <div class="p-3" style="max-width: 900px;">
                         <h5 class="text-white text-uppercase mb-3 animated slideInDown">Book your appointments</h5>
                         <h1 class="display-1 text-white mb-md-4 animated zoomIn">Take The Best Quality Treatment</h1>
-                        <a href="{{ url('/doctors') }}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Search by Doctor</a>
-                        <a href="{{ url('/calendar') }}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Search by Day</a>
+                        <a href="{{ url('/speciality') }}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Book an Appointment</a>
+                        <!-- <a href="{{ url('/calendar') }}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Search by Day</a> -->
                     </div>
                 </div>
             </div>

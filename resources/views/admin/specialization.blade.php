@@ -12,8 +12,8 @@
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Specializatios</h5>
-              <div style="text-align: right;"><a style="padding-right: 10px; cursor: pointer;" class="addNew" onclick="addSpecialization();"><i class="bi bi-bookmark-star"></i> Add New Specialization</a></div>
+              <h5 class="card-title">Specialities</h5>
+              <div style="text-align: right;"><a style="padding-right: 10px; cursor: pointer;" class="addNew" onclick="addSpecialization();"><i class="bi bi-bookmark-star"></i> Add New Speciality</a></div>
               <!-- Table with stripped rows -->
               <table class="table datatable">
                 <thead>
@@ -32,7 +32,7 @@
                             <td>{{$value->activeName}}</td>
                             <td><div >
                               <a class="btn btn-default editSpec" data-active="{{$value->active}}" data-id="{{$value->id}}" data-value="{{$value->name}}"><i class="fa fa-edit"></i></a>
-                              <a class="btn btn-default"><i class="fa fa-trash"></i></a>
+                              <a class="btn btn-default deleteSpec" data-id="{{$value->id}}"><i class="fa fa-trash"></i></a>
                           </div></td>
                         </tr>
                     @endforeach
@@ -49,7 +49,7 @@
 
         <div class="card" id="edit" style="display:none;">
             <div class="card-body">
-                <h5 class="card-title">Edit Specialization</h5>
+                <h5 class="card-title">Edit Speciality</h5>
 
                 <!-- Vertical Form -->
                 <form class="row g-3"  method="POST" action="{{ url('/admin/edit-specialization') }}">
@@ -79,7 +79,7 @@
         </div>
         <div class="card" id="add">
             <div class="card-body">
-                <h5 class="card-title">Add Specialization</h5>
+                <h5 class="card-title">Add Speciality</h5>
 
                 <!-- Vertical Form -->
                 <form class="row g-3" method="POST" action="{{ url('/admin/add-specialization') }}">
@@ -127,6 +127,22 @@ $(document).ready(function () {
         }
         $("#add").hide();
         $("#edit").show();
+    });
+
+    $('.deleteSpec').click(function(){
+        if(confirm("Do you want to delete this Speciality?")){
+            $.ajax({
+                url: baseUrl + '/admin/delete-spec',
+                type: 'post',
+                data: {'id':$(this).attr("data-id")},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function( html ) {
+                    if(html=='1'){
+                        location.reload();
+                    }
+                }
+            });
+        }
     });
 });
 </script>

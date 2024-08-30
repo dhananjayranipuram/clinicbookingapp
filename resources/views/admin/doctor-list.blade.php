@@ -17,7 +17,7 @@
                     <th>Name</th>
                     <th>Gender</th>
                     <th>Email</th>
-                    <th>Specialization</th>
+                    <th>Speciality</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -28,7 +28,7 @@
                             <td>{{$value->doctor_name}}</td>
                             <td>{{$value->gender}}</td>
                             <td>{{$value->email}}</td>
-                            <td>{{$value->specialization}}</td>
+                            <td>{{$value->Speciality}}</td>
                             <td><div >
                               <a href="{{ url('/admin/edit-doctor') }}?id={{$value->id}}" class="btn btn-default"><i class="fa fa-edit"></i></a>
                               <a href="#" class="btn btn-default"><i class="fa fa-trash"></i></a>

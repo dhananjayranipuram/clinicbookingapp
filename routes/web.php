@@ -63,9 +63,11 @@ Route::any('/admin/profile', [AdminController::class, 'viewAdminProfile']);
 
 Route::any('/admin/add-specialization', [AdminController::class, 'addSpecialization']);
 Route::any('/admin/edit-specialization', [AdminController::class, 'editSpecialization']);
+Route::any('/admin/delete-spec', [AdminController::class, 'deleteSpecialization']);
 
 Route::any('/admin/add-language', [AdminController::class, 'addLanguages']);
 Route::any('/admin/edit-language', [AdminController::class, 'editLanguages']);
+Route::any('/admin/delete-lang', [AdminController::class, 'deleteLanguages']);
 
 Route::get('/admin/logout', [AdminController::class, 'logout']);
 

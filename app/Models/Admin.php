@@ -11,23 +11,24 @@ class Admin extends Model
     public function getAppointmentData(){
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
-                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id;");
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
+                        ORDER BY ap.book_date ASC;");
     }
 
     public function getLatestAppointmentData(){
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
-                        ORDER BY ap.id DESC
+                        ORDER BY ap.book_date ASC
                         LIMIT 5;");
     }
 
     public function getAllSpeciality(){
-        return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM speciality ORDER BY name;");
+        return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM speciality WHERE deleted=0 ORDER BY name;");
     }
 
     public function getAllLanguages(){
-        return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM languages ORDER BY name;");
+        return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM languages WHERE deleted=0 ORDER BY name;");
     }
 
     public function authenticateAdmin($data){
@@ -35,7 +36,9 @@ class Admin extends Model
     }
 
     public function getDoctorsData(){
-        return DB::select("SELECT id,CONCAT(honor,' ',first_name,' ',last_name) doctor_name,email,gender,specialization FROM doctor;");
+        return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) doctor_name,d.email,d.gender,d.specialization,sp.name Speciality 
+        FROM doctor d
+        LEFT JOIN speciality sp ON sp.id=d.specialization;");
     }
 
     public function getSpecializationList(){
@@ -76,7 +79,11 @@ class Admin extends Model
     }
 
     public function editSpecialization($data){
-        return DB::INSERT("UPDATE speciality SET name='$data[specialization]',active='$data[active]' WHERE id='$data[specializationId]';");
+        return DB::UPDATE("UPDATE speciality SET name='$data[specialization]',active='$data[active]' WHERE id='$data[specializationId]';");
+    }
+
+    public function deleteSpecialization($data){
+        return DB::UPDATE("UPDATE speciality SET deleted='1' WHERE id='$data[specializationId]';");
     }
 
     public function addLanguage($data){
@@ -90,7 +97,11 @@ class Admin extends Model
     }
 
     public function editLanguage($data){
-        return DB::INSERT("UPDATE languages SET name='$data[language]',active='$data[active]' WHERE id='$data[languageId]';");
+        return DB::UPDATE("UPDATE languages SET name='$data[language]',active='$data[active]' WHERE id='$data[languageId]';");
+    }
+
+    public function deleteLanguage($data){
+        return DB::UPDATE("UPDATE languages SET deleted='1' WHERE id='$data[languageId]';");
     }
 
     public function getDocProfile($data){
