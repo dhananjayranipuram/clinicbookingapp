@@ -17,6 +17,10 @@ class AdminController extends Controller
 {
     public function __construct()
     {
+        // if(empty(session()->all())){
+            // Session::flush();
+            // return Redirect::to('/admin/login');exit;
+        // }
         $this->middleware('auth.session');
     }
 
@@ -30,10 +34,29 @@ class AdminController extends Controller
         }
     }
 
-    public function getAppointments(){
-        
+    public function getAppointments(Request $request){
+        $request->flash();
         $admin = new Admin();
-        $data['list'] = $admin->getAppointmentData();
+        if($request->method() == 'POST'){
+            $filterData = $request->validate([
+                'doctor' => [''],
+                'speciality' => [''],
+                'from' => [''],
+                'to' => [''],
+            ]);
+            $data['list'] = $admin->getAppointmentData($filterData);
+        }else{
+            date_default_timezone_set('Asia/Calcutta');
+            $filterData = [
+                'doctor' => '',
+                'speciality' => '',
+                'from' => ''/*date('Y-m-d', time())*/,
+                'to' => ''/*date('Y-m-d', time())*/,
+            ];
+            $data['list'] = $admin->getAppointmentData($filterData);
+        }
+        $data['spec'] = $admin->getAllSpeciality(); 
+        $data['docs'] = $admin->getDoctorsData();
         return view('admin/appointments',$data);
         
     }

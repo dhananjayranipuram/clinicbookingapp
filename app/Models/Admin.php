@@ -8,10 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
-    public function getAppointmentData(){
-        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
+    public function getAppointmentData($data){
+        $condition = '';
+        if(!empty($data['doctor'])){
+            $condition .= " AND dc.id = $data[doctor]";
+        }
+        if(!empty($data['speciality'])){
+            $condition .= " AND dc.specialization = $data[speciality]";
+        }
+        if(!empty($data['from']) && !empty($data['to'])){
+            $condition .= " AND (ap.book_date between '$data[from]' and '$data[to]')";
+        }
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time,sp.name 'speciclity',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
+                        LEFT JOIN speciality sp ON sp.id=dc.specialization
+                        WHERE dc.active=1 $condition
                         ORDER BY ap.book_date ASC;");
     }
 

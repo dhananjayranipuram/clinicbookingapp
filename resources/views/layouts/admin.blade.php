@@ -23,7 +23,8 @@
 
   <!-- Template Main CSS File -->
   <link href="{{asset('admin_assets/css/style.css')}}" rel="stylesheet">
-
+  
+  <link href="{{asset('admin_assets/css/daterangepicker.css')}}" rel="stylesheet">
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
@@ -260,6 +261,8 @@
   <script src="{{asset('admin_assets/js/main.js')}}"></script>
   <script src="{{asset('assets/js/jquery-3.4.1.min.js')}}"></script>
 
+  <script src="{{asset('admin_assets/js/moment.min.js')}}"></script>
+  <script src="{{asset('admin_assets/js/daterangepicker.min.js')}}"></script>
 </body>
 
 </html>
