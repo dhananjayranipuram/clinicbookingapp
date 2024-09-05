@@ -27,10 +27,11 @@ class Admin extends Model
                         ORDER BY ap.book_date ASC;");
     }
 
-    public function getLatestAppointmentData(){
+    public function getLatestAppointmentData($data){
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
+                        WHERE ap.book_date between '$data[from]' and '$data[to]'
                         ORDER BY ap.book_date ASC
                         LIMIT 5;");
     }

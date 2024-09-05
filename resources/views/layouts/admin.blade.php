@@ -313,64 +313,6 @@
 
   <script src="{{asset('admin_assets/js/moment.min.js')}}"></script>
   <script src="{{asset('admin_assets/js/daterangepicker.min.js')}}"></script>
+  <script src="{{asset('admin_assets/js/dashboard.js')}}?v={{time()}}"></script>
 </body>
-<script>
-$(document).ready(function () { 
-    $(document).on("click", ".booking-count" , function(e) { 
-        $(".overlay").show();
-        $.ajax({
-            url: baseUrl + '/admin/get-dashboard-booking-data',
-            type: 'post',
-            data: {'period':$(this).attr('data-value')},
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            success: function( html ) {
-                if(html){
-                    $("#bookingCount").html(html.booking.today_cnt);
-                    $(".booking-count-per").html(html.booking.increase + '%');
-                    if(html.booking.increase>=0){
-                        $(".booking-count-per").removeClass('text-success');
-                        $(".booking-count-per").removeClass('text-danger');
-                        $(".booking-count-per").addClass('text-success');
-                        $(".booking-count-trend").html('Increase');
-                    }else{
-                        $(".booking-count-per").removeClass('text-success');
-                        $(".booking-count-per").removeClass('text-danger');
-                        $(".booking-count-per").addClass('text-danger');
-                        $(".booking-count-trend").html('Decrease');
-                    }                    
-                }
-                $(".overlay").hide();
-            }
-        });
-    });
-
-    $(document).on("click", ".customer-count" , function(e) { 
-        $(".overlay").show();
-        $.ajax({
-            url: baseUrl + '/admin/get-dashboard-booking-data',
-            type: 'post',
-            data: {'period':$(this).attr('data-value')},
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            success: function( html ) {
-                if(html){
-                    $("#customerCount").html(html.customer.today_cnt);
-                    $(".customer-count-per").html(html.customer.increase + '%');
-                    if(html.customer.increase>=0){
-                        $(".customer-count-per").removeClass('text-success');
-                        $(".customer-count-per").removeClass('text-danger');
-                        $(".customer-count-per").addClass('text-success');
-                        $(".customer-count-trend").html('Increase');
-                    }else{
-                        $(".customer-count-per").removeClass('text-success');
-                        $(".customer-count-per").removeClass('text-danger');
-                        $(".customer-count-per").addClass('text-danger');
-                        $(".customer-count-trend").html('Decrease');
-                    }
-                }
-                $(".overlay").hide();
-            }
-        });
-    });
-});
-</script>
 </html>

@@ -152,16 +152,16 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item recent-appt" data-value="today" href="#">Today</a></li>
+                    <li><a class="dropdown-item recent-appt" data-value="thismonth" href="#">This Month</a></li>
+                    <li><a class="dropdown-item recent-appt" data-value="thisyear" href="#">This Year</a></li>
                   </ul>
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                  <h5 class="card-title">Recent Appointment <span>| Today</span></h5>
 
-                  <table class="table table-borderless datatable">
+                  <table class="table table-borderless datatable" id="recent-appt">
                     <thead>
                       <tr>
                         <th scope="col">ID</th>
@@ -174,7 +174,7 @@
                     <tbody>
                         @foreach($list as $key => $value)
                         <tr>
-                            <th scope="row">{{$value->appointment_id}}</th>
+                            <td scope="row">{{$value->appointment_id}}</td>
                             <td>{{$value->patient_name}}</td>
                             <td>{{$value->book_date}}</td>
                             <td>{{$value->book_time}}</td>
@@ -199,9 +199,9 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item doc-wise-appt" data-value="today" href="#">Today</a></li>
+                    <li><a class="dropdown-item doc-wise-appt" data-value="thismonth"href="#">This Month</a></li>
+                    <li><a class="dropdown-item doc-wise-appt" data-value="thisyear" href="#">This Year</a></li>
                   </ul>
                 </div>
 
@@ -212,21 +212,21 @@
 
                   <script>
                     var doc_appt = @json($doc_appt);
-                    // console.log(pass_data);
                     document.addEventListener("DOMContentLoaded", () => {
                       echarts.init(document.querySelector("#trafficChart")).setOption({
                         tooltip: {
                           trigger: 'item'
                         },
                         legend: {
-                          top: '5%',
-                          left: 'center'
+                          top: '1%',
+                          left: 'left',
+                          type:'scroll'
                         },
                         series: [{
                           name: 'Doctor wise appointment',
                           type: 'pie',
                           radius: ['40%', '70%'],
-                          avoidLabelOverlap: false,
+                          avoidLabelOverlap: true,
                           label: {
                             show: false,
                             position: 'center'

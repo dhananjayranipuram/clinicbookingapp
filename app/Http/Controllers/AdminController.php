@@ -29,7 +29,7 @@ class AdminController extends Controller
             $admin = new Admin();
             $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
             // print_r($input);exit;
-            $data['list'] = $admin->getLatestAppointmentData();
+            $data['list'] = $admin->getLatestAppointmentData($input);
             $bookingRes = $admin->getBookingData($input);
             $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
 
@@ -61,11 +61,25 @@ class AdminController extends Controller
                 break;
         }
         // print_r($input);exit;
-        $bookingRes = $admin->getBookingData($input);
-        $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
-
-        $customerRes = $admin->getCustomerData($input);
-        $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
+        switch ($request->post('card')) {
+            case 'booking-count':
+                $bookingRes = $admin->getBookingData($input);
+                $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
+                break;
+            case 'customer-count':
+                $customerRes = $admin->getCustomerData($input);
+                $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
+                break;
+            case 'pie-chart':
+                $data['doc_appt'] = $admin->getDocWiseAppointmentData($input);
+                break;
+            case 'recent-appt':
+                $data['list'] = $admin->getLatestAppointmentData($input);
+                break;
+            default:
+                # code...
+                break;
+        }
         return $data;
 
     }
