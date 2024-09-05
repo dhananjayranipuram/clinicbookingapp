@@ -325,7 +325,6 @@ $(document).ready(function () {
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             success: function( html ) {
                 if(html){
-                  console.log(html)
                     $("#bookingCount").html(html.booking.today_cnt);
                     $(".booking-count-per").html(html.booking.increase + '%');
                     if(html.booking.increase>=0){
@@ -354,7 +353,6 @@ $(document).ready(function () {
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             success: function( html ) {
                 if(html){
-                  console.log(html)
                     $("#customerCount").html(html.customer.today_cnt);
                     $(".customer-count-per").html(html.customer.increase + '%');
                     if(html.customer.increase>=0){

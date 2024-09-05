@@ -696,8 +696,12 @@
                 success: function(res) {
                     if(res.status==200){
                         $('#popupLogin').removeClass('show');
-                        if(confirm("Do you want to continue booking appointment?")){
-                            $("#appointmentForm").submit();
+                        if($("#appointmentDate").val() !='' && $("#appointmentTime").val() !='' && $("#appointmentDoctor").val() !=''){
+                            if(confirm("Do you want to continue booking appointment?")){
+                                $("#appointmentForm").submit();
+                            }else{
+                                location.reload();
+                            }
                         }else{
                             location.reload();
                         }
