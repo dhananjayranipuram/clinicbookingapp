@@ -65,8 +65,13 @@ class Site extends Model
     }
 
     public function saveAppointments($data){
-        DB::INSERT("INSERT INTO appointments (doc_id,enduser_id,book_date,book_time) VALUES ('$data[doctor]','$data[user]','$data[date]','$data[time]');");
-        return DB::getPdo()->lastInsertId();
+        $res = DB::select("SELECT * FROM appointments WHERE doc_id='$data[doctor]' AND book_date='$data[date]' AND book_time='$data[time]';");
+        if(empty($res)){
+            DB::INSERT("INSERT INTO appointments (doc_id,enduser_id,book_date,book_time) VALUES ('$data[doctor]','$data[user]','$data[date]','$data[time]');");
+            return DB::getPdo()->lastInsertId();
+        }else{
+            return 'Slot not available.';
+        }
     }
 
     public function getSlots($data){

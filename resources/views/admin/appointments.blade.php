@@ -24,7 +24,7 @@
                   <div class="col-md-3">
                     <label for="validationDefault02" class="form-label">Speciality</label>
                       <select name="speciality" class="form-select">
-                            <option value="">Choose Speciality</option>
+                            <option value="">All Specialities</option>
                             @foreach($spec as $key => $value)
                                 <option value="{{$value->id}}" @if(old('speciality') == $value->id) selected @endif>{{$value->name}}</option>
                             @endforeach
@@ -33,7 +33,7 @@
                   <div class="col-md-3">
                     <label for="validationDefault02" class="form-label">Doctor</label>
                     <select name="doctor" class="form-select">
-                        <option value="">Choose Doctor</option>
+                        <option value="">All Doctors</option>
                         @foreach($docs as $key => $value)
                             <option value="{{$value->id}}" @if(old('doctor') == $value->id) selected @endif>{{$value->doctor_name}}</option>
                         @endforeach
@@ -48,12 +48,12 @@
               <table class="table datatable">
                 <thead>
                   <tr>
-                    <th>Appointment ID</th>
+                    <th>Appt ID</th>
                     <th>Patient Name</th>
                     <th>Patient Mobile</th>
-                    <th data-type="date" data-format="YYYY/MM/DD">Appointment Date</th>
                     <th>Doctor Name</th>
                     <th>Speciality</th>
+                    <th data-type="date" data-format="YYYY/MM/DD">Appointment Date</th>
                     <th>Appointment Time</th>
                   </tr>
                 </thead>
@@ -63,9 +63,9 @@
                             <td>{{$value->appointment_id}}</td>
                             <td>{{$value->patient_name}}</td>
                             <td>{{$value->patient_mobile}}</td>
-                            <td>{{$value->book_date}}</td>
                             <td>{{$value->doctor_name}}</td>
                             <td>{{$value->speciclity}}</td>
+                            <td>{{$value->book_date}}</td>
                             <td>{{$value->book_time}}</td>
                         </tr>
                     @endforeach

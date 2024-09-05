@@ -17,7 +17,7 @@
       <div class="row">
 
         <!-- Left side columns -->
-        <div class="col-lg-8">
+        <div class="col-lg-12">
           <div class="row">
 
             <!-- Sales Card -->
@@ -31,9 +31,9 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item booking-count" data-value="today" href="#">Today</a></li>
+                    <li><a class="dropdown-item booking-count" data-value="thismonth" href="#">This Month</a></li>
+                    <li><a class="dropdown-item booking-count" data-value="thisyear" href="#">This Year</a></li>
                   </ul>
                 </div>
 
@@ -45,8 +45,15 @@
                       <i class="bi bi-calendar2-check"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>145</h6>
-                      <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                      <h6 id="bookingCount">{{$booking->today_cnt}}</h6>
+                      @if($booking->increase>=0)
+                          @php($bookingClass = 'text-success')
+                          @php($increase = 'Increase')
+                      @else
+                          @php($bookingClass = 'text-danger')
+                          @php($increase = 'Decrease')
+                      @endif
+                      <span class="{{$bookingClass}} small pt-1 fw-bold booking-count-per">{{$booking->increase}}%</span> <span class="text-muted small pt-2 ps-1 booking-count-trend">{{$increase}}</span>
 
                     </div>
                   </div>
@@ -80,7 +87,7 @@
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>$3,264</h6>
+                      <h6>AED 3,264</h6>
                       <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
                     </div>
@@ -102,9 +109,9 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item customer-count" data-value="today" href="#">Today</a></li>
+                    <li><a class="dropdown-item customer-count" data-value="thismonth" href="#">This Month</a></li>
+                    <li><a class="dropdown-item customer-count" data-value="thisyear" href="#">This Year</a></li>
                   </ul>
                 </div>
 
@@ -116,9 +123,16 @@
                       <i class="bi bi-people"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                    <h6 id="customerCount">{{$customer->today_cnt}}</h6>
+                      @if($customer->increase>=0)
+                          @php($customerClass = 'text-success')
+                          @php($increase = 'Increase')
+                      @else
+                          @php($customerClass = 'text-danger')
+                          @php($increase = 'Decrease')
+                      @endif
 
+                      <span class="{{$customerClass}} small pt-1 fw-bold customer-count-per">{{$customer->increase}}%</span> <span class="text-muted small pt-2 ps-1 customer-count-trend">{{$increase}}</span>
                     </div>
                   </div>
 
@@ -128,7 +142,7 @@
             </div><!-- End Customers Card -->
 
             <!-- Recent Sales -->
-            <div class="col-12">
+            <div class="col-lg-8">
               <div class="card recent-sales overflow-auto">
 
                 <div class="filter">
@@ -175,59 +189,76 @@
               </div>
             </div><!-- End Recent Sales -->
 
+            <!-- Website Traffic -->
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                  <h5 class="card-title">Doc wise Appt <span>| Today</span></h5>
+
+                  <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                  <script>
+                    var doc_appt = @json($doc_appt);
+                    // console.log(pass_data);
+                    document.addEventListener("DOMContentLoaded", () => {
+                      echarts.init(document.querySelector("#trafficChart")).setOption({
+                        tooltip: {
+                          trigger: 'item'
+                        },
+                        legend: {
+                          top: '5%',
+                          left: 'center'
+                        },
+                        series: [{
+                          name: 'Doctor wise appointment',
+                          type: 'pie',
+                          radius: ['40%', '70%'],
+                          avoidLabelOverlap: false,
+                          label: {
+                            show: false,
+                            position: 'center'
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: '18',
+                              fontWeight: 'bold'
+                            }
+                          },
+                          labelLine: {
+                            show: false
+                          },
+                          data: doc_appt
+                        }]
+                      });
+                    });
+                  </script>
+
+                </div>
+              </div>
+            </div><!-- End Website Traffic -->
             
 
           </div>
         </div><!-- End Left side columns -->
 
-        <!-- Right side columns -->
-        <div class="col-lg-4">
-
-          <!-- News & Updates Traffic -->
-          <div class="card">
-
-            <div class="card-body pb-0">
-              <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
-
-              <div class="news">
-                <div class="post-item clearfix">
-                  <img src="{{asset('admin_assets/img/news-1.jpg')}}" alt="">
-                  <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
-                  <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="{{asset('admin_assets/img/news-2.jpg')}}" alt="">
-                  <h4><a href="#">Quidem autem et impedit</a></h4>
-                  <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="{{asset('admin_assets/img/news-3.jpg')}}" alt="">
-                  <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
-                  <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="{{asset('admin_assets/img/news-4.jpg')}}" alt="">
-                  <h4><a href="#">Laborum corporis quo dara net para</a></h4>
-                  <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="{{asset('admin_assets/img/news-5.jpg')}}" alt="">
-                  <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
-                  <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
-                </div>
-
-              </div><!-- End sidebar recent posts-->
-
-            </div>
-          </div><!-- End News & Updates -->
-
-        </div><!-- End Right side columns -->
+        
 
       </div>
     </section>
+    
 
 @endsection

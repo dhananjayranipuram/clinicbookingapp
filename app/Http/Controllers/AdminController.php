@@ -27,11 +27,47 @@ class AdminController extends Controller
     public function dashboard(){
         if(Session::get('userAdminData')){
             $admin = new Admin();
+            $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
+            // print_r($input);exit;
             $data['list'] = $admin->getLatestAppointmentData();
+            $bookingRes = $admin->getBookingData($input);
+            $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
+
+            $customerRes = $admin->getCustomerData($input);
+            $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
+            $data['doc_appt'] = $admin->getDocWiseAppointmentData($input);
+            // echo '<pre>';print_r($data);exit;
             return view('admin/dashboard',$data);
         }else{
             return view('admin/pagenotfound');
         }
+    }
+
+    public function getDashboardBooking(Request $request){
+        $admin = new Admin();
+        $input = [];
+        switch ($request->post('period')) {
+            case 'today':
+                $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
+                break;
+            case 'thismonth':
+                $input = ['from' => date('Y-m-01'),'to' => date('Y-m-t'),'prev_from' => date('Y-m-d',strtotime('first day of previous month')),'prev_to' => date('Y-m-d',strtotime('last day of previous month'))]; //Today's data
+                break;
+            case 'thisyear':
+                $input = ['from' => date('Y-01-01'),'to' => date('Y-12-31'),'prev_from' => date('Y-01-01',strtotime("-1 years")),'prev_to' => date('Y-12-31',strtotime("-1 years"))]; //Today's data
+                break;
+            default:
+                $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
+                break;
+        }
+        // print_r($input);exit;
+        $bookingRes = $admin->getBookingData($input);
+        $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
+
+        $customerRes = $admin->getCustomerData($input);
+        $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
+        return $data;
+
     }
 
     public function getAppointments(Request $request){
@@ -300,5 +336,16 @@ class AdminController extends Controller
         $admin = new Admin();
         $data = $admin->deleteLanguage($input);
         return json_encode($data);
+    }
+
+    public function increasePercentage($old, $new, int $precision = 2): float
+    {
+        if ($old == 0) {
+            $old++;
+            $new++;
+        }
+        $change = (($new - $old) / $old) * 100;
+
+        return round($change, $precision);
     }
 }

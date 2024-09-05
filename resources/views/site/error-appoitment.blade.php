@@ -8,12 +8,9 @@
         <div class="row g-5">
             <div  style="width:50%; margin:0 auto;top: 50%;bottom:50%;min-height: 500px;padding: 70px 0;text-align: center;    font-weight: bold;">
                 <div style="color:green;text-align: center;">
-                    <i class="fa fa-check-circle fa-10x" aria-hidden="true" style="width:50%;"></i>
+                    <i class="fa fa-times-circle fa-10x" aria-hidden="true" style="width:50%;"></i>
                 </div><br>
-                <div style="text-align: center;">Your appointment is booked <br>For the date : {{$date}} <br>At {{$time}}</div>
-                <div style="text-align: center;">Booking ID is:{{$id}}</div>
-
-                <div style="text-align: center;">Note : Please be at Clinic 15 minutes before the apponintment time.</div>
+                <div style="text-align: center;">Your appointment is not booked.Something went wrong</div>
             </div>
         </div>
     </div>

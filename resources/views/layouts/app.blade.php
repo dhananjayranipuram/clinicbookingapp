@@ -278,6 +278,39 @@
   color: #ff5d94;
 }
 
+@media screen and (min-width: 320px) and (max-width: 480px) { 
+/* smartphones, iPhone, portrait 480x320 phones */ 
+    .popup-box{
+        width:90% !important;
+    }
+
+    .login-box{
+        width:90% !important;
+    }
+}
+@media screen and (min-width: 481px) and (max-width: 640px) { 
+/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+    .popup-box{
+        width:75% !important;
+    }
+
+    .login-box{
+        width:75% !important;
+    }
+}
+@media screen and (min-width: 641px) and (max-width: 960px) { 
+/* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+    .popup-box{
+        width:50% !important;
+    }
+
+    .login-box{
+        width:50% !important;
+    }
+}
+@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
+@media (min-width:1281px) { /* hi-res laptops and desktops */ }
     </style>
 </head>
 
@@ -381,16 +414,16 @@
                     <div class="col-md-6 mb-4">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="text" id="firstName" class="form-control form-control-lg" />
-                        <label class="form-label" for="firstName">First Name</label>
+                        <input type="text" id="firstName" class="form-control form-control-lg" placeholder="First Name" />
+                        <!-- <label class="form-label" for="firstName">First Name</label> -->
                     </div>
 
                     </div>
                     <div class="col-md-6 mb-4">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="text" id="lastName" class="form-control form-control-lg" />
-                        <label class="form-label" for="lastName">Last Name</label>
+                        <input type="text" id="lastName" class="form-control form-control-lg" placeholder="Last Name" />
+                        <!-- <label class="form-label" for="lastName">Last Name</label> -->
                     </div>
 
                     </div>
@@ -400,16 +433,16 @@
                     <div class="col-md-6 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="email" id="emailAddress" class="form-control form-control-lg" />
-                        <label class="form-label" for="emailAddress">Email</label>
+                        <input type="email" id="emailAddress" class="form-control form-control-lg" placeholder="Email" />
+                        <!-- <label class="form-label" for="emailAddress">Email</label> -->
                     </div>
 
                     </div>
                     <div class="col-md-6 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="tel" id="phoneNumber" class="form-control form-control-lg" />
-                        <label class="form-label" for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Phone Number" />
+                        <!-- <label class="form-label" for="phoneNumber">Phone Number</label> -->
                     </div>
 
                     </div>
@@ -450,23 +483,23 @@
                     <div class="col-md-6 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="password" id="password" class="form-control form-control-lg" />
-                        <label class="form-label" for="emailAddress">Password</label>
+                        <input type="password" id="password" class="form-control form-control-lg" placeholder="Password" />
+                        <!-- <label class="form-label" for="emailAddress">Password</label> -->
                     </div>
 
                     </div>
                     <div class="col-md-6 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="password" id="confirmPassword" class="form-control form-control-lg" />
-                        <label class="form-label" for="phoneNumber">Confirm  Password</label>
+                        <input type="password" id="confirmPassword" class="form-control form-control-lg" placeholder="Confirm  Password" />
+                        <!-- <label class="form-label" for="phoneNumber">Confirm  Password</label> -->
                     </div>
 
                     </div>
                 </div>
 
                 <div class="mt-4 pt-2">
-                    <label >Already registered? <span onclick="toggleLogin();">Login</span></label><br>
+                    <label >Already registered? <a onclick="toggleLogin();" style="cursor:pointer; color:blue;">Login</a></label><br>
                     <input class="btn btn-primary btn-lg" type="button" onclick="registration();" value="Submit" />
                     <input class="btn-close-popup" type="button" onclick="closeAllPopup();" value="Close" />
                     <!-- <button class="btn-close-popup" onclick="closeAllPopup();">Close</button> -->
@@ -482,8 +515,8 @@
                 <div class="col-md-12 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="email" id="loginEmailAddress" class="form-control form-control-lg" />
-                        <label class="form-label" for="loginEmailAddress">Email</label>
+                        <input type="email" id="loginEmailAddress" class="form-control form-control-lg" placeholder="Email" />
+                        <!-- <label class="form-label" for="loginEmailAddress">Email</label> -->
                     </div>
 
                 </div>
@@ -493,15 +526,15 @@
                 <div class="col-md-12 mb-4 pb-2">
 
                     <div data-mdb-input-init class="form-outline">
-                        <input type="password" id="loginPassword" class="form-control form-control-lg" />
-                        <label class="form-label" for="emailAddress">Password</label>
+                        <input type="password" id="loginPassword" class="form-control form-control-lg" placeholder="Password" />
+                        <!-- <label class="form-label" for="emailAddress">Password</label> -->
                     </div>
 
                 </div>
             </div>
 
             <div class="mt-4 pt-2">
-                <label >Not registered? <span onclick="toggleRegistration();">Register here</span></label><br>
+                <label >Not registered? <a onclick="toggleRegistration();" style="cursor:pointer; color:blue;">Register here</a></label><br>
                 <input class="btn btn-primary btn-lg" type="button" onclick="login();" value="Login" />
                 <input class="btn-close-popup" type="button" onclick="closeAllPopup();" value="Close" />
                 <div id="loginMessage" style="color:red;"></div>
@@ -662,7 +695,12 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(res) {
                     if(res.status==200){
-                        location.reload();
+                        $('#popupLogin').removeClass('show');
+                        if(confirm("Do you want to continue booking appointment?")){
+                            $("#appointmentForm").submit();
+                        }else{
+                            location.reload();
+                        }
                     }else{
                         $("#loginMessage").html(res.message);
                     }
@@ -678,7 +716,7 @@
                 dataType: "json",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(res) {
-                    console.log(res)
+                    // console.log(res)
                     if(res==true){
                         location.reload();
                     }

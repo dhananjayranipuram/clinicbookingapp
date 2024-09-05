@@ -171,18 +171,27 @@ class SiteController extends Controller
         $userData = Session::get('userData');
         $site = new Site();
         $input = $data = [];
-        $input['time'] = $request->post('appointmenttime');
-        $input['date'] = $request->post('appointmentdate');
-        $input['doctor'] = $request->post('doctor');
-        $input['user'] = $userData->id;
-        // print_r($input);exit;
-        $res = $site->saveAppointments($input);
-        $input['id'] = $data['id'] = $res;
-        $input['userName'] = Session::get('userName');
-        Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
-        $data['date'] = $input['date'];
-        $data['time'] = $input['time'];
-        return view('site/confirm-appoitment',$data);
+        if(isset($_POST)){
+            $input['time'] = $request->post('appointmenttime');
+            $input['date'] = $request->post('appointmentdate');
+            $input['doctor'] = $request->post('doctor');
+            $input['user'] = $userData->id;
+            // print_r($input);exit;
+            $res = $site->saveAppointments($input);
+            $input['id'] = $data['id'] = $res;
+            $input['userName'] = Session::get('userName');
+            if($res!='Slot not available.'){
+                Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
+                $data['date'] = $input['date'];
+                $data['time'] = $input['time'];
+                return view('site/confirm-appoitment',$data);
+            }else{
+                return view('site/error-appoitment');
+            }
+            
+        }else{
+            return view('site/home');
+        }
     }
 
     public function getAppointments(Request $request){
@@ -220,7 +229,6 @@ class SiteController extends Controller
                 array_push($appointments[$value->doc_id],$value->book_time);
             }
         }
-        // print_r($res);exit;
         $slots = [];
         if(!empty($res)){
             foreach ($res as $key => $value) {
@@ -244,17 +252,12 @@ class SiteController extends Controller
                         <strong>'.$date.'</strong>
                         <span></span>
                     </h2>';
-            // print_r($docs);exit;
             foreach ($docs as $key => $value) {
-                // print_r($value);exit;
-                // print_r($res[$value->id]);exit;
-                // $result = $res[0];
                 $t1 = strtotime($res[$value->id]['start_time']);
                 $t2 = strtotime($res[$value->id]['end_time']);
                 $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
                 $slotStr = '<select class="form-select" id="timeslot_'.$value->id.'">';
                 while ($t1 < $t2) {
-                    // print_r($appointments);exit;
                     $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                     $t1 = $duration+ $t1;
                     if(!empty($appointments[$value->id])){

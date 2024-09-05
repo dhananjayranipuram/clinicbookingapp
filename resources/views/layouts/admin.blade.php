@@ -32,6 +32,51 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+  <style>
+    .overlay {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: #22222296;
+        display:none;
+    }
+
+    .overlay__inner {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+
+    .overlay__content {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .spinner {
+        width: 75px;
+        height: 75px;
+        display: inline-block;
+        border-width: 2px;
+        border-color: rgba(255, 255, 255, 0.05);
+        border-top-color: #fff;
+        animation: spin 1s infinite linear;
+        border-radius: 100%;
+        border-style: solid;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -52,7 +97,12 @@
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div>End Search Bar -->
-
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+        </div>
+    </div>
+    
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
 
@@ -264,5 +314,65 @@
   <script src="{{asset('admin_assets/js/moment.min.js')}}"></script>
   <script src="{{asset('admin_assets/js/daterangepicker.min.js')}}"></script>
 </body>
+<script>
+$(document).ready(function () { 
+    $(document).on("click", ".booking-count" , function(e) { 
+        $(".overlay").show();
+        $.ajax({
+            url: baseUrl + '/admin/get-dashboard-booking-data',
+            type: 'post',
+            data: {'period':$(this).attr('data-value')},
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                if(html){
+                  console.log(html)
+                    $("#bookingCount").html(html.booking.today_cnt);
+                    $(".booking-count-per").html(html.booking.increase + '%');
+                    if(html.booking.increase>=0){
+                        $(".booking-count-per").removeClass('text-success');
+                        $(".booking-count-per").removeClass('text-danger');
+                        $(".booking-count-per").addClass('text-success');
+                        $(".booking-count-trend").html('Increase');
+                    }else{
+                        $(".booking-count-per").removeClass('text-success');
+                        $(".booking-count-per").removeClass('text-danger');
+                        $(".booking-count-per").addClass('text-danger');
+                        $(".booking-count-trend").html('Decrease');
+                    }                    
+                }
+                $(".overlay").hide();
+            }
+        });
+    });
 
+    $(document).on("click", ".customer-count" , function(e) { 
+        $(".overlay").show();
+        $.ajax({
+            url: baseUrl + '/admin/get-dashboard-booking-data',
+            type: 'post',
+            data: {'period':$(this).attr('data-value')},
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                if(html){
+                  console.log(html)
+                    $("#customerCount").html(html.customer.today_cnt);
+                    $(".customer-count-per").html(html.customer.increase + '%');
+                    if(html.customer.increase>=0){
+                        $(".customer-count-per").removeClass('text-success');
+                        $(".customer-count-per").removeClass('text-danger');
+                        $(".customer-count-per").addClass('text-success');
+                        $(".customer-count-trend").html('Increase');
+                    }else{
+                        $(".customer-count-per").removeClass('text-success');
+                        $(".customer-count-per").removeClass('text-danger');
+                        $(".customer-count-per").addClass('text-danger');
+                        $(".customer-count-trend").html('Decrease');
+                    }
+                }
+                $(".overlay").hide();
+            }
+        });
+    });
+});
+</script>
 </html>

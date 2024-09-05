@@ -35,6 +35,33 @@ class Admin extends Model
                         LIMIT 5;");
     }
 
+    public function getDocWiseAppointmentData($data){
+        return DB::select("SELECT d.id,COUNT(a.doc_id) 'value',CONCAT(d.honor,d.first_name,' ',d.last_name) 'name' FROM doctor d
+                        LEFT JOIN appointments a ON d.id=a.doc_id
+                        WHERE a.book_date between '$data[from]' and '$data[to]'
+                        GROUP BY d.id;");
+    }
+
+    public function getBookingData($data){
+        return DB::select("SELECT 'Today' AS 'label',COUNT(id) cnt FROM appointments a
+                        WHERE a.book_date between '$data[from]' and '$data[to]'
+
+                        UNION
+
+                        SELECT 'Yesterday' AS 'label',COUNT(id) cnt FROM appointments a
+                        WHERE a.book_date between '$data[prev_from]' and '$data[prev_to]';");
+    }
+
+    public function getCustomerData($data){
+        return DB::select("SELECT 'Today' AS 'label',COUNT(u.id) cnt FROM enduser u
+                        WHERE u.created_at between '$data[from]' and '$data[to]'
+
+                        UNION
+
+                        SELECT 'Yesterday' AS 'label',COUNT(u.id) cnt FROM enduser u
+                        WHERE u.created_at between '$data[prev_from]' and '$data[prev_to]';");
+    }
+
     public function getAllSpeciality(){
         return DB::select("SELECT id,name,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM speciality WHERE deleted=0 ORDER BY name;");
     }
