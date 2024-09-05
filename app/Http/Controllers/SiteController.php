@@ -27,7 +27,7 @@ class SiteController extends Controller
     public function speciality(){
         $site = new Site();
         $data['speciality'] = $site->getSpeciality();
-        
+        // echo '<pre>';print_r($data);exit;
         return view('site/speciality',$data);
     }
 

@@ -15,7 +15,11 @@ class Site extends Model
     }
 
     public function getSpeciality(){
-        return DB::select("SELECT id,name FROM speciality WHERE active=1 ORDER BY name;");
+        return DB::select("SELECT s.id,s.name,COUNT(d.id) cnt FROM speciality s 
+                            LEFT JOIN doctor d ON s.id=d.specialization
+                            WHERE s.active=1 
+                            GROUP BY s.id
+                            ORDER BY NAME;");
     }
 
     public function getDoctors(){

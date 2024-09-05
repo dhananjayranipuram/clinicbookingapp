@@ -19,7 +19,7 @@
                                     <img class="img-fluid" src="img/service-1.jpg" alt="">
                                 </div> -->
                                 <div class="position-relative bg-light rounded-bottom text-center p-4">
-                                    <h5 class="m-0">{{$value->name}}</h5>
+                                    <h5 class="m-0">{{$value->name}} ({{$value->cnt}})</h5>
                                 </div>
                                 </a>
                             </div>

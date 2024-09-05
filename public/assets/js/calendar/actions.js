@@ -13,6 +13,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function( html ) {
                     if(html=='true'){
+                        $(".overlay").show();
                         $("#appointmentForm").submit();
                     }else{
                         toggleRegistration();

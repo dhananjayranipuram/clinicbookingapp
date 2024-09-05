@@ -312,11 +312,57 @@
 @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
 @media (min-width:1281px) { /* hi-res laptops and desktops */ }
     </style>
+
+<style>
+    .overlay {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: #22222296;
+        display:none;
+        z-index: 10000000;
+    }
+
+    .overlay__inner {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+
+    .overlay__content {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .spinner {
+        width: 75px;
+        height: 75px;
+        display: inline-block;
+        border-width: 2px;
+        border-color: rgba(255, 255, 255, 0.05);
+        border-top-color: #fff;
+        animation: spin 1s infinite linear;
+        border-radius: 100%;
+        border-style: solid;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>    
 </head>
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary m-1" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -325,6 +371,12 @@
         </div>
         <div class="spinner-grow text-secondary m-1" role="status">
             <span class="sr-only">Loading...</span>
+        </div>
+    </div> -->
+
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
         </div>
     </div>
     <!-- Spinner End -->
@@ -683,6 +735,7 @@
         }
 
         function login(){
+            
             var datas = {
                 'email': $("#loginEmailAddress").val(),
                 'password': $("#loginPassword").val()
@@ -696,8 +749,19 @@
                 success: function(res) {
                     if(res.status==200){
                         $('#popupLogin').removeClass('show');
-                        if($("#appointmentDate").val() !='' && $("#appointmentTime").val() !='' && $("#appointmentDoctor").val() !=''){
+                        chk = 0;
+                        if($("#appointmentDate").val() == undefined || $("#appointmentDate").val() == ''){
+                            chk = 1;
+                        }
+                        if($("#appointmentTime").val() == undefined || $("#appointmentTime").val() == ''){
+                            chk = 1;
+                        }
+                        if($("#appointmentDoctor").val() == undefined || $("#appointmentDoctor").val() == ''){
+                            chk = 1;
+                        }
+                        if(chk == 0){
                             if(confirm("Do you want to continue booking appointment?")){
+                                $(".overlay").show();
                                 $("#appointmentForm").submit();
                             }else{
                                 location.reload();

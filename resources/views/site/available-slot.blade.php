@@ -88,5 +88,5 @@
       <script src="{{asset('assets/js/calendar/jquery.tooltipster.min.js')}}"></script>
       <script src="{{asset('assets/js/calendar/functions.js')}}"></script>
       <script src="{{asset('assets/js/calendar/perfect-scrollbar.jquery.min.js')}}"></script>
-      <script src="{{asset('assets/js/calendar/actions.js')}}"></script>
+      <script src="{{asset('assets/js/calendar/actions.js')}}?v={{time()}}"></script>
 @endsection
