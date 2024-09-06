@@ -53,8 +53,8 @@
                     <th>Patient Mobile</th>
                     <th>Doctor Name</th>
                     <th>Speciality</th>
-                    <th data-type="date" data-format="YYYY/MM/DD">Appointment Date</th>
-                    <th>Appointment Time</th>
+                    <th data-type="date" data-format="YYYY/MM/DD">Appt Date</th>
+                    <th>Appt Time</th>
                   </tr>
                 </thead>
                 <tbody>

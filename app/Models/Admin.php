@@ -19,7 +19,7 @@ class Admin extends Model
         if(!empty($data['from']) && !empty($data['to'])){
             $condition .= " AND (ap.book_date between '$data[from]' and '$data[to]')";
         }
-        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time,sp.name 'speciclity',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time,sp.name 'speciclity',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
                         LEFT JOIN speciality sp ON sp.id=dc.specialization
@@ -28,7 +28,7 @@ class Admin extends Model
     }
 
     public function getLatestAppointmentData($data){
-        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,ap.book_date,ap.book_time FROM appointments ap
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
                         WHERE ap.book_date between '$data[from]' and '$data[to]'
