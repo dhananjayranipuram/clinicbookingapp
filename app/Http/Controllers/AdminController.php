@@ -100,8 +100,8 @@ class AdminController extends Controller
             $filterData = [
                 'doctor' => '',
                 'speciality' => '',
-                'from' => ''/*date('Y-m-d', time())*/,
-                'to' => ''/*date('Y-m-d', time())*/,
+                'from' => date('Y-m-d', time()),
+                'to' => date('Y-m-d', time()),
             ];
             $data['list'] = $admin->getAppointmentData($filterData);
         }
