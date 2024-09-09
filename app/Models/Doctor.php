@@ -9,10 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     public function getAppointmentData($data){
+        $condition = '';
+        if(!empty($data['from']) && !empty($data['to'])){
+            $condition .= " AND (ap.book_date between '$data[from]' and '$data[to]')";
+        }
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
-                        WHERE ap.doc_id=$data[id];");
+                        WHERE ap.doc_id=$data[id] $condition;");
     }
 
     public function getDocProfile($data){

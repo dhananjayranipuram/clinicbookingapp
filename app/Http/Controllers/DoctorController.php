@@ -28,12 +28,27 @@ class DoctorController extends Controller
         return view('doctor/login');
     }
 
-    public function getAppointments(){
+    public function getAppointments(Request $request){
         if(Session::get('userDoctorData')){
-            $data = $inputs = [];
-            $inputs['id'] = Session::get('userDoctorData')->id;
+            $data = [];
             $doc = new Doctor();
-            $data['list'] = $doc->getAppointmentData($inputs);
+            if($request->method() == 'POST'){
+                $filterData = $request->validate([
+                    'from' => [''],
+                    'to' => [''],
+                ]);
+                $filterData['id'] = Session::get('userDoctorData')->id;
+                $data['list'] = $doc->getAppointmentData($filterData);
+            }else{
+                date_default_timezone_set('Asia/Calcutta');
+                $filterData = [
+                    'id' => Session::get('userDoctorData')->id,
+                    'from' => date('Y-m-d', time()),
+                    'to' => date('Y-m-d', time()),
+                ];
+                $data['list'] = $doc->getAppointmentData($filterData);
+            }
+            
             return view('doctor/appointments',$data);
         }else{
             return view('doctor/pagenotfound');

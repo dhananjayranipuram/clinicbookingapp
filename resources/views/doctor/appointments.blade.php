@@ -9,6 +9,22 @@
             <div class="card-body">
               <h5 class="card-title">My Appointments</h5>
 
+              <form class="row g-5 needs-validation" method="post" action="{{ url('/doctor/appointments') }}">
+                @csrf <!-- {{ csrf_field() }} -->
+                  <div class="col-md-3">
+                    <label for="validationDefault02" class="form-label">Data</label>
+                    <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span></span> <i class="fa fa-caret-down"></i>
+                        <input type="hidden" id="from" name="from">
+                        <input type="hidden" id="to" name="to">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-3" style="align-content: end;">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                  </div>
+                </form>
               <!-- Table with stripped rows -->
               <table class="table datatable">
                 <thead>
@@ -40,4 +56,36 @@
         </div>
       </div>
     </section>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+    
+        // var start = moment().subtract(29, 'days');
+        var start = moment();
+        var end = moment();
+    
+        function cb(start, end) {
+            $('#reportrange span').html(start.format('DD-MM-Y') + ' - ' + end.format('DD-MM-Y'));
+            $("#from").val(start.format('Y-MM-DD'));
+            $("#to").val(end.format('Y-MM-DD'));
+        }
+    
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+              //  'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+              //  'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+              //  'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+              'This Year': [moment().startOf('year'), moment().endOf('year')],
+            }
+        }, cb);
+    
+        cb(start, end);
+    
+    });
+    </script>      
 @endsection
