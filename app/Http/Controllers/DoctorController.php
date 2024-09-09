@@ -40,6 +40,15 @@ class DoctorController extends Controller
         }
     }
 
+    public function postHelp(){
+        if(Session::get('userDoctorData')){
+            
+            return view('doctor/need-help');
+        }else{
+            return view('doctor/pagenotfound');
+        }
+    }
+
     public function getProfile(){
 
         $userData = Session::get('userDoctorData');

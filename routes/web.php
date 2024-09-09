@@ -48,6 +48,7 @@ Route::any('/doctor/profile', [DoctorController::class, 'getProfile']);
 Route::any('/doctor/auth', [DoctorController::class, 'authenticateDoctor']);
 Route::any('/doctor/update-profile', [DoctorController::class, 'updateProfile']);
 Route::any('/doctor/change-password', [DoctorController::class, 'changePassword']);
+Route::any('/doctor/help', [DoctorController::class, 'postHelp']);
 Route::get('/doctor/logout', [DoctorController::class, 'logout']);
 
 Route::get('/admin/login', [AdminController::class, 'login']);
