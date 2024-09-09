@@ -183,7 +183,7 @@ class SiteController extends Controller
             if($res!='Slot not available.'){
                 Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
                 $data['date'] = $input['date'];
-                $data['time'] = $input['time'];
+                $data['time'] = substr($input['time'],0,11);
                 return view('site/confirm-appoitment',$data);
             }else{
                 return view('site/error-appoitment');

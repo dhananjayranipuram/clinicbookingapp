@@ -10,7 +10,7 @@
                 <div style="color:green;text-align: center;">
                     <i class="fa fa-check-circle fa-10x" aria-hidden="true" style="width:50%;"></i>
                 </div><br>
-                <div style="text-align: center;">Your appointment is booked <br>For the date : {{$date}} <br>At {{$time}}</div>
+                <div style="text-align: center;">Your appointment is booked <br>For the date : {{$date}} At {{$time}}</div>
                 <div style="text-align: center;">Booking ID is:{{$id}}</div>
 
                 <div style="text-align: center;">Note : Please be at Clinic 15 minutes before the apponintment time.</div>

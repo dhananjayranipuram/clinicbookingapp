@@ -760,12 +760,8 @@
                             chk = 1;
                         }
                         if(chk == 0){
-                            if(confirm("Do you want to continue booking appointment?")){
-                                $(".overlay").show();
-                                $("#appointmentForm").submit();
-                            }else{
-                                location.reload();
-                            }
+                            $(".overlay").show();
+                            $("#appointmentForm").submit();
                         }else{
                             location.reload();
                         }
