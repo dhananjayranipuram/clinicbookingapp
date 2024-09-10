@@ -176,14 +176,16 @@ class SiteController extends Controller
             $input['date'] = $request->post('appointmentdate');
             $input['doctor'] = $request->post('doctor');
             $input['user'] = $userData->id;
-            // print_r($input);exit;
             $res = $site->saveAppointments($input);
-            $input['id'] = $data['id'] = $res;
-            $input['userName'] = Session::get('userName');
+            if(is_numeric($res)){
+                $emailData = $site->getEmailData($res);
+                Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($emailData[0]));
+                $data['id']   = $res;
+                $data['date'] = $emailData[0]->book_date;
+                $data['time'] = $emailData[0]->book_time;
+            }
+            
             if($res!='Slot not available.'){
-                Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($input));
-                $data['date'] = $input['date'];
-                $data['time'] = substr($input['time'],0,11);
                 return view('site/confirm-appoitment',$data);
             }else{
                 return view('site/error-appoitment');

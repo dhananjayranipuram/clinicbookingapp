@@ -110,4 +110,12 @@ class Site extends Model
                             GROUP BY d.id
                             ORDER BY d.first_name,d.last_name;");
     }
+
+    public function getEmailData($id){
+        return DB::select("SELECT CONCAT(eu.first_name,' ',eu.last_name) patient_name,CONCAT(dc.honor,dc.first_name,' ',dc.last_name) 'doctor_name',sp.name 'speciality',DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
+                        LEFT JOIN doctor dc ON dc.id=ap.doc_id
+                        LEFT JOIN speciality sp ON dc.specialization = sp.id
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id
+                        WHERE ap.id=$id;");
+    }
 }

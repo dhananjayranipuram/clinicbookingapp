@@ -300,20 +300,20 @@
               <!-- START MAIN CONTENT AREA -->
               <tr>
                 <td class="wrapper">
-                  <p>Hi Admin</p>
-                  <p>A doctor appointment has been received through booking application.Details are as given below.</p>
+                  <p>Hi,</p>
+                  <p>Your appointment has been received to consult <b>{{$email_data->doctor_name}}</b>, <b>{{$email_data->speciality}}</b>.</p>
                   <table>
                     <tr>
                       <td><p>Name</p></td>
-                      <td><p>{{$email_data['userName']}}</p></td>
+                      <td><p>{{$email_data->patient_name}}</p></td>
                     </tr>
                     <tr>
                       <td><p>Date</p></td>
-                      <td><p>{{$email_data['date']}}</p></td>
+                      <td><p>{{$email_data->book_date}}</p></td>
                     </tr>
                     <tr>
                       <td><p>Time</p></td>
-                      <td><p>{{$email_data['time']}}</p></td>
+                      <td><p>{{$email_data->book_time}}</p></td>
                     </tr>
 
                   </table>            
