@@ -16,9 +16,10 @@ class AppointmentConfirmed extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($email_data)
+    public function __construct($email_data,$user)
     {
         $this->email_data = $email_data;
+        $this->user = $user;
     }
 
     /**
@@ -36,9 +37,15 @@ class AppointmentConfirmed extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.appointments.appointments'
-        );
+        if($this->user == 'admin'){
+            return new Content(
+                view: 'emails.appointments.appointments-admin'
+            );
+        }else{
+            return new Content(
+                view: 'emails.appointments.appointments-customer'
+            );
+        }
     }
 
     /**

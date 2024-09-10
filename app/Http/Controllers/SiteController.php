@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Mail\AppointmentConfirmed;
+use App\Mail\AppointmentConfirmedCustomer;
 use Illuminate\Http\Request;
 use App\Models\Site;
 use Session;
@@ -21,6 +22,7 @@ class SiteController extends Controller
     // }
 
     public function index(){
+        
         return view('site/home');
     }
 
@@ -179,7 +181,7 @@ class SiteController extends Controller
             $res = $site->saveAppointments($input);
             if(is_numeric($res)){
                 $emailData = $site->getEmailData($res);
-                Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($emailData[0]));
+                $this->sendEmails($emailData[0]);
                 $data['id']   = $res;
                 $data['date'] = $emailData[0]->book_date;
                 $data['time'] = $emailData[0]->book_time;
@@ -196,6 +198,11 @@ class SiteController extends Controller
         }
     }
 
+    public function sendEmails($emailData){
+        Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($emailData,'admin'));
+        Mail::to($emailData->email)->send(new AppointmentConfirmed($emailData,'customer'));
+    }
+    
     public function getAppointments(Request $request){
         
         $site = new Site();
