@@ -192,11 +192,24 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="{{asset('admin_assets/img/user-image.jpg')}}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">{{ Session::get('userAdminData')->name}}</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2">
+           
+              @if(isset(Session::get('userAdminData')->name))         
+                {{Session::get('userAdminData')->name}}
+              @else
+                  
+              @endif
+            </span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li class="dropdown-header"><h6>{{ Session::get('userAdminData')->name}}</h6></li>
+            <li class="dropdown-header"><h6>
+              @if(isset(Session::get('userAdminData')->name))         
+                {{Session::get('userAdminData')->name}}
+              @else
+                  
+              @endif  
+            </h6></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ url('/admin/profile') }}">

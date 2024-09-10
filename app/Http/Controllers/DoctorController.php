@@ -65,26 +65,29 @@ class DoctorController extends Controller
     }
 
     public function getProfile(){
-
-        $userData = Session::get('userDoctorData');
-        $doc = new Doctor();
-        $data = $doc->getDocProfile($userData);
-        $details['lang_select'] = explode(',',$data[0]->lang_id);
-        $details['spec'] = $doc->getSpecializationList(); 
-        $details['lang'] = $doc->getLanguages();
-        $details['data'] = $doc->getSlots($userData);
-        $details['days_available'] = [];
-        $details['start_time'] = '';
-        $details['end_time'] = '';
-        $details['duration'] = '';
-        foreach ($details['data'] as $key => $value) {
-            array_push($details['days_available'],$value->working_days);
-            $details['start_time'] = $value->start_time;
-            $details['end_time'] = $value->end_time;
-            $details['duration'] = $value->duration;
-        }
+        if(Session::get('userDoctorData')){
+            $userData = Session::get('userDoctorData');
+            $doc = new Doctor();
+            $data = $doc->getDocProfile($userData);
+            $details['lang_select'] = explode(',',$data[0]->lang_id);
+            $details['spec'] = $doc->getSpecializationList(); 
+            $details['lang'] = $doc->getLanguages();
+            $details['data'] = $doc->getSlots($userData);
+            $details['days_available'] = [];
+            $details['start_time'] = '';
+            $details['end_time'] = '';
+            $details['duration'] = '';
+            foreach ($details['data'] as $key => $value) {
+                array_push($details['days_available'],$value->working_days);
+                $details['start_time'] = $value->start_time;
+                $details['end_time'] = $value->end_time;
+                $details['duration'] = $value->duration;
+            }
         
-        return view('doctor/profile',(array)$data[0],$details);
+            return view('doctor/profile',(array)$data[0],$details);
+        }else{
+            return view('doctor/pagenotfound');
+        }
     }
 
     public function updateProfile(Request $request){

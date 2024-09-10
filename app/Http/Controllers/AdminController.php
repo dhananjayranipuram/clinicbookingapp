@@ -17,10 +17,6 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        // if(empty(session()->all())){
-            // Session::flush();
-            // return Redirect::to('/admin/login');exit;
-        // }
         $this->middleware('auth.session');
     }
 
@@ -44,43 +40,47 @@ class AdminController extends Controller
     }
 
     public function getDashboardBooking(Request $request){
-        $admin = new Admin();
-        $input = [];
-        switch ($request->post('period')) {
-            case 'today':
-                $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
-                break;
-            case 'thismonth':
-                $input = ['from' => date('Y-m-01'),'to' => date('Y-m-t'),'prev_from' => date('Y-m-d',strtotime('first day of previous month')),'prev_to' => date('Y-m-d',strtotime('last day of previous month'))]; //Today's data
-                break;
-            case 'thisyear':
-                $input = ['from' => date('Y-01-01'),'to' => date('Y-12-31'),'prev_from' => date('Y-01-01',strtotime("-1 years")),'prev_to' => date('Y-12-31',strtotime("-1 years"))]; //Today's data
-                break;
-            default:
-                $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
-                break;
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            $input = [];
+            switch ($request->post('period')) {
+                case 'today':
+                    $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
+                    break;
+                case 'thismonth':
+                    $input = ['from' => date('Y-m-01'),'to' => date('Y-m-t'),'prev_from' => date('Y-m-d',strtotime('first day of previous month')),'prev_to' => date('Y-m-d',strtotime('last day of previous month'))]; //Today's data
+                    break;
+                case 'thisyear':
+                    $input = ['from' => date('Y-01-01'),'to' => date('Y-12-31'),'prev_from' => date('Y-01-01',strtotime("-1 years")),'prev_to' => date('Y-12-31',strtotime("-1 years"))]; //Today's data
+                    break;
+                default:
+                    $input = ['from' => date('Y-m-d'),'to' => date('Y-m-d'),'prev_from' => date('Y-m-d',strtotime("-1 days")),'prev_to' => date('Y-m-d',strtotime("-1 days"))]; //Today's data
+                    break;
+            }
+            // print_r($input);exit;
+            switch ($request->post('card')) {
+                case 'booking-count':
+                    $bookingRes = $admin->getBookingData($input);
+                    $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
+                    break;
+                case 'customer-count':
+                    $customerRes = $admin->getCustomerData($input);
+                    $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
+                    break;
+                case 'pie-chart':
+                    $data['doc_appt'] = $admin->getDocWiseAppointmentData($input);
+                    break;
+                case 'recent-appt':
+                    $data['list'] = $admin->getLatestAppointmentData($input);
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            return $data;
+        }else{
+            return view('admin/pagenotfound');
         }
-        // print_r($input);exit;
-        switch ($request->post('card')) {
-            case 'booking-count':
-                $bookingRes = $admin->getBookingData($input);
-                $data['booking'] = (object)['today_cnt'=>$bookingRes[0]->cnt,'increase'=>$this->increasePercentage($bookingRes[1]->cnt,$bookingRes[0]->cnt)];
-                break;
-            case 'customer-count':
-                $customerRes = $admin->getCustomerData($input);
-                $data['customer'] = (object)['today_cnt'=>$customerRes[0]->cnt,'increase'=>$this->increasePercentage($customerRes[1]->cnt,$customerRes[0]->cnt)];
-                break;
-            case 'pie-chart':
-                $data['doc_appt'] = $admin->getDocWiseAppointmentData($input);
-                break;
-            case 'recent-appt':
-                $data['list'] = $admin->getLatestAppointmentData($input);
-                break;
-            default:
-                # code...
-                break;
-        }
-        return $data;
 
     }
 
@@ -107,7 +107,11 @@ class AdminController extends Controller
         }
         $data['spec'] = $admin->getAllSpeciality(); 
         $data['docs'] = $admin->getDoctorsData();
-        return view('admin/appointments',$data);
+        if(Session::get('userAdminData')){
+            return view('admin/appointments',$data);
+        }else{
+            return view('admin/pagenotfound');
+        }
         
     }
 
@@ -176,7 +180,7 @@ class AdminController extends Controller
                     return view('admin/add-doctor',$data);
                 }
             }else{
-                return Redirect::to('/admin/login');
+                return view('admin/pagenotfound');
             }
         } catch (\Exception $e) {
             return back()->withErrors(["error" => $e->getMessage()]);
@@ -184,25 +188,29 @@ class AdminController extends Controller
     }
 
     public function editDoctor(){
-        $queries = [];
-        parse_str($_SERVER['QUERY_STRING'], $queries);
-        $admin = new Admin();
-        $data = $admin->getDocProfile((object)$queries);
-        $details['lang_select'] = explode(',',$data[0]->lang_id);
-        $details['spec'] = $admin->getAllSpeciality(); 
-        $details['lang'] = $admin->getLanguages();
-        $details['data'] = $admin->getSlots((object)$queries);
-        $details['days_available'] = [];
-        $details['start_time'] = '';
-        $details['end_time'] = '';
-        $details['duration'] = '';
-        foreach ($details['data'] as $key => $value) {
-            array_push($details['days_available'],$value->working_days);
-            $details['start_time'] = $value->start_time;
-            $details['end_time'] = $value->end_time;
-            $details['duration'] = $value->duration;
+        if(Session::get('userAdminData')){
+            $queries = [];
+            parse_str($_SERVER['QUERY_STRING'], $queries);
+            $admin = new Admin();
+            $data = $admin->getDocProfile((object)$queries);
+            $details['lang_select'] = explode(',',$data[0]->lang_id);
+            $details['spec'] = $admin->getAllSpeciality(); 
+            $details['lang'] = $admin->getLanguages();
+            $details['data'] = $admin->getSlots((object)$queries);
+            $details['days_available'] = [];
+            $details['start_time'] = '';
+            $details['end_time'] = '';
+            $details['duration'] = '';
+            foreach ($details['data'] as $key => $value) {
+                array_push($details['days_available'],$value->working_days);
+                $details['start_time'] = $value->start_time;
+                $details['end_time'] = $value->end_time;
+                $details['duration'] = $value->duration;
+            }
+            return view('admin/edit-doctor',(array)$data[0],$details);
+        }else{
+            return view('admin/pagenotfound');
         }
-        return view('admin/edit-doctor',(array)$data[0],$details);
     }
 
     public function updateDoctorProfile(Request $request){
@@ -237,10 +245,14 @@ class AdminController extends Controller
     }
 
     public function viewAdminProfile(){
-        $admin = new Admin();
-        $userData = Session::get('userAdminData');
-        $data = $admin->getAdminProfile($userData);
-        return view('admin/admin-profile',(array)$data[0]);
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            $userData = Session::get('userAdminData');
+            $data = $admin->getAdminProfile($userData);
+            return view('admin/admin-profile',(array)$data[0]);
+        }else{
+            return view('admin/pagenotfound');
+        }
     }
 
     public function logout(){
@@ -249,26 +261,30 @@ class AdminController extends Controller
     }
 
     public function addSpecialization(Request $request){
-        $admin = new Admin();
-        if($request->method() == 'POST'){
-            $request->flash();
-            $credentials = $request->validate([
-                'specialization' => ['required'],
-            ]);
-            if($request->post('active')=='on'){
-                $credentials['active'] = 1;
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            if($request->method() == 'POST'){
+                $request->flash();
+                $credentials = $request->validate([
+                    'specialization' => ['required'],
+                ]);
+                if($request->post('active')=='on'){
+                    $credentials['active'] = 1;
+                }else{
+                    $credentials['active'] = 0;
+                }
+                $data = $admin->addSpecialization($credentials);
+                if($data==1){
+                    return Redirect::to('/admin/add-specialization');
+                }else{
+                    return back()->withErrors(["error" => $data]);
+                }
             }else{
-                $credentials['active'] = 0;
-            }
-            $data = $admin->addSpecialization($credentials);
-            if($data==1){
-                return Redirect::to('/admin/add-specialization');
-            }else{
-                return back()->withErrors(["error" => $data]);
+                $data['spec'] = $admin->getAllSpeciality();   
+                return view('admin/specialization',$data);
             }
         }else{
-            $data['spec'] = $admin->getAllSpeciality();   
-            return view('admin/specialization',$data);
+            return view('admin/pagenotfound');
         }
     }
 
@@ -294,33 +310,41 @@ class AdminController extends Controller
     }
 
     public function deleteSpecialization(){
-        $input['specializationId'] = $_POST['id'];
-        $admin = new Admin();
-        $data = $admin->deleteSpecialization($input);
-        return json_encode($data);
+        if(Session::get('userAdminData')){
+            $input['specializationId'] = $_POST['id'];
+            $admin = new Admin();
+            $data = $admin->deleteSpecialization($input);
+            return json_encode($data);
+        }else{
+            return view('admin/pagenotfound');
+        }
     }
 
     public function addLanguages(Request $request){
-        $admin = new Admin();
-        if($request->method() == 'POST'){
-            $request->flash();
-            $credentials = $request->validate([
-                'language' => ['required'],
-            ]);
-            if($request->post('active')=='on'){
-                $credentials['active'] = 1;
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            if($request->method() == 'POST'){
+                $request->flash();
+                $credentials = $request->validate([
+                    'language' => ['required'],
+                ]);
+                if($request->post('active')=='on'){
+                    $credentials['active'] = 1;
+                }else{
+                    $credentials['active'] = 0;
+                }
+                $data = $admin->addLanguage($credentials);
+                if($data==1){
+                    return Redirect::to('/admin/add-language');
+                }else{
+                    return back()->withErrors(["error" => $data]);
+                }
             }else{
-                $credentials['active'] = 0;
-            }
-            $data = $admin->addLanguage($credentials);
-            if($data==1){
-                return Redirect::to('/admin/add-language');
-            }else{
-                return back()->withErrors(["error" => $data]);
+                $data['spec'] = $admin->getAllLanguages();   
+                return view('admin/language',$data);
             }
         }else{
-            $data['spec'] = $admin->getAllLanguages();   
-            return view('admin/language',$data);
+            return view('admin/pagenotfound');
         }
     }
 
@@ -346,10 +370,14 @@ class AdminController extends Controller
     }
 
     public function deleteLanguages(){
-        $input['languageId'] = $_POST['id'];
-        $admin = new Admin();
-        $data = $admin->deleteLanguage($input);
-        return json_encode($data);
+        if(Session::get('userAdminData')){
+            $input['languageId'] = $_POST['id'];
+            $admin = new Admin();
+            $data = $admin->deleteLanguage($input);
+            return json_encode($data);
+        }else{
+            return view('admin/pagenotfound');
+        }
     }
 
     public function increasePercentage($old, $new, int $precision = 2): float
