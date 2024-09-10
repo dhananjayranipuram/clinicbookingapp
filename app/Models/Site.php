@@ -17,7 +17,7 @@ class Site extends Model
     public function getSpeciality(){
         return DB::select("SELECT s.id,s.name,COUNT(d.id) cnt FROM speciality s 
                             LEFT JOIN doctor d ON s.id=d.specialization
-                            WHERE s.active=1 
+                            WHERE s.active=1 AND d.deleted=0 AND d.active=1
                             GROUP BY s.id
                             ORDER BY NAME;");
     }
@@ -28,7 +28,7 @@ class Site extends Model
                             LEFT JOIN speciality sp ON d.specialization = sp.id
                             LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
                             LEFT JOIN languages l ON dl.lang_id = l.id
-                            WHERE d.active=1 
+                            WHERE d.active=1 AND d.deleted=0
                             GROUP BY d.id
                             ORDER BY d.first_name,d.last_name;");
     }
@@ -51,7 +51,7 @@ class Site extends Model
                             LEFT JOIN speciality sp ON d.specialization = sp.id
                             LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
                             LEFT JOIN languages l ON dl.lang_id = l.id
-                            WHERE d.active=1 $condition
+                            WHERE d.active=1 AND d.deleted=0 $condition
                             GROUP BY d.id
                             ORDER BY d.first_name,d.last_name;");
     }
@@ -97,7 +97,7 @@ class Site extends Model
         $dayofweek = date('w', strtotime($data['date']));
         return DB::select("SELECT doc.id,CONCAT(doc.honor,doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
             LEFT JOIN doctor doc ON slab.doc_id=doc.id
-            WHERE slab.working_days=$dayofweek");
+            WHERE slab.working_days=$dayofweek AND doc.deleted=0 AND doc.active=1");
     }
 
     public function getDoctorDetains($data){

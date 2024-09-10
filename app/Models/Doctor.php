@@ -25,7 +25,7 @@ class Doctor extends Model
                         LEFT JOIN speciality sp ON sp.id=d.specialization
                         LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
                         LEFT JOIN languages l ON dl.lang_id = l.id
-                        WHERE d.id = $data->id
+                        WHERE d.id = $data->id AND AND d.deleted=0
                         GROUP BY d.id;");
     }
 
@@ -74,7 +74,7 @@ class Doctor extends Model
     }
 
     public function authenticateDoctor($data){
-        return DB::select("SELECT id,CONCAT(honor,' ',first_name,' ',last_name) doctor_name,first_name,profile_pic FROM doctor WHERE email='$data[username]' AND password='$data[password]';");
+        return DB::select("SELECT id,CONCAT(honor,' ',first_name,' ',last_name) doctor_name,first_name,profile_pic FROM doctor WHERE email='$data[username]' AND password='$data[password]' AND deleted=0 AND active=1;");
     }
 
     public function updateDoctorPassword($data){

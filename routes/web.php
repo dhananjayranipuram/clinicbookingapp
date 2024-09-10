@@ -69,6 +69,7 @@ Route::any('/admin/delete-spec', [AdminController::class, 'deleteSpecialization'
 Route::any('/admin/add-language', [AdminController::class, 'addLanguages']);
 Route::any('/admin/edit-language', [AdminController::class, 'editLanguages']);
 Route::any('/admin/delete-lang', [AdminController::class, 'deleteLanguages']);
+Route::any('/admin/delete-doc', [AdminController::class, 'deleteDoctor']);
 
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
 

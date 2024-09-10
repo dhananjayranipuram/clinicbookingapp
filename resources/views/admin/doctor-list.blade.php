@@ -31,7 +31,7 @@
                             <td>{{$value->Speciality}}</td>
                             <td><div >
                               <a href="{{ url('/admin/edit-doctor') }}?id={{$value->id}}" class="btn btn-default"><i class="fa fa-edit"></i></a>
-                              <a href="#" class="btn btn-default"><i class="fa fa-trash"></i></a>
+                              <a href="#" class="btn btn-default deleteDoc" data-id="{{$value->id}}"><i class="fa fa-trash"></i></a>
                           </div></td>
                         </tr>
                     @endforeach
@@ -45,4 +45,26 @@
         </div>
       </div>
     </section>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$(document).ready(function () { 
+    
+
+    $('.deleteDoc').click(function(){
+        if(confirm("Do you want to delete this Doctor?")){
+            $.ajax({
+                url: baseUrl + '/admin/delete-doc',
+                type: 'post',
+                data: {'id':$(this).attr("data-id")},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function( html ) {
+                    if(html=='1'){
+                        location.reload();
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
 @endsection

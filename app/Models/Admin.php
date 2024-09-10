@@ -78,7 +78,8 @@ class Admin extends Model
     public function getDoctorsData(){
         return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) doctor_name,d.email,d.gender,d.specialization,sp.name Speciality 
         FROM doctor d
-        LEFT JOIN speciality sp ON sp.id=d.specialization;");
+        LEFT JOIN speciality sp ON sp.id=d.specialization
+        WHERE d.deleted=0;");
     }
 
     public function getSpecializationList(){
@@ -126,6 +127,10 @@ class Admin extends Model
         return DB::UPDATE("UPDATE speciality SET deleted='1' WHERE id='$data[specializationId]';");
     }
 
+    public function deleteDoctorData($data){
+        return DB::UPDATE("UPDATE doctor SET deleted='1' WHERE id='$data[docId]';");
+    }
+
     public function addLanguage($data){
 
         $res = DB::select("SELECT id FROM languages WHERE name LIKE '%$data[language]%';");
@@ -149,7 +154,7 @@ class Admin extends Model
                         LEFT JOIN speciality sp ON sp.id=d.specialization
                         LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
                         LEFT JOIN languages l ON dl.lang_id = l.id
-                        WHERE d.id = $data->id
+                        WHERE d.id = $data->id AND d.deleted=0
                         GROUP BY d.id;");
     }
 
@@ -168,7 +173,6 @@ class Admin extends Model
     public function updateDoctorData($data){
         DB::beginTransaction();
         $docId = $data['docId'];
-        // print_r($data);exit;
         try {
             DB::INSERT("UPDATE doctor SET honor='$data[honor]',first_name='$data[first_name]',last_name='$data[last_name]',email='$data[email]',gender='$data[gender]',specialization='$data[specialization]' WHERE id='$data[docId]';");
             

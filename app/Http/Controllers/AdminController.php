@@ -239,9 +239,19 @@ class AdminController extends Controller
             if($res){
                 return Redirect::to('/admin/edit-doctor?id='.$res);
             }
-        }
-            
+        }   
         
+    }
+
+    public function deleteDoctor(){
+        if(Session::get('userAdminData')){
+            $input['docId'] = $_POST['id'];
+            $admin = new Admin();
+            $data = $admin->deleteDoctorData($input);
+            return json_encode($data);
+        }else{
+            return view('admin/pagenotfound');
+        }
     }
 
     public function viewAdminProfile(){
