@@ -81,10 +81,13 @@ class SiteController extends Controller
             $input['dob'] = $request->post('dob');
             $input['gender'] = $request->post('gender');
             $input['password'] = $request->post('password');
-            if($site->getUserExist($input)[0]->cnt<=0){
-                if($site->saveEndUserData($input)){
+            $ex = $site->getUserExist($input);
+            if($ex[0]->cnt<=0){
+                $reg = $site->saveEndUserData($input);
+                if($reg){
                     $response['status'] = '200';
                     $response['message'] = 'User created succesfully.';
+                    $response['userId'] = $reg;
                 }else{
                     $response['status'] = '500';
                     $response['message'] = 'Something went wrong.';
@@ -92,6 +95,7 @@ class SiteController extends Controller
             }else{
                 $response['status'] = '200';
                 $response['message'] = 'User already exist.';
+                $response['userId'] = $ex[0]->id;
             }
         }else{
             $response['status'] = '500';
@@ -333,7 +337,7 @@ class SiteController extends Controller
                         <span class="timeslot-time">
                             <span class="timeslot-range">
                                 <i class="booked-icon booked-icon-clock"></i>
-                                '.$timeSlot.'
+                                '.substr($timeSlot,0,11).'
                             </span>
                         </span>
                         <span class="timeslot-people">
@@ -481,5 +485,14 @@ class SiteController extends Controller
         return $str;
     }
 
+    public function userAppointments(){
+        $site = new Site();
+        if(Session::get('userName')){
+            $data = Session::get('userData');
+            $app['data'] = $site->getUserAppointments($data);
+            // print_r($app);exit;
+            return view('site/user-appointments',$app);
+        }
+    }
     
 }

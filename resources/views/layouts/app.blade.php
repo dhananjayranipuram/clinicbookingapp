@@ -441,7 +441,7 @@
                     <h3>{{ Session::get('userName')}}<br /></h3>
                     <ul>
                     <li>
-                        <a href="#">My profile</a>
+                        <a href="{{ url('/appointments') }}">My Appointments</a>
                     </li>
                     <li>
                         <a href="{{ url('/logout') }}">Logout</a>

@@ -39,6 +39,7 @@ Route::any('/calendar', [SiteController::class, 'getSelectDocCalendar']);
 Route::any('/get-doctor-apointment', [SiteController::class, 'getDoctorAppointments']);
 Route::any('/speciality', [SiteController::class, 'speciality']);
 Route::any('/speciality-doctors', [SiteController::class, 'specDoctors']);
+Route::any('/appointments', [SiteController::class, 'userAppointments']);
 // Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);
@@ -70,6 +71,16 @@ Route::any('/admin/add-language', [AdminController::class, 'addLanguages']);
 Route::any('/admin/edit-language', [AdminController::class, 'editLanguages']);
 Route::any('/admin/delete-lang', [AdminController::class, 'deleteLanguages']);
 Route::any('/admin/delete-doc', [AdminController::class, 'deleteDoctor']);
+
+Route::any('/admin/delete-appt', [AdminController::class, 'deleteAppointment']);
+Route::any('/admin/edit-appointment', [AdminController::class, 'editAppointment']);
+Route::any('/admin/get-time-slot', [AdminController::class, 'getTimeSlots']);
+Route::any('/admin/update-appointment', [AdminController::class, 'updateAppointment']);
+
+Route::any('/admin/calendar-view', [AdminController::class, 'appointmentCalendar']);
+Route::any('/admin/get-doctor-apointment', [AdminController::class, 'getDoctorAppointments']);
+Route::any('/admin/slot-not-available', [AdminController::class, 'slotNotAvailable']);
+Route::any('/admin/book-appointment', [AdminController::class, 'bookAppointment']);
 
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
 

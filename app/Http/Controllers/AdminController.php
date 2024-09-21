@@ -20,6 +20,98 @@ class AdminController extends Controller
         $this->middleware('auth.session');
     }
 
+    public function appointmentCalendar(){
+        $admin = new Admin();
+        $data['spec'] = $admin->getAllSpeciality(); 
+        $data['docs'] = $admin->getDoctorsData();
+        $temp = ['gotoMonth' => date('Y-m-01')];
+        $data['calendarStr'] = $this->generateCalendar($temp);
+        return view('admin/appointment-calendar',$data);
+    }
+
+    public function getDoctorAppointments(Request $request){
+        
+        $admin = new Admin();
+        $input['day'] = date('w', strtotime($request->post('date')));
+        $input['date'] = $request->post('date');
+        $input['docId'] = $request->post('docId');
+        $input['specId'] = $request->post('specId');
+        $docs = $admin->getAvailableDocs($input);
+        
+        $res = $admin->getAvailableSlots($input);
+        $app = $admin->getDocAppointments($input);
+        // print_r($app);exit;
+        $appointments = [];
+        if(!empty($app)){
+            foreach ($app as $key => $value) {
+                if(!isset($appointments[$value->doc_id]))
+                    $appointments[$value->doc_id] = [];
+                array_push($appointments[$value->doc_id],['slot'=>$value->book_time,'status'=>$value->status]);
+            }
+        }
+        // print_r($appointments);exit;
+        $slots = [];
+        if(!empty($res)){
+            foreach ($res as $key => $value) {
+                if(!isset($slots[$value->doc_id]))
+                    $slots[$value->doc_id] = [];
+                $slots[$value->doc_id] = ['start_time'=>$value->start_time,'end_time'=>$value->end_time,'duration'=>$value->duration];
+            }
+        }
+        return $this->generateDoctorTimeSlot($docs,$slots,$appointments,$request);
+    }
+
+    public function slotNotAvailable(Request $request){
+        $admin = new Admin();
+        $input['date'] = $request->post('date');
+        $input['docId'] = $request->post('docId');
+        $input['time'] = $request->post('time');
+        $docs = $admin->saveSlotNotAvailable($input);
+    }
+
+    public function bookAppointment(Request $request){
+        $site = new Site();
+        $input['date'] = $request->post('date');
+        $input['docId'] = $request->post('docId');
+        $input['time'] = $request->post('time');
+        $input['userId'] = $request->post('userId');
+        
+        $input['firstName'] = $request->post('firstName');
+        $input['lastName'] = $request->post('lastName');
+        $input['emailAddress'] = $request->post('emailAddress');
+        $input['phoneNumber'] = $request->post('phoneNumber');
+        $input['dob'] = $request->post('dob');
+        $input['gender'] = $request->post('gender');
+        $input['password'] = $request->post('phoneNumber');
+        $response = [];
+        $ex = $site->getUserExist($input);
+        if($ex[0]->cnt<=0){
+            $reg = $site->saveEndUserData($input);
+            if($reg){
+                $input['userId'] = $reg;
+                
+                $response['status'] = '200';
+                $response['message'] = 'User created succesfully.';
+                $response['appId'] = $this->saveAppointment($input);
+            }else{
+                $response['status'] = '500';
+                $response['message'] = 'Something went wrong.';
+            }
+        }else{
+            $input['userId'] = $ex[0]->id;
+            
+            $response['status'] = '200';
+            $response['message'] = 'User already exist.';
+            $response['appId'] = $this->saveAppointment($input);
+        }
+        return json_encode($response);
+    }
+
+    public function saveAppointment($input){
+        $admin = new Admin();
+        return $admin->saveUserAppointment($input);
+    }
+
     public function dashboard(){
         if(Session::get('userAdminData')){
             $admin = new Admin();
@@ -254,6 +346,111 @@ class AdminController extends Controller
         }
     }
 
+    public function deleteAppointment(){
+        if(Session::get('userAdminData')){
+            $input['id'] = $_POST['id'];
+            $admin = new Admin();
+            $data = $admin->deleteAppointment($input);
+            return json_encode($data);
+        }else{
+            return view('admin/pagenotfound');
+        }
+    }
+
+    public function updateAppointment(Request $request){
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            $credentials = $request->validate([
+                'docId' => ['required'],
+                'appDate' => ['required'],
+                'timeSlot' => ['required'],
+                'appId' => ['required'],
+            ]);
+            // print_r($credentials);exit;
+            $res = $admin->updateAppointmentData($credentials);
+            // if($res){
+                return Redirect::to('/admin/appointments');
+            // }
+        }else{
+            return view('admin/pagenotfound');
+        }
+    }
+
+    public function editAppointment(){
+        if(Session::get('userAdminData')){
+            $queries = [];
+            parse_str($_SERVER['QUERY_STRING'], $queries);
+            $admin = new Admin();
+            $data['det'] = $admin->getAppointmentDataDetailed((object)$queries);
+            $data['spec'] = $admin->getAllSpeciality(); 
+            $data['docs'] = $admin->getDoctorsData();
+
+            $input['id'] = $input['docId'] = $data['det'][0]->doc_id;
+            $input['date'] = $data['det'][0]->book_date;
+            $res = $admin->getSlots((object)$input);
+            $app = $admin->getDocAppointments($input);
+            
+            $data['timeslotselect'] = $this->generateTimeSlotSelect($res,$app,$input);
+            // echo '<pre>';print_r($data);exit;
+            return view('admin/edit-appointment',$data);
+        }else{
+            return view('admin/pagenotfound');
+        }
+    }
+
+    public function getTimeSlots(Request $request){
+
+        $admin = new Admin();
+        $input['id'] = $input['docId'] = $request->post('docId');
+        $input['day'] = date('w', strtotime($request->post('appDate')));
+        $input['date'] = $request->post('appDate');
+        $res = $admin->getSlots((object)$input);
+        $app = $admin->getDocAppointments($input);
+
+        return $this->generateTimeSlotSelect($res,$app,$input);
+    }
+
+    public function generateTimeSlotSelect($res,$app,$input){
+
+        $timestamp = strtotime($input['date']);
+        $day = date('l', $timestamp);
+        $dayKey = $this->in_array_day($day,$res);
+        $slotStr = '';
+        $appointments = [];
+        if(!empty($app)){
+            foreach ($app as $key => $value) {
+                if(!isset($appointments))
+                    $appointments = [];
+                array_push($appointments,$value->book_time);
+            }
+        }
+        // print_r($appointments);exit;
+        if($dayKey!='not found'){
+            $t1 = strtotime($res[$dayKey]->start_time);
+            $t2 = strtotime($res[$dayKey]->end_time);
+            $duration = strtotime($res[$dayKey]->duration) - strtotime('00:00:00');
+            $slotStr = '<select class="form-select" id="timeslot" name="timeSlot">';
+            while ($t1 < $t2) {
+                $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
+                $t1 = $duration+ $t1;
+                if(!empty($appointments)){
+                    if(in_array($timeSlot,$appointments)){
+                        continue;
+                    }
+                }
+                $slotStr .= '<option value="'.$timeSlot.'">'.$timeSlot.'</option>';
+                
+            }
+            $slotStr .= '</select>';
+            if($slotStr == '<select class="form-select" id="timeslot" name="timeSlot"></select>'){
+                $slotStr = '<select class="form-select" id="timeslot"><option value="0" selected disabled>Slot not available</option></select>';                
+            }
+        }else{
+            $slotStr = '<select class="form-select" id="timeslot"><option value="0" selected disabled>Slot not available</option></select>';
+        }
+        return $slotStr;
+    }
+
     public function viewAdminProfile(){
         if(Session::get('userAdminData')){
             $admin = new Admin();
@@ -399,5 +596,219 @@ class AdminController extends Controller
         $change = (($new - $old) / $old) * 100;
 
         return round($change, $precision);
+    }
+
+    public function generateCalendar($data){
+        $list=[];
+        $goToMonth = strtotime($data['gotoMonth']);
+        $month = date("m" ,$goToMonth);
+        $year = date("Y",$goToMonth);
+        $firstDay = date("D",$goToMonth);
+        $blankDates = 0;
+        switch ($firstDay) {
+            case 'Mon':
+                $blankDates = 0;
+                break;
+            case 'Tue':
+                $blankDates = 1;
+                break;
+            case 'Wed':
+                $blankDates = 2;
+                break;
+            case 'Thu':
+                $blankDates = 3;
+                break;
+            case 'Fri':
+                $blankDates = 4;
+                break;
+            case 'Sat':
+                $blankDates = 5;
+                break;
+            case 'Sun':
+                $blankDates = 6;
+                break;
+            default:
+                $blankDates = 0;
+                break;
+        }
+        
+        for($d=1; $d<=31; $d++){
+            $time=mktime(12, 0, 0, $month, $d, $year);          
+            if (date('m', $time)==$month){      
+                $list[]=date('Y-m-d', $time);
+            }
+        }
+        $today = date("Y-m-d");
+        $nextMonth = date('Y-m-d', strtotime('+1 month', strtotime($data['gotoMonth'])));
+        $prevMonth = date('Y-m-d', strtotime('-1 month', strtotime($data['gotoMonth'])));
+        
+        $str = '<table class="booked-calendar">
+                <thead>
+                    <tr>
+                        <th colspan="7">';
+        if($data['gotoMonth']!=$today){
+            $str .='<a href="" data-goto="'.$prevMonth.'" class="page-left">
+                <i class="booked-icon booked-icon-arrow-left"></i>
+            </a>';
+        }
+        $str .='<span class="calendarSavingState">
+                                <i class="booked-icon booked-icon-spinner-clock booked-icon-spin"></i>
+                            </span>
+                            <span class="monthName">
+                                '.date("F" ,$goToMonth).' '.date("Y" ,$goToMonth).'
+                            </span>
+                            <a href="" data-goto="'.$nextMonth.'" class="page-right">
+                                <i class="booked-icon booked-icon-arrow-right"></i>
+                            </a>
+                        </th>
+                    </tr>
+                    <tr class="days">
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                        <th>Sun</th>
+                    </tr>
+                </thead><tbody>';
+        for($i=0;$i<$blankDates;$i++){
+            if($i == 0){
+                $str .= '<tr class="week">';
+            }
+            $str .= '<td data-date="" class="prev-month prev-date">
+                    <span class="date tooltipster">
+                        <span class="number"></span>
+                    </span>
+                </td>';
+        }
+        $dayCount = 0;
+        foreach ($list as $key => $value) {
+            if(date("D",strtotime($value)) == 'Mon'){
+                $str .= '<tr class="week">';
+            }
+            $className = '';
+            if(strtotime($value)<strtotime($today)){
+                $className = 'prev-date';
+            }else if(strtotime($value)==strtotime($today)){
+                $className = 'today';
+            }else{
+                $className = '';
+            }
+
+            $str .= '<td data-date="'.$value.'" class="'.$className.'">
+                    <span class="date tooltipster">
+                        <span class="number">'.date("d",strtotime($value)).'</span>
+                    </span>
+                </td>';
+            $dayCount++;
+            if(date("D",strtotime($value)) == 'Sun'){
+                $str .= '</tr>';
+                $dayCount = 0;
+            }
+        }
+        
+        for($i=0;$i<7-$dayCount;$i++){
+            $str .= '<td data-date="" class="next-month prev-date">
+                    <span class="date tooltipster">
+                        <span class="number"></span>
+                    </span>
+                </td>';
+        }
+        $str .= '</tr>
+                </tbody>
+            </table>';
+        return $str;
+    }
+
+    public function generateDoctorTimeSlot($docs,$res,$appointments,$request){
+        
+        $date = date("F d, Y", strtotime($request->post('date')));
+        $dateValue = date("Y-m-d", strtotime($request->post('date')));
+        if(!empty($docs)){
+            
+            $str = '<div class="booked-appt-list">
+                    <h2>
+                        <span>Available Doctors on </span>
+                        <strong>'.$date.'</strong>
+                        <span></span>
+                    </h2>';
+            foreach ($docs as $key => $value) {
+                $t1 = strtotime($res[$value->id]['start_time']);
+                $t2 = strtotime($res[$value->id]['end_time']);
+                $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
+                
+                $str .='<div class="container" style="width:100%;">
+                            <div class="row">
+                                <div class="col-lg-2"><img class="doctor-image-calendar" src="'.asset($value->profile_pic).'"><br><span>Name : '.$value->name.'</span></div>
+                                <div class="col-lg-10"><div class="row">';
+                                $cnt = 0;
+                                while ($t1 < $t2) {
+                                    $cnt++;
+                                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
+                                    $t1 = $duration+ $t1;
+                                    if(!empty($appointments[$value->id])){
+                                        $check = $this->in_array_r($timeSlot,$appointments[$value->id]);
+                                        if($check!='not found'){
+                                            $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
+                                            $str .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
+                                                <div class="col-lg-4 '.$cnt.'_'.$value->id.'">
+                                                    <span class="'.$classStstus.'">'.$appointments[$value->id][$check]['status'].'</span>
+                                                </div>';
+                                                continue;
+                                        }
+                                    }
+                                    $str .='<div class="col-lg-2">'.substr($timeSlot,0,11).'</div>
+                                    <div class="col-lg-4 '.$cnt.'_'.$value->id.'">
+                                        <button class="new-appt button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                                            <span class="button-text">Book</span>
+                                        </button>&nbsp;
+                                        <button class="not-available button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'">
+                                            <span class="button-text">Not Available</span>
+                                        </button>
+                                    </div>';
+                                }
+
+                $str .='</div></div>
+                        </div>
+                        </div>';
+                if($key+1!=count($docs)){
+                    $str .='</br><div class="dropdown-divider"></div></br>';
+                }else{
+                    $str .='</br>';
+                }
+            }
+            
+            $str .= '</div>';
+        }else{
+            $str = '<div class="booked-appt-list">
+                    <h2>
+                        <span>No Doctors Available on </span>
+                        <strong>'.$date.'</strong>
+                        <span></span>
+                    </h2>
+                    </div>';
+        }
+        return $str;
+    }
+
+    public function in_array_r($needle, $haystack, $strict = false) {
+        foreach ($haystack as $key => $item) {
+            if ( $item['slot'] == $needle) {
+                return $key;
+            }
+        }
+    
+        return 'not found';
+    }
+
+    public function in_array_day($needle, $haystack, $strict = false) {
+        foreach ($haystack as $key => $item) {
+            if ( strtoupper($item->day) == strtoupper($needle)) {
+                return $key;
+            }
+        }
+    
+        return 'not found';
     }
 }

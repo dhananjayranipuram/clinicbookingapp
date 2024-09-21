@@ -57,11 +57,12 @@ class Site extends Model
     }
     
     public function saveEndUserData($data){
-        return DB::INSERT("INSERT INTO enduser (first_name,last_name,mobile,email,pword,dob,gender) VALUES ('$data[firstName]','$data[lastName]','$data[phoneNumber]','$data[emailAddress]','$data[password]','$data[dob]','$data[gender]');");
+        DB::INSERT("INSERT INTO enduser (first_name,last_name,mobile,email,pword,dob,gender) VALUES ('$data[firstName]','$data[lastName]','$data[phoneNumber]','$data[emailAddress]','$data[password]','$data[dob]','$data[gender]');");
+        return $docId = DB::getPdo()->lastInsertId();
     }
 
     public function getUserExist($data){
-        return DB::select("SELECT COUNT(*) cnt FROM enduser WHERE email='$data[emailAddress]';");
+        return DB::select("SELECT COUNT(*) cnt,id FROM enduser WHERE email='$data[emailAddress]';");
     }
 
     public function getUserLoginCheck($data){
@@ -88,9 +89,13 @@ class Site extends Model
 
     public function getDocAppointments($data){
         if(isset($data['docId'])){
-            return DB::select("SELECT book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]';");
+            return DB::select("SELECT book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]'
+                                UNION
+                                SELECT book_time FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]';");
         }else{
-            return DB::select("SELECT doc_id,book_time FROM appointments WHERE book_date='$data[date]';");
+            return DB::select("SELECT doc_id,book_time FROM appointments WHERE book_date='$data[date]'
+                                UNION
+                                SELECT doc_id,book_time FROM slot_not_available WHERE book_date='$data[date]';");
         }
     }
     public function getAvailableDocs($data){
@@ -117,5 +122,14 @@ class Site extends Model
                         LEFT JOIN speciality sp ON dc.specialization = sp.id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
                         WHERE ap.id=$id;");
+    }
+
+    public function getUserAppointments($data){
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time,sp.name 'speciclity',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
+                        LEFT JOIN doctor dc ON dc.id=ap.doc_id
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
+                        LEFT JOIN speciality sp ON sp.id=dc.specialization
+                        WHERE dc.active=1 AND ap.status > '-1' AND ap.enduser_id='$data->id'
+                        ORDER BY ap.book_date ASC;");
     }
 }

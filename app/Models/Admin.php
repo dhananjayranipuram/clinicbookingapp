@@ -23,15 +23,24 @@ class Admin extends Model
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
                         LEFT JOIN speciality sp ON sp.id=dc.specialization
-                        WHERE dc.active=1 $condition
+                        WHERE dc.active=1 AND ap.status > '-1' $condition
                         ORDER BY ap.book_date ASC;");
+    }
+
+    public function getAppointmentDataDetailed($data){
+        
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%Y-%m-%d') book_date,LEFT(ap.book_time,11) book_time,sp.name 'speciclity',dc.specialization 'spec_id',dc.id 'doc_id',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
+                        LEFT JOIN doctor dc ON dc.id=ap.doc_id
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
+                        LEFT JOIN speciality sp ON sp.id=dc.specialization
+                        WHERE dc.active=1 AND ap.status > '-1' AND ap.id='$data->id';");
     }
 
     public function getLatestAppointmentData($data){
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
-                        WHERE ap.book_date between '$data[from]' and '$data[to]'
+                        WHERE (ap.book_date between '$data[from]' and '$data[to]') AND ap.status > '-1'
                         ORDER BY ap.book_date ASC
                         LIMIT 5;");
     }
@@ -39,18 +48,18 @@ class Admin extends Model
     public function getDocWiseAppointmentData($data){
         return DB::select("SELECT d.id,COUNT(a.doc_id) 'value',CONCAT(d.honor,d.first_name,' ',d.last_name) 'name' FROM doctor d
                         LEFT JOIN appointments a ON d.id=a.doc_id
-                        WHERE a.book_date between '$data[from]' and '$data[to]'
+                        WHERE (a.book_date between '$data[from]' and '$data[to]') AND a.status > '-1'
                         GROUP BY d.id;");
     }
 
     public function getBookingData($data){
         return DB::select("SELECT 'Today' AS 'label',COUNT(id) cnt FROM appointments a
-                        WHERE a.book_date between '$data[from]' and '$data[to]'
+                        WHERE (a.book_date between '$data[from]' and '$data[to]') AND a.status > '-1'
 
                         UNION
 
                         SELECT 'Yesterday' AS 'label',COUNT(id) cnt FROM appointments a
-                        WHERE a.book_date between '$data[prev_from]' and '$data[prev_to]';");
+                        WHERE (a.book_date between '$data[prev_from]' and '$data[prev_to]') AND a.status > '-1';");
     }
 
     public function getCustomerData($data){
@@ -131,6 +140,10 @@ class Admin extends Model
         return DB::UPDATE("UPDATE doctor SET deleted='1' WHERE id='$data[docId]';");
     }
 
+    public function deleteAppointment($data){
+        return DB::UPDATE("UPDATE appointments SET status='-1' WHERE id='$data[id]';");
+    }
+
     public function addLanguage($data){
 
         $res = DB::select("SELECT id FROM languages WHERE name LIKE '%$data[language]%';");
@@ -195,5 +208,56 @@ class Admin extends Model
 
     public function getAdminProfile($data){
         return DB::select("SELECT id,name,email FROM users WHERE id = '$data->id';");
+    }
+
+    public function getAvailableDocs($data){
+        $condition = '';
+        if(!empty($data['docId'])){
+            $condition .= " AND doc.id = $data[docId]";
+        }
+        if(!empty($data['specId'])){
+            $condition .= " AND doc.specialization = $data[specId]";
+        }
+        $dayofweek = date('w', strtotime($data['date']));
+        return DB::select("SELECT doc.id,CONCAT(doc.honor,doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
+            LEFT JOIN doctor doc ON slab.doc_id=doc.id
+            WHERE slab.working_days=$dayofweek AND doc.deleted=0 AND doc.active=1 $condition");
+    }
+
+    public function getAvailableSlots($data){
+        if(isset($data['docId'])){
+            return DB::select("SELECT doc_id,start_time,end_time,duration FROM duty_slab WHERE doc_id='$data[docId]' AND working_days='$data[day]';");
+        }else{
+            return DB::select("SELECT doc_id,start_time,end_time,duration FROM duty_slab;");
+        }
+    }
+
+    public function getDocAppointments($data){
+        if(isset($data['docId'])){
+            return DB::select("SELECT book_time,'Booked' as 'status' FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status > '-1'
+                                UNION
+                                SELECT book_time,'Not Available' as 'status' FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]';");
+        }else{
+            return DB::select("SELECT doc_id,book_time,'Booked' as 'status' FROM appointments WHERE book_date='$data[date]' AND status > '-1'
+                                UNION
+                                SELECT doc_id,book_time,'Not Available' as 'status' FROM slot_not_available WHERE book_date='$data[date]';");
+        }
+    }
+    public function saveSlotNotAvailable($data){
+        DB::INSERT("INSERT INTO slot_not_available (doc_id,book_date,book_time) VALUES ('$data[docId]','$data[date]','$data[time]');");
+    }
+
+    public function saveUserAppointment($data){
+        $res = DB::select("SELECT * FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND book_time='$data[time]' AND status > '-1';");
+        if(empty($res)){
+            DB::INSERT("INSERT INTO appointments (doc_id,enduser_id,book_date,book_time) VALUES ('$data[docId]','$data[userId]','$data[date]','$data[time]');");
+            return DB::getPdo()->lastInsertId();
+        }else{
+            return 'Slot not available.';
+        }
+    }
+
+    public function updateAppointmentData($data){
+        return DB::UPDATE("UPDATE appointments SET doc_id='$data[docId]',book_date='$data[appDate]',book_time='$data[timeSlot]' WHERE id='$data[appId]';");
     }
 }

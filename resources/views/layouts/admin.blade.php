@@ -292,9 +292,97 @@
     @yield('content')
 
   </main><!-- End #main -->
-
+  
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
+    <div class="modal fade" id="registrationModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Registration</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+
+              <div data-mdb-input-init class="form-outline">
+                  <input type="text" id="firstName" class="form-control form-control-lg" placeholder="First Name" />
+                  <!-- <label class="form-label" for="firstName">First Name</label> -->
+              </div>
+
+              </div>
+              <div class="col-md-6 mb-4">
+
+              <div data-mdb-input-init class="form-outline">
+                  <input type="text" id="lastName" class="form-control form-control-lg" placeholder="Last Name" />
+                  <!-- <label class="form-label" for="lastName">Last Name</label> -->
+              </div>
+
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4 pb-2">
+
+                <div data-mdb-input-init class="form-outline">
+                    <input type="email" id="emailAddress" class="form-control form-control-lg" placeholder="Email" />
+                    <!-- <label class="form-label" for="emailAddress">Email</label> -->
+                </div>
+
+                </div>
+                <div class="col-md-6 mb-4 pb-2">
+
+                <div data-mdb-input-init class="form-outline">
+                    <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Phone Number" />
+                    <!-- <label class="form-label" for="phoneNumber">Phone Number</label> -->
+                </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4 d-flex align-items-center">
+
+                <div data-mdb-input-init class="form-outline datepicker w-100">
+                    <input type="date" class="form-control form-control-lg" id="dob" />
+                    <label for="birthdayDate" class="form-label">Birthday</label>
+                </div>
+
+                </div>
+                <div class="col-md-6 mb-4">
+
+                <h6 class="mb-2 pb-1">Gender: </h6>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" value="Female" checked />
+                    <label class="form-check-label" for="femaleGender">Female</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" value="Male" />
+                    <label class="form-check-label" for="maleGender">Male</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" value="other" />
+                    <label class="form-check-label" for="otherGender">Other</label>
+                </div>
+
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 mb-12">
+                <span id="errors"></span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="close-modal-reg" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary book_appointment" >Book Appointment</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="copyright">
       &copy; Copyright <strong><span>GrowthArk Media</span></strong>. All Rights Reserved
     </div>

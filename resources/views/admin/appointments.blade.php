@@ -41,7 +41,9 @@
                   </div>
                   <div class="col-md-3" style="align-content: end;">
                     <button class="btn btn-primary" type="submit">Search</button>
+                    <a type="button" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar4-week me-1"></i> Calendar View</a>
                   </div>
+                  
                 </form>
               <!-- </div> -->
               <!-- Table with stripped rows -->
@@ -55,6 +57,7 @@
                     <th>Speciality</th>
                     <th data-type="date" data-format="YYYY/MM/DD">Appt Date</th>
                     <th>Appt Time</th>
+                    <th style="min-width:110px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -67,6 +70,10 @@
                             <td>{{$value->speciclity}}</td>
                             <td>{{$value->book_date}}</td>
                             <td>{{$value->book_time}}</td>
+                            <td><div >
+                              <a href="{{ url('/admin/edit-appointment') }}?id={{$value->appointment_id}}" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                              <a href="#" class="btn btn-default deleteAppt" data-id="{{$value->appointment_id}}"><i class="fa fa-trash"></i></a>
+                            </div></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -110,6 +117,26 @@
     
         cb(start, end);
     
+    });
+
+    $(document).ready(function () { 
+    
+
+        $('.deleteAppt').click(function(){
+            if(confirm("Do you want to delete this Appointment?")){
+                $.ajax({
+                    url: baseUrl + '/admin/delete-appt',
+                    type: 'post',
+                    data: {'id':$(this).attr("data-id")},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function( html ) {
+                        if(html=='1'){
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
     });
     </script>    
 @endsection

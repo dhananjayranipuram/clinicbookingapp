@@ -38,13 +38,9 @@ class AppointmentConfirmed extends Mailable
     public function content(): Content
     {
         if($this->user == 'admin'){
-            return new Content(
-                view: 'emails.appointments.appointments-admin'
-            );
+            return new Content(view: 'emails.appointments.appointments-admin');
         }else{
-            return new Content(
-                view: 'emails.appointments.appointments-customer'
-            );
+            return new Content(view: 'emails.appointments.appointments-customer');
         }
     }
 
