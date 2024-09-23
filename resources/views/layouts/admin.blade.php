@@ -82,23 +82,52 @@
       white-space: nowrap; /* Don't forget this one */
       text-overflow: ellipsis;
     }
+    
   @media (min-width:641px)  {
     .calendar-view-button{
+      width: 100%;
+      text-align: center !important;
       position: unset !important;
       margin-top: 2px;
+    }
+    .appt-search-button{
+      width: 100%;
     }
   }
   @media (min-width:961px){
     .calendar-view-button{
+      width: 100%;
+      text-align: center !important;
       position: unset !important;
       margin-top: 2px;
     } 
+    .appt-search-button{
+      width: 100%;
+    }
   }  
-  @media (min-width:1025px) { 
+  @media (min-width:1025px) and (max-width:1488px) { 
     .calendar-view-button{
+      width: 100%;
+      text-align: center !important;
       position: unset !important;
       margin-top: 2px;
     }  
+
+    .appt-search-button{
+      width: 100%;
+    }
+  }
+  @media only screen and (min-width: 1489px) {
+    .calendar-view-button{
+      width: initial;
+      text-align: right;
+      position:absolute;
+      margin-top: 0px;
+    }  
+
+    .appt-search-button{
+      width: initial;
+    }
   }
   </style>
 </head>

@@ -40,7 +40,7 @@
                     </select>
                   </div>
                   <div class="col-md-3" style="align-content: end;">
-                    <button class="btn btn-primary" type="submit">Search</button>
+                    <button class="btn btn-primary appt-search-button" type="submit">Search</button>
                     <a type="button" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary calendar-view-button" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar4-week me-1"></i> Calendar View</a>
                   </div>
                   
