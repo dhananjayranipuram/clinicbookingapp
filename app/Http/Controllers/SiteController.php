@@ -494,5 +494,21 @@ class SiteController extends Controller
             return view('site/user-appointments',$app);
         }
     }
+
+    public function editAppointment(Request $request){
+        $queries = [];
+        parse_str($_SERVER['QUERY_STRING'], $queries);
+        $admin = new Admin();
+        $data['det'] = $admin->getAppointmentDataDetailed((object)$queries);
+        $data['spec'] = $admin->getAllSpeciality(); 
+        $data['docs'] = $admin->getDoctorsData();
+
+        $input['id'] = $input['docId'] = $data['det'][0]->doc_id;
+        $input['date'] = $data['det'][0]->book_date;
+        $res = $admin->getSlots((object)$input);
+        $app = $admin->getDocAppointments($input);
+        
+        $data['timeslotselect'] = $this->generateTimeSlotSelect($res,$app,$input);
+    }
     
 }

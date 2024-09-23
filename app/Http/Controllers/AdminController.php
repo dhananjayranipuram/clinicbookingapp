@@ -347,14 +347,14 @@ class AdminController extends Controller
     }
 
     public function deleteAppointment(){
-        if(Session::get('userAdminData')){
+        // if(Session::get('userAdminData')){
             $input['id'] = $_POST['id'];
             $admin = new Admin();
             $data = $admin->deleteAppointment($input);
             return json_encode($data);
-        }else{
-            return view('admin/pagenotfound');
-        }
+        // }else{
+        //     return view('admin/pagenotfound');
+        // }
     }
 
     public function updateAppointment(Request $request){

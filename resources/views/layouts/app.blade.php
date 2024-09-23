@@ -439,7 +439,7 @@
                 </div>
                 <div class="menu">
                     <h3>{{ Session::get('userName')}}<br /></h3>
-                    <ul>
+                    <ul style="padding-left: 0px;">
                     <li>
                         <a href="{{ url('/appointments') }}">My Appointments</a>
                     </li>
