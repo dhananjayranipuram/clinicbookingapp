@@ -78,7 +78,7 @@
             <div class="row">
                 <div class="col-md-6 mb-4 pb-2">
                     <div data-mdb-input-init class="form-outline">
-                        <input type="date" id="apptDate" class="form-control form-control-lg" placeholder="Date" />
+                        <input type="date" id="apptDate" class="form-control form-control-lg inputs" placeholder="Date" />
                     </div>
                 </div>
                 <div class="col-md-6 mb-4 pb-2">
@@ -133,11 +133,13 @@ $(document).ready(function () {
             success: function( html ) {
                 $(".timeslotselect").html(html.timeslotselect);
                 $.each(html.spec, function() {
-                    $("#specId").append($("<option />").val(this.id).attr("selected", html.det[0].spec_id).text(this.name));
+                    $("#specId").append($("<option />").val(this.id).text(this.name));
                 });
+                $("#specId").val(html.det[0].spec_id);
                 $.each(html.docs, function() {
-                    $("#doctorId").append($("<option />").val(this.id).attr("selected", html.det[0].doc_id).text(this.doctor_name));
+                    $("#doctorId").append($("<option />").val(this.id).text(this.doctor_name));
                 });
+                $("#doctorId").val(html.det[0].doc_id);
                 $("#apptDate").val(html.det[0].book_date);
                 console.log(html)
             }
@@ -149,13 +151,13 @@ $(document).ready(function () {
 
     $('.updateAppointment').click(function(){
         $.ajax({
-            url: baseUrl + '/update-appt',
+            url: baseUrl + '/update-appointment',
             type: 'post',
             data: {
-                'id' : $("#apptId").val(),
+                'appId' : $("#apptId").val(),
                 'appDate' : $("#apptDate").val(),
-                'doctorId' : $("#doctorId").val(),
-                'timeslot' : $("#timeslot").val(),
+                'docId' : $("#doctorId").val(),
+                'timeSlot' : $("#timeslot").val(),
             },
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             success: function( html ) {
@@ -166,6 +168,18 @@ $(document).ready(function () {
 
     $('.btn-close-popup').click(function(){
         $('#editAppt').removeClass('show');
+    });
+
+    $('.inputs').change(function(){
+            $.ajax({
+                url: baseUrl + '/admin/get-time-slot',
+                type: 'post',
+                data: {'docId':$("#doctorId").val() , 'appDate':$("#apptDate").val()},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function( html ) {
+                    $(".timeslotselect").html(html);
+                }
+            });
     });
 
 });

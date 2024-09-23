@@ -531,7 +531,7 @@ class SiteController extends Controller
             $t1 = strtotime($res[$dayKey]->start_time);
             $t2 = strtotime($res[$dayKey]->end_time);
             $duration = strtotime($res[$dayKey]->duration) - strtotime('00:00:00');
-            $slotStr = '<select class="form-select inputs" id="timeslot" name="timeSlot">';
+            $slotStr = '<select class="form-select" id="timeslot" name="timeSlot">';
             while ($t1 < $t2) {
                 $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                 $t1 = $duration+ $t1;
@@ -561,6 +561,18 @@ class SiteController extends Controller
         }
     
         return 'not found';
+    }
+
+    public function updateAppointment(Request $request){
+        $admin = new Admin();
+        $credentials = $request->validate([
+            'docId' => ['required'],
+            'appDate' => ['required'],
+            'timeSlot' => ['required'],
+            'appId' => ['required'],
+        ]);
+        $res = $admin->updateAppointmentData($credentials);
+        return json_encode($res);
     }
     
 }
