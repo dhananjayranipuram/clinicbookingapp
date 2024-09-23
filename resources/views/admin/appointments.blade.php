@@ -14,7 +14,7 @@
                 @csrf <!-- {{ csrf_field() }} -->
                   <div class="col-md-3">
                     <label for="validationDefault02" class="form-label">Data</label>
-                    <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                    <div id="reportrange" class="word-wrap-custom" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                         <i class="fa fa-calendar"></i>&nbsp;
                         <span></span> <i class="fa fa-caret-down"></i>
                         <input type="hidden" id="from" name="from">
@@ -41,7 +41,7 @@
                   </div>
                   <div class="col-md-3" style="align-content: end;">
                     <button class="btn btn-primary" type="submit">Search</button>
-                    <a type="button" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar4-week me-1"></i> Calendar View</a>
+                    <a type="button" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary calendar-view-button" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar4-week me-1"></i> Calendar View</a>
                   </div>
                   
                 </form>

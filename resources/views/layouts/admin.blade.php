@@ -76,6 +76,30 @@
         transform: rotate(360deg);
       }
     }
+
+    .word-wrap-custom{
+      overflow: hidden;
+      white-space: nowrap; /* Don't forget this one */
+      text-overflow: ellipsis;
+    }
+  @media (min-width:641px)  {
+    .calendar-view-button{
+      position: unset !important;
+      margin-top: 2px;
+    }
+  }
+  @media (min-width:961px){
+    .calendar-view-button{
+      position: unset !important;
+      margin-top: 2px;
+    } 
+  }  
+  @media (min-width:1025px) { 
+    .calendar-view-button{
+      position: unset !important;
+      margin-top: 2px;
+    }  
+  }
   </style>
 </head>
 
