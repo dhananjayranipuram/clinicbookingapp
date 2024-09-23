@@ -62,38 +62,36 @@
         <h2>Edit Appointment</h2><br>
             <div class="row">
                 <div class="col-md-6 mb-4">
-
-                <div data-mdb-input-init class="form-outline">
-                    <input type="text" id="firstName" class="form-control form-control-lg" placeholder="Speciality" />
-                </div>
-
+                    <div data-mdb-input-init class="form-outline">
+                        <select class="form-select" id="specId" aria-label="Default select example" disabled>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-6 mb-4">
-
-                <div data-mdb-input-init class="form-outline">
-                    <input type="text" id="lastName" class="form-control form-control-lg" placeholder="Doctor" />
-                </div>
-
+                    <div data-mdb-input-init class="form-outline">
+                        <select class="form-select inputs" id="doctorId" aria-label="Default select example" name="docId">
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-4 pb-2">
                     <div data-mdb-input-init class="form-outline">
-                        <input type="email" id="emailAddress" class="form-control form-control-lg" placeholder="Date" />
+                        <input type="date" id="apptDate" class="form-control form-control-lg" placeholder="Date" />
                     </div>
                 </div>
                 <div class="col-md-6 mb-4 pb-2">
-                    <div data-mdb-input-init class="form-outline">
-                        <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Time slot" />
+                    <div data-mdb-input-init class="form-outline timeslotselect">
+                        
                     </div>
                 </div>
             </div>
 
             <div class="mt-4 pt-2">
                 <input type="hidden" id="apptId">
-                <input class="btn btn-primary btn-lg" type="button" onclick="registration();" value="Update" />
-                <input class="btn-close-popup" type="button" onclick="closeAllPopup();" value="Close" />
+                <input class="btn btn-primary btn-lg updateAppointment" type="button" value="Update" />
+                <input class="btn-close-popup" type="button" value="Close"/>
             </div>
         
     </div>
@@ -126,23 +124,49 @@ $(document).ready(function () {
     });
 
     $('.editAppt').click(function(){
-        $("#editAppt").addClass('show');
-        $(this).attr("data-id");
-    });
-
-    function editAppointment(){
         $.ajax({
-            url: baseUrl + '/admin/delete-appt',
+            url: baseUrl + '/edit-appt',
             type: 'post',
             data: {'id':$(this).attr("data-id")},
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            dataType: "json",
             success: function( html ) {
-                if(html=='1'){
-                    location.reload();
-                }
+                $(".timeslotselect").html(html.timeslotselect);
+                $.each(html.spec, function() {
+                    $("#specId").append($("<option />").val(this.id).attr("selected", html.det[0].spec_id).text(this.name));
+                });
+                $.each(html.docs, function() {
+                    $("#doctorId").append($("<option />").val(this.id).attr("selected", html.det[0].doc_id).text(this.doctor_name));
+                });
+                $("#apptDate").val(html.det[0].book_date);
+                console.log(html)
             }
         });
-    }
+        $("#editAppt").addClass('show');
+        $("#apptId").val($(this).attr("data-id"));
+
+    });
+
+    $('.updateAppointment').click(function(){
+        $.ajax({
+            url: baseUrl + '/update-appt',
+            type: 'post',
+            data: {
+                'id' : $("#apptId").val(),
+                'appDate' : $("#apptDate").val(),
+                'doctorId' : $("#doctorId").val(),
+                'timeslot' : $("#timeslot").val(),
+            },
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                
+            }
+        });
+    });
+
+    $('.btn-close-popup').click(function(){
+        $('#editAppt').removeClass('show');
+    });
 
 });
 </script>

@@ -40,6 +40,7 @@ Route::any('/get-doctor-apointment', [SiteController::class, 'getDoctorAppointme
 Route::any('/speciality', [SiteController::class, 'speciality']);
 Route::any('/speciality-doctors', [SiteController::class, 'specDoctors']);
 Route::any('/appointments', [SiteController::class, 'userAppointments']);
+Route::any('/edit-appt', [SiteController::class, 'editAppointment']);
 // Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);

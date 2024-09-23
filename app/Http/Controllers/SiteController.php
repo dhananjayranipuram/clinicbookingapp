@@ -5,6 +5,7 @@ use App\Mail\AppointmentConfirmed;
 use App\Mail\AppointmentConfirmedCustomer;
 use Illuminate\Http\Request;
 use App\Models\Site;
+use App\Models\Admin;
 use Session;
 use Storage;
 use Mail;
@@ -496,10 +497,9 @@ class SiteController extends Controller
     }
 
     public function editAppointment(Request $request){
-        $queries = [];
-        parse_str($_SERVER['QUERY_STRING'], $queries);
+        $data['id'] = $request->post('id');
         $admin = new Admin();
-        $data['det'] = $admin->getAppointmentDataDetailed((object)$queries);
+        $data['det'] = $admin->getAppointmentDataDetailed((object)$data);
         $data['spec'] = $admin->getAllSpeciality(); 
         $data['docs'] = $admin->getDoctorsData();
 
@@ -509,6 +509,58 @@ class SiteController extends Controller
         $app = $admin->getDocAppointments($input);
         
         $data['timeslotselect'] = $this->generateTimeSlotSelect($res,$app,$input);
+        return json_encode($data);
+    }
+
+    public function generateTimeSlotSelect($res,$app,$input){
+
+        $timestamp = strtotime($input['date']);
+        $day = date('l', $timestamp);
+        $dayKey = $this->in_array_day($day,$res);
+        $slotStr = '';
+        $appointments = [];
+        if(!empty($app)){
+            foreach ($app as $key => $value) {
+                if(!isset($appointments))
+                    $appointments = [];
+                array_push($appointments,$value->book_time);
+            }
+        }
+        // print_r($appointments);exit;
+        if($dayKey!='not found'){
+            $t1 = strtotime($res[$dayKey]->start_time);
+            $t2 = strtotime($res[$dayKey]->end_time);
+            $duration = strtotime($res[$dayKey]->duration) - strtotime('00:00:00');
+            $slotStr = '<select class="form-select inputs" id="timeslot" name="timeSlot">';
+            while ($t1 < $t2) {
+                $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
+                $t1 = $duration+ $t1;
+                if(!empty($appointments)){
+                    if(in_array($timeSlot,$appointments)){
+                        continue;
+                    }
+                }
+                $slotStr .= '<option value="'.$timeSlot.'">'.$timeSlot.'</option>';
+                
+            }
+            $slotStr .= '</select>';
+            if($slotStr == '<select class="form-select" id="timeslot" name="timeSlot"></select>'){
+                $slotStr = '<select class="form-select" id="timeslot"><option value="0" selected disabled>Slot not available</option></select>';                
+            }
+        }else{
+            $slotStr = '<select class="form-select" id="timeslot"><option value="0" selected disabled>Slot not available</option></select>';
+        }
+        return $slotStr;
+    }
+
+    public function in_array_day($needle, $haystack, $strict = false) {
+        foreach ($haystack as $key => $item) {
+            if ( strtoupper($item->day) == strtoupper($needle)) {
+                return $key;
+            }
+        }
+    
+        return 'not found';
     }
     
 }
