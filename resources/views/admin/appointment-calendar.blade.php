@@ -46,7 +46,11 @@ background-color: #012970 !important;
         <input type="hidden" id="appointmentDoctor" name="doctor">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">All Appointments</h5>
+            <div>
+                <h5 class="card-title" style="display:inline-block">All Appointments</h5>
+                <a type="button" style="display:inline-block;float: right;margin-top: 20px;" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar"></i></a>
+                <a type="button" style="display:inline-block;float: right;margin-top: 20px;margin-right: 20px;" href ="{{url('/admin/appointments')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-card-list"></i></a>
+              </div>
               <!-- <div class="row g-5"> -->
                 <div class="row g-5 needs-validation">
                   <div class="col-md-3">
@@ -66,9 +70,6 @@ background-color: #012970 !important;
                             <option value="{{$value->id}}" @if(old('doctor') == $value->id) selected @endif>{{$value->doctor_name}}</option>
                         @endforeach
                     </select>
-                  </div>
-                  <div class="col-md-3">
-                      <a type="button" href ="{{url('/admin/appointments')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px; top:100px;"><i class="bi bi-card-list me-1"></i> List View</a>
                   </div>
                  </div>
                 <div class="booked-calendar-wrap large" id="calendar-body">

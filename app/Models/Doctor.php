@@ -25,7 +25,7 @@ class Doctor extends Model
                         LEFT JOIN speciality sp ON sp.id=d.specialization
                         LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
                         LEFT JOIN languages l ON dl.lang_id = l.id
-                        WHERE d.id = $data->id AND AND d.deleted=0
+                        WHERE d.id = $data->id AND d.deleted=0
                         GROUP BY d.id;");
     }
 

@@ -175,29 +175,33 @@ class SiteController extends Controller
     }
 
     public function makeAppointments(Request $request){
-        $userData = Session::get('userData');
-        $site = new Site();
-        $input = $data = [];
-        if(isset($_POST)){
-            $input['time'] = $request->post('appointmenttime');
-            $input['date'] = $request->post('appointmentdate');
-            $input['doctor'] = $request->post('doctor');
-            $input['user'] = $userData->id;
-            $res = $site->saveAppointments($input);
-            if(is_numeric($res)){
-                $emailData = $site->getEmailData($res);
-                $this->sendEmails($emailData[0]);
-                $data['id']   = $res;
-                $data['date'] = $emailData[0]->book_date;
-                $data['time'] = $emailData[0]->book_time;
-            }
-            
-            if($res!='Slot not available.'){
-                return view('site/confirm-appoitment',$data);
+        if(Session::get('userData')){
+            $userData = Session::get('userData');
+            $site = new Site();
+            $input = $data = [];
+            if(isset($_POST)){
+                $input['time'] = $request->post('appointmenttime');
+                $input['date'] = $request->post('appointmentdate');
+                $input['doctor'] = $request->post('doctor');
+                $input['user'] = $userData->id;
+                $res = $site->saveAppointments($input);
+                if(is_numeric($res)){
+                    $emailData = $site->getEmailData($res);
+                    $this->sendEmails($emailData[0]);
+                    $data['id']   = $res;
+                    $data['date'] = $emailData[0]->book_date;
+                    $data['time'] = $emailData[0]->book_time;
+                }
+                
+                if($res!='Slot not available.'){
+                    return view('site/confirm-appoitment',$data);
+                }else{
+                    return view('site/error-appoitment');
+                }
+                
             }else{
-                return view('site/error-appoitment');
+                return view('site/home');
             }
-            
         }else{
             return view('site/home');
         }

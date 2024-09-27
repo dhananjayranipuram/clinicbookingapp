@@ -8,12 +8,16 @@
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">All Appointments</h5>
-              <!-- <div class="row g-5"> -->
+              <div>
+                <h5 class="card-title" style="display:inline-block">All Appointments</h5>
+                <a type="button" style="display:inline-block;float: right;margin-top: 20px;" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar"></i></a>
+                <a type="button" style="display:inline-block;float: right;margin-top: 20px;margin-right: 20px;" href ="{{url('/admin/appointments')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-card-list"></i></a>
+                <!-- <div class="row g-5"> -->
+              </div>
                 <form class="row g-5 needs-validation" method="post" action="{{ url('/admin/appointments') }}">
                 @csrf <!-- {{ csrf_field() }} -->
-                  <div class="col-md-3">
-                    <label for="validationDefault02" class="form-label">Data</label>
+                  <div class="col-md-4">
+                    <label for="validationDefault02" class="form-label">Date</label>
                     <div id="reportrange" class="word-wrap-custom" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                         <i class="fa fa-calendar"></i>&nbsp;
                         <span></span> <i class="fa fa-caret-down"></i>
@@ -39,9 +43,8 @@
                         @endforeach
                     </select>
                   </div>
-                  <div class="col-md-3" style="align-content: end;">
-                    <button class="btn btn-primary appt-search-button" type="submit">Search</button>
-                    <a type="button" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary calendar-view-button" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar4-week me-1"></i> Calendar View</a>
+                  <div class="col-md-2" style="align-content: end;">
+                    <button class="btn btn-primary appt-search-button" type="submit">Search <i class="bi bi-search"></i></button>
                   </div>
                   
                 </form>
