@@ -16,7 +16,7 @@
               </div>
                 <form class="row g-5 needs-validation" method="post" action="{{ url('/admin/appointments') }}">
                 @csrf <!-- {{ csrf_field() }} -->
-                  <div class="col-md-4">
+                  <div class="col-md-5">
                     <label for="validationDefault02" class="form-label">Date</label>
                     <div id="reportrange" class="word-wrap-custom" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                         <i class="fa fa-calendar"></i>&nbsp;
@@ -43,8 +43,8 @@
                         @endforeach
                     </select>
                   </div>
-                  <div class="col-md-2" style="align-content: end;">
-                    <button class="btn btn-primary appt-search-button" type="submit">Search <i class="bi bi-search"></i></button>
+                  <div class="col-md-1" style="align-content: end;">
+                    <button class="btn btn-primary appt-search-button" type="submit">Search</i></button>
                   </div>
                   
                 </form>
