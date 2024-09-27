@@ -276,6 +276,15 @@ class SiteController extends Controller
                 $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
                 $slotStr = '<select class="form-select" id="timeslot_'.$value->id.'">';
                 while ($t1 < $t2) {
+                    // date_default_timezone_set('Australia/Melbourne');
+                    echo $startTime = date('h:i:s', $t1);
+                    echo $currentTime = date('h:i:s', time());
+                    echo $currentDate = date("Y-m-d", time());
+                    echo $endTime = date('h:i:s', $duration+ $t1);exit;
+                    if($currentTime<$endTime && $currentTime>$startTime && $dateValue==$currentDate){
+
+                    }
+
                     $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                     $t1 = $duration+ $t1;
                     if(!empty($appointments[$value->id])){
@@ -314,6 +323,18 @@ class SiteController extends Controller
         return $str;
     }
 
+    public function checkTime($startTime,$endTime,$dateValue){
+        date_default_timezone_set("Asia/Calcutta");
+        $currentTime = date('h:i:s', time());
+        $currentDate = date("Y-m-d", time());
+        date_default_timezone_set("UTC");
+        if(($currentTime<$endTime && $currentTime>$startTime || $endTime<$currentTime) && $dateValue==$currentDate){
+            return 'false';
+        }else{
+            return 'true';
+        }
+    }
+
     public function generateTimeSlot($res,$appointments,$request){
         $str = '';
         $date = date("F d, Y", strtotime($request->post('date')));
@@ -331,10 +352,18 @@ class SiteController extends Controller
                         <span></span>
                     </h2>';
             while ($t1 < $t2) {
+                    
+                $startTime = date('h:i:s', $t1);
+                $endTime = date('h:i:s', $duration+ $t1);
                 
+
                 $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                 $t1 = $duration+ $t1;
                 if(in_array($timeSlot,$appointments)){
+                    continue;
+                }
+
+                if($this->checkTime($startTime,$endTime,$dateValue) != 'true'){
                     continue;
                 }
                 
