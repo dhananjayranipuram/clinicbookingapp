@@ -352,11 +352,46 @@
         border-style: solid;
     }
 
+    
+
+    #otp-section{
+        display:none;
+    }
+    .otp-field {
+        display: flex;
+    }
+    .otp-field input {
+        height: 30px;
+        width: 100%;
+        font-size: 32px;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        background-color: #d3d3d388;
+        border: 2px solid #dad4e5;
+        margin: 2px;
+        font-weight: bold;
+        color: #181313;
+        outline: none;
+        transition: all 0.1s;
+    }
+    .otp-field input:focus {
+        border: 2px solid #878689;
+        box-shadow: 0 0 2px 2px #878689;
+    }
+    .disabled {
+        opacity: 0.5;
+    }
+    .space {
+        margin-right: 1rem !important;
+    }
     @keyframes spin {
       100% {
         transform: rotate(360deg);
       }
     }
+
+    
   </style>    
 </head>
 
@@ -549,7 +584,28 @@
 
                     </div>
                 </div>
+                <div class="row" id="otp-section">
+                    <div class="col-md-12 mb-12 pb-2">
+                        <div class="otpSection">
+                            <p class="otpSentTo">OTP has been sent to your email address.</p>
+                            <p class="resend">Resend otp after <span class="countdown"></span></p>
+                            <h3>Enter OTP</h3>
+                            <div class="otp-field">
+                                <input type="text" maxlength="1" />
+                                <input type="text" maxlength="1" />
+                                <input class="space" type="text" maxlength="1" />
+                                <input type="text" maxlength="1" />
+                                <input type="text" maxlength="1" />
+                                <input type="text" maxlength="1" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-12 pb-2" id="errorMessages">
 
+                    </div>
+                </div>
                 <div class="mt-4 pt-2">
                     <label >Already registered? <a onclick="toggleLogin();" style="cursor:pointer; color:blue;">Login</a></label><br>
                     <input class="btn btn-primary btn-lg" type="button" onclick="registration();" value="Submit" />
@@ -709,24 +765,35 @@
                 'password': $("#password").val(),
                 'confirmPassword': $("#confirmPassword").val(),
             };
-            if(datas.password == datas.confirmPassword){
-                $.ajax({
-                    url: baseUrl + '/registration',
-                    type: 'post',
-                    data: datas,
-                    dataType: "json",
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    success: function(res) {
-                        $('#popupRegistration').removeClass('show');
-                        if(res.status==200){
-                            $("#message").html('<span style="color:green;">'+res.message+'</span><br><span onclick="toggleLogin();">Click here to Login</span>');
-                        }else{
-                            $("#message").html('<span style="color:red;">'+res.message+' User not registered.</span>');
+            
+            if(validateForm(datas)){
+                $('#errorMessages').append('<span style="color:red;">Fill the form</span>');
+                setTimeout(function () {
+                     $('#errorMessages').html('');
+                 }, 2500);
+            }
+            if(datas.password == datas.confirmPassword && datas.password != ''){
+                if(chk == 0){
+                    $(".overlay").show();
+                    $.ajax({
+                        url: baseUrl + '/send-otp',
+                        type: 'post',
+                        data: datas,
+                        dataType: "json",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: function(res) {
+                            if(res){
+                                $("#otp-section").show();
+                                $(".overlay").hide();
+                            }
                         }
-                        $('#popupMessage').addClass('show');
-                    }
-                });
+                    });
+                }
             }else{
+                $('#errorMessages').append('<br><span style="color:red;">Password should be match</span>');
+                setTimeout(function () {
+                     $('#errorMessages').html('');
+                 }, 2500);
             }
         }
 
@@ -780,7 +847,6 @@
                 dataType: "json",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(res) {
-                    // console.log(res)
                     if(res==true){
                         location.reload();
                     }
@@ -791,6 +857,198 @@
         function menuToggle() {
             const toggleMenu = document.querySelector(".menu");
             toggleMenu.classList.toggle("active");
+        }
+
+        
+
+        function submit() {
+
+            let  otp = "";
+            inputs.forEach((input) => {
+                otp += input.value;
+                input.disabled = true;
+                input.classList.add("disabled");
+            });
+
+            var datas = {
+                'firstName': $("#firstName").val(),
+                'lastName': $("#lastName").val(),
+                'emailAddress': $("#emailAddress").val(),
+                'phoneNumber': $("#phoneNumber").val(),
+                'dob': $("#dob").val(),
+                'gender':$('input[name="gender"]:checked').val(),
+                'password': $("#password").val(),
+                'confirmPassword': $("#confirmPassword").val(),
+            };
+            datas.otp = otp;
+            if(validateForm(datas)){
+                $('#errorMessages').append('<span style="color:red;">Fill the form</span>');
+                setTimeout(function () {
+                     $('#errorMessages').html('');
+                 }, 2500);
+            }
+            if(datas.password == datas.confirmPassword && datas.password != ''){
+                if(chk == 0){
+                    $(".overlay").show();
+                    $.ajax({
+                        type: "POST",
+                        url: baseUrl+'/verify-otp',
+                        data: datas,
+                        dataType: "json",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: function(html){
+                            $(".overlay").show();
+                            if(html.status==200){
+                                chk = 0;
+                                if($("#appointmentDate").val() == undefined || $("#appointmentDate").val() == ''){
+                                    chk = 1;
+                                }
+                                if($("#appointmentTime").val() == undefined || $("#appointmentTime").val() == ''){
+                                    chk = 1;
+                                }
+                                if($("#appointmentDoctor").val() == undefined || $("#appointmentDoctor").val() == ''){
+                                    chk = 1;
+                                }
+                                if(chk == 0){
+                                    $(".overlay").show();
+                                    $("#appointmentForm").submit();
+                                }else{
+                                    location.reload();
+                                }
+                            }else{
+                                inputs.forEach((input) => {
+                                    otp += input.value;
+                                    input.value = '';
+                                    input.disabled = false;
+                                });
+                                $('#errorMessages').append('<br><span style="color:red;">Invalid OTP</span>');
+                                setTimeout(function () {
+                                    $('#errorMessages').html('');
+                                }, 2500);
+                            }
+                        }
+                    });
+                }
+            }else{
+                $('#errorMessages').append('<br><span style="color:red;">Password should be match</span>');
+                setTimeout(function () {
+                     $('#errorMessages').html('');
+                 }, 2500);
+            }
+            
+        }
+
+        function validateForm(datas){
+            chk = 0;
+            if(datas.firstName == ''){
+                chk = 1;
+                $('#firstName').css('border-color', 'red');
+            }else{
+                $('#firstName').css('border-color', '');
+            }
+            if(datas.lastName == ''){
+                chk = 1;
+                $('#lastName').css('border-color', 'red');
+            }else{
+                $('#lastName').css('border-color', '');
+            }
+            if(datas.emailAddress == ''){
+                chk = 1;
+                $('#emailAddress').css('border-color', 'red');
+            }else{
+                $('#emailAddress').css('border-color', '');
+            }
+            if(datas.phoneNumber == ''){
+                chk = 1;
+                $('#phoneNumber').css('border-color', 'red');
+            }else{
+                $('#phoneNumber').css('border-color', '');
+            }
+            if(datas.dob == ''){
+                chk = 1;
+                $('#dob').css('border-color', 'red');
+            }else{
+                $('#dob').css('border-color', '');
+            }
+            if(datas.gender == ''){
+                chk = 1;
+                $('#gender').css('border-color', 'red');
+            }else{
+                $('#gender').css('border-color', '');
+            }
+            if(datas.dob == ''){
+                chk = 1;
+                $('#dob').css('border-color', 'red');
+            }else{
+                $('#dob').css('border-color', '');
+            }
+            if(datas.password == ''){
+                chk = 1;
+                $('#password').css('border-color', 'red');
+            }else{
+                $('#password').css('border-color', '');
+            }
+            if(datas.confirmPassword == ''){
+                chk = 1;
+                $('#confirmPassword').css('border-color', 'red');
+            }else{
+                $('#confirmPassword').css('border-color', '');
+            }
+            return chk;
+        }
+
+        const inputs = document.querySelectorAll(".otp-field input");
+        inputs.forEach((input, index) => {
+            input.dataset.index = index;
+            input.addEventListener("keyup", handleOtp);
+            input.addEventListener("paste", handleOnPasteOtp);
+        });
+        function handleOtp(e) {
+            const input = e.target;
+            let value = input.value;
+            let isValidInput = value.match(/[0-9a-z]/gi);
+            input.value = "";
+            input.value = isValidInput ? value[0] : "";
+            let fieldIndex = input.dataset.index;
+            if (fieldIndex < inputs.length - 1 && isValidInput) {
+                input.nextElementSibling.focus();
+            }
+            if (e.key === "Backspace" && fieldIndex > 0) {
+                input.previousElementSibling.focus();
+            }
+            if (fieldIndex == inputs.length - 1 && isValidInput) {
+                submit();
+            }
+        }
+        function handleOnPasteOtp(e) {
+            const data = e.clipboardData.getData("text");
+            const value = data.split("");
+            if (value.length === inputs.length) {
+                inputs.forEach((input, index) => (input.value = value[index]));
+                submit();
+            }
+        }
+
+        function showResendotp(){
+            $('.resend').html('Resend otp after <span class="countdown"></span>');
+            var timer2 = "15:00";
+            var interval = setInterval(function() {
+                var timer = timer2.split(':');
+                //by parsing integer, I avoid all extra string processing
+                var minutes = parseInt(timer[0], 10);
+                var seconds = parseInt(timer[1], 10);
+                --seconds;
+                minutes = (seconds < 0) ? --minutes : minutes;
+                if (minutes < 0) clearInterval(interval);
+                seconds = (seconds < 0) ? 59 : seconds;
+                seconds = (seconds < 10) ? '0' + seconds : seconds;
+                $('.countdown').html(minutes + ':' + seconds);
+                timer2 = minutes + ':' + seconds;
+                if(timer2=='0:00'){
+                    $('.resend').html('<a>Resend OTP</a>');
+                    clearInterval(interval);
+                }
+            }, 1000);
         }
     </script>
 </body>

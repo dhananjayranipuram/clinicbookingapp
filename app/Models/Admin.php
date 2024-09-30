@@ -101,15 +101,18 @@ class Admin extends Model
 
     public function saveDoctorData($data){
         DB::beginTransaction();
-        // print_r($data);exit;
         try {
             DB::INSERT("INSERT INTO doctor (honor,first_name,last_name,email,password,gender,specialization,profile_pic) VALUES ('$data[honor]','$data[first_name]','$data[last_name]','$data[email]','$data[password]','$data[gender]','$data[specialization]','$data[profile_pic]');");
             $docId = DB::getPdo()->lastInsertId();
             foreach ($data['available_days'] as $key => $value) {
-                DB::INSERT("INSERT INTO duty_slab (doc_id,working_days,start_time,end_time,duration) VALUES ('$docId','$value','$data[start]','$data[end]','$data[duration]');");
+                if($value!=""){
+                    DB::INSERT("INSERT INTO duty_slab (doc_id,working_days,start_time,end_time,duration) VALUES ('$docId','$value','$data[start]','$data[end]','$data[duration]');");
+                }
             }
             foreach ($data['languages'] as $key => $value) {
-                DB::INSERT("INSERT INTO doctor_languages (doctor_id,lang_id) VALUES ('$docId','$value');");
+                if($value!=""){
+                    DB::INSERT("INSERT INTO doctor_languages (doctor_id,lang_id) VALUES ('$docId','$value');");
+                }
             }
             DB::commit();
             return $docId;
@@ -179,7 +182,7 @@ class Admin extends Model
                         WHEN working_days = 4 THEN 'THURSDAY'
                         WHEN working_days = 5 THEN 'FRIDAY'
                         WHEN working_days = 6 THEN 'SATURDAY' END 'day',working_days,
-                        TIME_FORMAT(start_time,'%h:%i %p') start_time_label,TIME_FORMAT(end_time,'%h:%i %p') end_time_label,end_time,start_time,duration FROM duty_slab WHERE doc_id='$data->id' ORDER BY working_days;");
+                        TIME_FORMAT(start_time,'%h:%i %p') start_time_label,TIME_FORMAT(end_time,'%h:%i %p') end_time_label,end_time,start_time,TIME_FORMAT(duration,'%h:%i') 'duration' FROM duty_slab WHERE doc_id='$data->id' ORDER BY working_days;");
                                 
     }
 
@@ -191,12 +194,16 @@ class Admin extends Model
             
             DB::INSERT("DELETE FROM duty_slab WHERE doc_id='$data[docId]';");
             foreach ($data['available_days'] as $key => $value) {
-                DB::INSERT("INSERT INTO duty_slab (doc_id,working_days,start_time,end_time,duration) VALUES ('$docId','$value','$data[start]','$data[end]','$data[duration]');");
+                if($value!=""){
+                    DB::INSERT("INSERT INTO duty_slab (doc_id,working_days,start_time,end_time,duration) VALUES ('$docId','$value','$data[start]','$data[end]','$data[duration]');");
+                }
             }
 
             DB::INSERT("DELETE FROM doctor_languages WHERE doctor_id='$data[docId]';");
             foreach ($data['languages'] as $key => $value) {
-                DB::INSERT("INSERT INTO doctor_languages (doctor_id,lang_id) VALUES ('$docId','$value');");
+                if($value!=""){
+                    DB::INSERT("INSERT INTO doctor_languages (doctor_id,lang_id) VALUES ('$docId','$value');");
+                }
             }
 
             DB::commit();
@@ -234,17 +241,23 @@ class Admin extends Model
 
     public function getDocAppointments($data){
         if(isset($data['docId'])){
-            return DB::select("SELECT book_time,'Booked' as 'status' FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status > '-1'
+            return DB::select("SELECT book_time,'Booked' as 'status',id FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status > '-1'
                                 UNION
-                                SELECT book_time,'Not Available' as 'status' FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]';");
+                                SELECT book_time,'Not Available' as 'status',id FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status>-1;");
         }else{
-            return DB::select("SELECT doc_id,book_time,'Booked' as 'status' FROM appointments WHERE book_date='$data[date]' AND status > '-1'
+            return DB::select("SELECT doc_id,book_time,'Booked' as 'status',id FROM appointments WHERE book_date='$data[date]' AND status > '-1'
                                 UNION
-                                SELECT doc_id,book_time,'Not Available' as 'status' FROM slot_not_available WHERE book_date='$data[date]';");
+                                SELECT doc_id,book_time,'Not Available' as 'status',id FROM slot_not_available WHERE book_date='$data[date]'  AND status>-1;");
         }
     }
     public function saveSlotNotAvailable($data){
         DB::INSERT("INSERT INTO slot_not_available (doc_id,book_date,book_time) VALUES ('$data[docId]','$data[date]','$data[time]');");
+        return DB::getPdo()->lastInsertId();
+    }
+
+    public function enableSlotData($data){
+        DB::INSERT("UPDATE slot_not_available sl SET sl.status='-1' WHERE sl.id='$data[id]';");
+        return DB::select("SELECT doc_id,book_date,book_time FROM slot_not_available WHERE id='$data[id]';");
     }
 
     public function saveUserAppointment($data){

@@ -54,7 +54,33 @@
                     data: {'docId':docId,'date':date,'time':time},
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     success: function( html ) {
-                        $("."+element+"").html('<span class="badge bg-secondary">Not Available</span>');
+                        $("."+element+"").html('<span style="cursor:pointer;" data-id="'+html+'" class="badge bg-secondary not-available-slot">Not Available</span>');
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".not-available-slot" , function(e) { 
+            if(confirm("Do you want to Enable this time-slot?")){
+                e.preventDefault();
+                var element = $(this);
+                var id = element.attr('data-id');
+                $.ajax({
+                    url: baseUrl + '/admin/enable-slot',
+                    type: 'post',
+                    data: {'id':id},
+                    dataType: "json",
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function( html ) {
+                        var parentElement = element.parents('.col-lg-4');
+                        var elementAttr = parentElement.attr('data-el');
+                        var str = '<button class="new-appt button" data-el="'+elementAttr+'" data-date="'+html.book_date+'"  data-time="'+html.book_time+'" data-doc="'+html.doc_id+'" data-bs-toggle="modal" data-bs-target="#registrationModal">'+
+                                '<span class="button-text">Book</span>'+
+                                '</button> '+
+                                '<button class="not-available button" data-el="'+elementAttr+'" data-date="'+html.book_date+'"  data-time="'+html.book_time+'" data-doc="'+html.doc_id+'">'+
+                                '<span class="button-text">Not Available</span>'+
+                                '</button>';
+                                element.parents('.col-lg-4').html(str);
                     }
                 });
             }

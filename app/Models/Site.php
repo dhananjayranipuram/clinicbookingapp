@@ -91,11 +91,11 @@ class Site extends Model
         if(isset($data['docId'])){
             return DB::select("SELECT book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]'
                                 UNION
-                                SELECT book_time FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]';");
+                                SELECT book_time FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status>-1;");
         }else{
             return DB::select("SELECT doc_id,book_time FROM appointments WHERE book_date='$data[date]'
                                 UNION
-                                SELECT doc_id,book_time FROM slot_not_available WHERE book_date='$data[date]';");
+                                SELECT doc_id,book_time FROM slot_not_available WHERE book_date='$data[date]' AND status>-1;");
         }
     }
     public function getAvailableDocs($data){
@@ -132,4 +132,20 @@ class Site extends Model
                         WHERE dc.active=1 AND ap.status > '-1' AND ap.enduser_id='$data->id'
                         ORDER BY ap.book_date ASC;");
     }
+
+    public function saveOtp($data){
+        return DB::INSERT("INSERT INTO otp (otp) VALUES ('$data[otp]');");
+    }
+
+    public function verifyOtp($data){
+        $res = DB::select("SELECT otp FROM otp WHERE status = '0' AND otp=$data[otp] AND created_on > NOW() - INTERVAL 15 MINUTE ;");
+        DB::UPDATE("UPDATE otp SET status='1' WHERE otp='$data[otp]';");
+        return $res;
+    }
+
+    public function getUserRegLoginCheck($data){
+        return DB::select("SELECT CONCAT(first_name,' ',last_name) user_name,id FROM enduser WHERE id='$data';");
+    }
+
+    
 }

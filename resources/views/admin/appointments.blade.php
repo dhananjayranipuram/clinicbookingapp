@@ -27,7 +27,7 @@
                   </div>
                   <div class="col-md-3">
                     <label for="validationDefault02" class="form-label">Speciality</label>
-                      <select name="speciality" class="form-select">
+                      <select name="speciality" class="form-select speciality-select">
                             <option value="">All Specialities</option>
                             @foreach($spec as $key => $value)
                                 <option value="{{$value->id}}" @if(old('speciality') == $value->id) selected @endif>{{$value->name}}</option>
@@ -36,7 +36,7 @@
                   </div>
                   <div class="col-md-3">
                     <label for="validationDefault02" class="form-label">Doctor</label>
-                    <select name="doctor" class="form-select">
+                    <select name="doctor" class="form-select doctor-select">
                         <option value="">All Doctors</option>
                         @foreach($docs as $key => $value)
                             <option value="{{$value->id}}" @if(old('doctor') == $value->id) selected @endif>{{$value->doctor_name}}</option>
@@ -139,6 +139,18 @@
                     }
                 });
             }
+        });
+
+        $('.speciality-select').change(function(){
+            $(".needs-validation").submit();
+        });
+
+        $('.doctor-select').change(function(){
+            $(".needs-validation").submit();
+        });
+
+        $('.ranges').click(function(){
+            $(".needs-validation").submit();
         });
     });
     </script>    

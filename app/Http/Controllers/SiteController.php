@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Mail\AppointmentConfirmed;
 use App\Mail\AppointmentConfirmedCustomer;
+use App\Mail\OtpVerification;
 use Illuminate\Http\Request;
 use App\Models\Site;
 use App\Models\Admin;
@@ -606,6 +607,65 @@ class SiteController extends Controller
         ]);
         $res = $admin->updateAppointmentData($credentials);
         return json_encode($res);
+    }
+
+    public function sendOtp(Request $request){
+        $site = new Site();
+        $res = [];
+        $credentials = $request->validate([
+            'firstName' => ['required'],
+            'emailAddress' => ['required']
+        ]);
+        $credentials['otp'] = mt_rand(100000,999999);
+        $res = $site->saveOtp($credentials);
+        if($res){
+            Mail::to($credentials['emailAddress'])->send(new OtpVerification((object)$credentials));
+        }
+        return json_encode($res);
+    }
+
+    public function verifyOtp(Request $request){
+        $site = new Site();
+        $response = [];
+        $credentials = $request->validate([
+            'firstName' => ['required'],
+            'lastName' => ['required'],
+            'emailAddress' => ['required'],
+            'phoneNumber' => ['required'],
+            'dob' => ['required'],
+            'gender' => ['required'],
+            'password' => ['required'],
+            'otp' => []
+        ]);
+        $res = $site->verifyOtp($credentials);
+        if($res){
+            $ex = $site->getUserExist($credentials);
+            if($ex[0]->cnt<=0){
+                $reg = $site->saveEndUserData($credentials);
+                if($reg){
+                    $response['status'] = '200';
+                    $response['message'] = 'User created succesfully.';
+                    $response['userId'] = $reg;
+                    $res = $site->getUserRegLoginCheck($reg);
+                    Session::put('userName', $res[0]->user_name);
+                    Session::put('userData', $res[0]);
+                }else{
+                    $response['status'] = '500';
+                    $response['message'] = 'Something went wrong.';
+                }
+            }else{
+                $response['status'] = '200';
+                $response['message'] = 'User already exist.';
+                $response['userId'] = $ex[0]->id;
+                $res = $site->getUserRegLoginCheck($ex[0]->id);
+                Session::put('userName', $res[0]->user_name);
+                Session::put('userData', $res[0]);
+            }
+        }else{
+            $response['status'] = '401';
+            $response['message'] = 'Invalid OTP.';
+        }
+        return json_encode($response);
     }
     
 }

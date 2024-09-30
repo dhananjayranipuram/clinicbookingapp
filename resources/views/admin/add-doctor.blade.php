@@ -72,7 +72,7 @@
                     <div class="col-md-3">
                         <label class="form-label">Available Days</label>
                         <select class="form-select" multiple aria-label="multiple select example" name="available_days[]">
-                            <option selected>Select Available Week Days</option>
+                            <option value="" selected>Select Available Week Days</option>
                             <option value="0">Sunday</option>
                             <option value="1">Monday</option>
                             <option value="2">Tuesday</option>
@@ -94,8 +94,8 @@
                         <input type="time" class="form-control" name="end" value="{{old('end')}}">
                     </div>
                     <div class="col-md-3">
-                        <label for="duration" class="form-label">Duration</label>
-                        <input type="time" class="form-control" name="duration" value="{{old('duration')}}">
+                        <label for="duration" class="form-label">Duration (hh:mm)</label>
+                        <input type="text" class="form-control" name="duration" value="{{old('duration')}}">
                     </div>
                 </div>
                 <div class="row mb-3">

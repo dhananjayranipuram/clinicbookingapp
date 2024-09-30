@@ -46,7 +46,7 @@ class AdminController extends Controller
             foreach ($app as $key => $value) {
                 if(!isset($appointments[$value->doc_id]))
                     $appointments[$value->doc_id] = [];
-                array_push($appointments[$value->doc_id],['slot'=>$value->book_time,'status'=>$value->status]);
+                array_push($appointments[$value->doc_id],['slot'=>$value->book_time,'status'=>$value->status,'id'=>$value->id]);
             }
         }
         // print_r($appointments);exit;
@@ -67,6 +67,14 @@ class AdminController extends Controller
         $input['docId'] = $request->post('docId');
         $input['time'] = $request->post('time');
         $docs = $admin->saveSlotNotAvailable($input);
+        return $docs;
+    }
+
+    public function enableSlot(Request $request){
+        $admin = new Admin();
+        $input['id'] = $request->post('id');
+        $docs = $admin->enableSlotData($input);
+        return json_encode($docs);
     }
 
     public function bookAppointment(Request $request){
@@ -256,10 +264,10 @@ class AdminController extends Controller
                         'available_days' => ['required'],
                         'start' => ['required'],
                         'end' => ['required'],
-                        'duration' => ['required'],
+                        'duration' => ['required','regex:/^(0?[1-9]|1[0-2]):[0-5][0-9]$/'],
                         'languages' => ['required'],
                     ]);
-                    
+                    print_r($credentials);exit;
                     $file = $request->file('profile_pic');
                     $credentials['profile_pic'] = 'storage/'.$file->store('uploads', 'public');
                     $res = $admin->saveDoctorData($credentials);
@@ -322,7 +330,7 @@ class AdminController extends Controller
                 'available_days' => ['required'],
                 'start' => ['required'],
                 'end' => ['required'],
-                'duration' => ['required'],
+                'duration' => ['required','regex:/^(0?[1-9]|1[0-2]):[0-5][0-9]$/'],
                 'languages' => ['required'],
             ]);
             // $file = $request->file('profile_pic');
@@ -722,7 +730,7 @@ class AdminController extends Controller
     }
 
     public function generateDoctorTimeSlot($docs,$res,$appointments,$request){
-        
+        // print_r($appointments);exit;
         $date = date("F d, Y", strtotime($request->post('date')));
         $dateValue = date("Y-m-d", strtotime($request->post('date')));
         if(!empty($docs)){
@@ -752,17 +760,17 @@ class AdminController extends Controller
                                         if($check!='not found'){
                                             $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
                                             $str .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
-                                                <div class="col-lg-4 '.$cnt.'_'.$value->id.'">
-                                                    <span class="'.$classStstus.'">'.$appointments[$value->id][$check]['status'].'</span>
+                                                <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
+                                                    <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' not-available-slot">'.$appointments[$value->id][$check]['status'].'</span>
                                                 </div>';
                                                 continue;
                                         }
                                     }
                                     $str .='<div class="col-lg-2">'.substr($timeSlot,0,11).'</div>
-                                    <div class="col-lg-4 '.$cnt.'_'.$value->id.'">
+                                    <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
                                         <button class="new-appt button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'" data-bs-toggle="modal" data-bs-target="#registrationModal">
                                             <span class="button-text">Book</span>
-                                        </button>&nbsp;
+                                        </button>
                                         <button class="not-available button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'">
                                             <span class="button-text">Not Available</span>
                                         </button>

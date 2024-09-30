@@ -42,6 +42,8 @@ Route::any('/speciality-doctors', [SiteController::class, 'specDoctors']);
 Route::any('/appointments', [SiteController::class, 'userAppointments']);
 Route::any('/edit-appt', [SiteController::class, 'editAppointment']);
 Route::any('/update-appointment', [SiteController::class, 'updateAppointment']);
+Route::any('/send-otp', [SiteController::class, 'sendOtp']);
+Route::any('/verify-otp', [SiteController::class, 'verifyOtp']);
 // Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
 Route::get('/doctor/login', [DoctorController::class, 'login']);
@@ -82,6 +84,7 @@ Route::any('/admin/update-appointment', [AdminController::class, 'updateAppointm
 Route::any('/admin/calendar-view', [AdminController::class, 'appointmentCalendar']);
 Route::any('/admin/get-doctor-apointment', [AdminController::class, 'getDoctorAppointments']);
 Route::any('/admin/slot-not-available', [AdminController::class, 'slotNotAvailable']);
+Route::any('/admin/enable-slot', [AdminController::class, 'enableSlot']);
 Route::any('/admin/book-appointment', [AdminController::class, 'bookAppointment']);
 
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
