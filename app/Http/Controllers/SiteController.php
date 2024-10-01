@@ -343,6 +343,7 @@ class SiteController extends Controller
     public function generateTimeSlot($res,$appointments,$request){
         // print_r($res);
         // print_r($appointments);exit;
+        date_default_timezone_set("UTC");
         $str = '';
         $date = date("F d, Y", strtotime($request->post('date')));
         $dateValue = date("Y-m-d", strtotime($request->post('date')));
