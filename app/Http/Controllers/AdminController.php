@@ -743,9 +743,9 @@ class AdminController extends Controller
                         <span></span>
                     </h2>';
             foreach ($docs as $key => $value) {
-                echo $t1 = strtotime($res[$value->id]['start_time']);
-                echo $t2 = strtotime($res[$value->id]['end_time']);
-                echo $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
+                $t1 = strtotime($res[$value->id]['start_time']) - strtotime('00:00:00');
+                $t2 = strtotime($res[$value->id]['end_time']) - strtotime('00:00:00');
+                $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
 
                 $cnt = 0;
                 $innerStr = '';
@@ -755,9 +755,8 @@ class AdminController extends Controller
                     $endTime = date('H:i:s', $t1 + $duration);
 
                     $cnt++;
-                    echo $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
-                    echo $t1 = $t1 + $duration;
-                    echo '<br>';
+                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
+                    $t1 = $t1 + $duration;
                     if($this->checkTime($startTime,$endTime,$dateValue) == 'false'){
                         continue;
                     }
