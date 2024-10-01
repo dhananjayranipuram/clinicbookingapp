@@ -1,4 +1,5 @@
 (function($) {
+    var xhr;
     $(document).ready(function () { 
         $(document).on("click", ".new-appt" , function(e) { 
             e.preventDefault();
@@ -83,6 +84,63 @@
                                 element.parents('.col-lg-4').html(str);
                     }
                 });
+            }
+        });
+    });
+
+    $(document).on("change keyup", "#emailAddress" , function(e) { 
+        var emailAddress = $(this).val();
+        if (xhr != null){ 
+            xhr.abort();
+        }
+        xhr = $.ajax({
+            url: baseUrl + '/admin/get-user-data',
+            type: 'post',
+            data: {'emailAddress':emailAddress},
+            dataType: "json",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                if(html){
+                    var data = html[0];
+                    $("#firstName").val(data.first_name);
+                    $("#lastName").val(data.last_name);
+                    $("#phoneNumber").val(data.mobile);
+                    $("#dob").val(data.dob);
+                    $('input[name=gender]').each(function(){
+                        if($(this).val() == data.gender){
+                            $(this).prop('checked',true);
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
+    });
+    $(document).on("change keyup", "#phoneNumber" , function(e) { 
+        var mobile = $(this).val();
+        if (xhr != null){ 
+            xhr.abort();
+        }
+        xhr = $.ajax({
+            url: baseUrl + '/admin/get-user-data',
+            type: 'post',
+            data: {'mobile':mobile},
+            dataType: "json",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                if(html){
+                    var data = html[0];
+                    $("#firstName").val(data.first_name);
+                    $("#lastName").val(data.last_name);
+                    $("#emailAddress").val(data.email);
+                    $("#dob").val(data.dob);
+                    $('input[name=gender]').each(function(){
+                        if($(this).val() == data.gender){
+                            $(this).prop('checked',true);
+                            return false;
+                        }
+                    });
+                }
             }
         });
     });

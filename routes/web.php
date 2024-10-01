@@ -89,6 +89,8 @@ Route::any('/admin/book-appointment', [AdminController::class, 'bookAppointment'
 
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
 
+Route::any('/admin/get-user-data', [AdminController::class, 'getUserData']);
+
 Route::get('/admin/logout', [AdminController::class, 'logout']);
 
 //Clear Cache facade value:

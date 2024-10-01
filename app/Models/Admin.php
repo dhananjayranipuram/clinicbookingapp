@@ -273,4 +273,15 @@ class Admin extends Model
     public function updateAppointmentData($data){
         return DB::UPDATE("UPDATE appointments SET doc_id='$data[docId]',book_date='$data[appDate]',book_time='$data[timeSlot]' WHERE id='$data[appId]';");
     }
+
+    public function getUserDataFilter($data){
+        $condition = '';
+        if(!empty($data['emailAddress'])){
+            $condition = "WHERE email = '$data[emailAddress]'";
+        }
+        if(!empty($data['mobile'])){
+            $condition = "WHERE mobile = '$data[mobile]'";
+        }
+        return DB::select("SELECT first_name,last_name,mobile,gender,dob,email FROM enduser $condition;");
+    }
 }

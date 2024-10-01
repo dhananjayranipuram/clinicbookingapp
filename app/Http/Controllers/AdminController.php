@@ -765,7 +765,7 @@ class AdminController extends Controller
                         $check = $this->in_array_r($timeSlot,$appointments[$value->id]);
                         if($check!='not found'){
                             $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
-                            $$innerStr .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
+                            $innerStr .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
                                 <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
                                     <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' not-available-slot">'.$appointments[$value->id][$check]['status'].'</span>
                                 </div>';
@@ -854,5 +854,18 @@ class AdminController extends Controller
         }
     
         return 'not found';
+    }
+
+    public function getUserData(Request $request){
+        $admin = new Admin();
+        if($request->method() == 'POST'){
+            $credentials = $request->validate([
+                'emailAddress' => [''],
+                'mobile' => [''],
+            ]);
+            
+            $data = $admin->getUserDataFilter($credentials);
+            return json_encode($data);
+        }
     }
 }
