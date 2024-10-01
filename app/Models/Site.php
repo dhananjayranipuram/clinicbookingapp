@@ -62,7 +62,7 @@ class Site extends Model
     }
 
     public function getUserExist($data){
-        return DB::select("SELECT COUNT(*) cnt,id FROM enduser WHERE email='$data[emailAddress]';");
+        return DB::select("SELECT COUNT(*) cnt,id FROM enduser WHERE email='$data[emailAddress]' OR mobile='$data[phoneNumber]';");
     }
 
     public function getUserLoginCheck($data){

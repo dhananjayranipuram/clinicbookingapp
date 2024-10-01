@@ -621,12 +621,27 @@ class SiteController extends Controller
         $res = [];
         $credentials = $request->validate([
             'firstName' => ['required'],
-            'emailAddress' => ['required']
+            'emailAddress' => ['required'],
+            'phoneNumber' => ['required'],
         ]);
-        $credentials['otp'] = mt_rand(100000,999999);
-        $res = $site->saveOtp($credentials);
-        if($res){
-            Mail::to($credentials['emailAddress'])->send(new OtpVerification((object)$credentials));
+        $ex = $site->getUserExist($credentials);
+        if($ex[0]->cnt == 0){
+            $credentials['otp'] = mt_rand(100000,999999);
+            $res = $site->saveOtp($credentials);
+            if($res){
+                Mail::to($credentials['emailAddress'])->send(new OtpVerification((object)$credentials));
+            }
+            $res = [
+                'status' => '200',
+                'exist' => '0',
+                'message' => '',
+            ];
+        }else{
+            $res = [
+                'status' => '200',
+                'exist' => '1',
+                'message' => 'User already exist.',
+            ];
         }
         return json_encode($res);
     }

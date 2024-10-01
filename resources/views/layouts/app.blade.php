@@ -782,10 +782,15 @@
                         dataType: "json",
                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         success: function(res) {
-                            if(res){
+                            if(res.exist == 0){
                                 $("#otp-section").show();
-                                $(".overlay").hide();
+                            }else{
+                                $('#errorMessages').append('<br><span style="color:red;">User already exist.</span>');
+                                setTimeout(function () {
+                                    $('#errorMessages').html('');
+                                }, 2500);
                             }
+                            $(".overlay").hide();
                         }
                     });
                 }
