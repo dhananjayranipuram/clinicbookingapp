@@ -756,7 +756,7 @@ class AdminController extends Controller
 
                     $cnt++;
                     $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
-                    $t1 = $t1 + $duration;
+                    echo $t1 = $t1 + $duration.'<br>';
                     if($this->checkTime($startTime,$endTime,$dateValue) == 'false'){
                         continue;
                     }
