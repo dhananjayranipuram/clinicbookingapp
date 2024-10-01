@@ -751,8 +751,8 @@ class AdminController extends Controller
                 $innerStr = '';
                 while ($t1 < $t2) {
 
-                    $startTime = date('H:i:s', $t1);
-                    $endTime = date('H:i:s', $t1 + $duration);
+                    echo $startTime = date('H:i:s', $t1);
+                    echo $endTime = date('H:i:s', $t1 + $duration);
 
                     $cnt++;
                     $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
