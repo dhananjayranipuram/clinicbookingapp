@@ -64,6 +64,7 @@ Route::any('/admin/doctor-list', [AdminController::class, 'showDoctorList']);
 Route::any('/admin/add-doctor', [AdminController::class, 'addDoctor']);
 Route::any('/admin/edit-doctor', [AdminController::class, 'editDoctor']);
 Route::any('/admin/update-doctor-profile', [AdminController::class, 'updateDoctorProfile']);
+Route::any('/admin/get-doctors', [AdminController::class, 'getDoctorsList']);
 
 Route::any('/admin/profile', [AdminController::class, 'viewAdminProfile']);
 

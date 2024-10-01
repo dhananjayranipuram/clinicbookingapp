@@ -63,7 +63,7 @@
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <div data-mdb-input-init class="form-outline">
-                        <select class="form-select" id="specId" aria-label="Default select example" disabled>
+                        <select class="form-select" id="specId" aria-label="Default select example">
                         </select>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             <div class="row">
                 <div class="col-md-6 mb-4 pb-2">
                     <div data-mdb-input-init class="form-outline">
-                        <input type="date" id="apptDate" class="form-control form-control-lg inputs" placeholder="Date" />
+                        <input type="date" id="apptDate" class="form-control form-control-lg inputs" placeholder="Date" min="{{ date('Y-m-d') }}" />
                     </div>
                 </div>
                 <div class="col-md-6 mb-4 pb-2">
@@ -87,7 +87,11 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 mb-12 pb-2" id="errorMessages">
 
+                </div>
+            </div>
             <div class="mt-4 pt-2">
                 <input type="hidden" id="apptId">
                 <input class="btn btn-primary btn-lg updateAppointment" type="button" value="Update" />
@@ -141,7 +145,6 @@ $(document).ready(function () {
                 });
                 $("#doctorId").val(html.det[0].doc_id);
                 $("#apptDate").val(html.det[0].book_date);
-                console.log(html)
             }
         });
         $("#editAppt").addClass('show');
@@ -159,9 +162,21 @@ $(document).ready(function () {
                 'docId' : $("#doctorId").val(),
                 'timeSlot' : $("#timeslot").val(),
             },
+            dataType: "json",
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             success: function( html ) {
-                
+                if(html){
+                    $('#errorMessages').append('<br><span style="color:green;">Appointment updated successfully</span>');
+                    setTimeout(function () {
+                        $('#errorMessages').html('');
+                        location.reload();
+                    }, 2500);
+                }else{
+                    $('#errorMessages').append('<br><span style="color:red;">Something went wrong.</span>');
+                    setTimeout(function () {
+                        $('#errorMessages').html('');
+                    }, 2500);
+                }
             }
         });
     });
@@ -180,6 +195,26 @@ $(document).ready(function () {
                     $(".timeslotselect").html(html);
                 }
             });
+    });
+
+    $('#specId').change(function(){
+        $.ajax({
+            url: baseUrl + '/admin/get-doctors',
+            type: 'post',
+            data: {'spec':$(this).val()},
+            dataType: "json",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                $("#doctorId").html('');
+                if(html.length>0){
+                    $.each(html, function() {
+                        $("#doctorId").append($("<option />").val(this.id).text(this.doctor_name));
+                    });
+                }else{
+                    $("#doctorId").html('<option disabled selected>Doctors not available</option>');
+                }
+            }
+        });
     });
 
 });

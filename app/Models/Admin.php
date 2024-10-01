@@ -84,11 +84,15 @@ class Admin extends Model
         return DB::select("SELECT id,name FROM users WHERE email='$data[username]' AND password='$data[password]';");
     }
 
-    public function getDoctorsData(){
+    public function getDoctorsData($data=[]){
+        $condition = '';
+        if(!empty($data['spec'])){
+            $condition .= " AND d.specialization = $data[spec]";
+        }
         return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) doctor_name,d.email,d.gender,d.specialization,sp.name Speciality 
         FROM doctor d
         LEFT JOIN speciality sp ON sp.id=d.specialization
-        WHERE d.deleted=0;");
+        WHERE d.deleted=0 $condition;");
     }
 
     public function getSpecializationList(){
@@ -182,7 +186,7 @@ class Admin extends Model
                         WHEN working_days = 4 THEN 'THURSDAY'
                         WHEN working_days = 5 THEN 'FRIDAY'
                         WHEN working_days = 6 THEN 'SATURDAY' END 'day',working_days,
-                        TIME_FORMAT(start_time,'%h:%i %p') start_time_label,TIME_FORMAT(end_time,'%h:%i %p') end_time_label,end_time,start_time,TIME_FORMAT(duration,'%h:%i') 'duration' FROM duty_slab WHERE doc_id='$data->id' ORDER BY working_days;");
+                        TIME_FORMAT(start_time,'%h:%i %p') start_time_label,TIME_FORMAT(end_time,'%h:%i %p') end_time_label,end_time,start_time,TIME_FORMAT(duration,'%H:%i') 'duration' FROM duty_slab WHERE doc_id='$data->id' ORDER BY working_days;");
                                 
     }
 

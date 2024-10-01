@@ -330,7 +330,7 @@ class AdminController extends Controller
                 'available_days' => ['required'],
                 'start' => ['required'],
                 'end' => ['required'],
-                'duration' => ['required','regex:/^(0?[1-9]|1[0-2]):[0-5][0-9]$/'],
+                'duration' => ['required','regex:/^([01][0-9]|2[0-3]):([0-5][0-9])$/'],
                 'languages' => ['required'],
             ]);
             // $file = $request->file('profile_pic');
@@ -419,10 +419,11 @@ class AdminController extends Controller
     }
 
     public function generateTimeSlotSelect($res,$app,$input){
-
+        date_default_timezone_set("UTC");
         $timestamp = strtotime($input['date']);
         $day = date('l', $timestamp);
         $dayKey = $this->in_array_day($day,$res);
+        $dateValue = date("Y-m-d", strtotime($input['date']));
         $slotStr = '';
         $appointments = [];
         if(!empty($app)){
@@ -433,14 +434,21 @@ class AdminController extends Controller
             }
         }
         // print_r($appointments);exit;
+        // print_r($res[$dayKey]);exit;
         if($dayKey!='not found'){
             $t1 = strtotime($res[$dayKey]->start_time);
             $t2 = strtotime($res[$dayKey]->end_time);
             $duration = strtotime($res[$dayKey]->duration) - strtotime('00:00:00');
             $slotStr = '<select class="form-select" id="timeslot" name="timeSlot">';
             while ($t1 < $t2) {
+                $startTime = date('H:i:s', $t1);
+                $endTime = date('H:i:s', $t1 + $duration);
+
                 $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
                 $t1 = $duration+ $t1;
+                if($this->checkTime($startTime,$endTime,$dateValue) != 'true'){
+                    continue;
+                }
                 if(!empty($appointments)){
                     if(in_array($timeSlot,$appointments)){
                         continue;
@@ -831,15 +839,14 @@ class AdminController extends Controller
     }
 
     public function checkTime($startTime,$endTime,$dateValue){
-        
+
         date_default_timezone_set("Asia/Calcutta");
         $currentTime = date('H:i:s', time());
         $currentDate = date("Y-m-d", time());
         date_default_timezone_set("UTC");
-
         if($currentTime>$endTime && $dateValue==$currentDate){
             return 'false';
-        }else if($currentTime>$endTime && $dateValue==$currentDate){
+        }else if($currentTime>$endTime && $dateValue<$currentDate ){
             return 'false';
         }else{
             return 'true';
@@ -867,5 +874,15 @@ class AdminController extends Controller
             $data = $admin->getUserDataFilter($credentials);
             return json_encode($data);
         }
+    }
+
+    public function getDoctorsList(Request $request){
+        
+        $admin = new Admin();
+        $credentials = $request->validate([
+            'spec' => [''],
+        ]);
+        $data = $admin->getDoctorsData($credentials);
+        return json_encode($data);
     }
 }
