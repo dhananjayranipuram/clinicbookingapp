@@ -747,43 +747,55 @@ class AdminController extends Controller
                 $t2 = strtotime($res[$value->id]['end_time']);
                 $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
 
+                $cnt = 0;
+                $innerStr = '';
+                while ($t1 < $t2) {
+
+                    $startTime = date('H:i:s', $t1);
+                    $endTime = date('H:i:s', $t1 + $duration);
+
+                    $cnt++;
+                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
+                    $t1 = $t1 + $duration;
+                    if($this->checkTime($startTime,$endTime,$dateValue) == 'false'){
+                        continue;
+                    }
+                    if(!empty($appointments[$value->id])){
+                        $check = $this->in_array_r($timeSlot,$appointments[$value->id]);
+                        if($check!='not found'){
+                            $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
+                            $$innerStr .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
+                                <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
+                                    <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' not-available-slot">'.$appointments[$value->id][$check]['status'].'</span>
+                                </div>';
+                                continue;
+                        }
+                    }
+                    $innerStr .='<div class="col-lg-2">'.substr($timeSlot,0,11).'</div>
+                    <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
+                        <button class="new-appt button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                            <span class="button-text">Book</span>
+                        </button>
+                        <button class="not-available button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'">
+                            <span class="button-text">Not Available</span>
+                        </button>
+                    </div>';
+                }
+
+
+                if($innerStr == ''){
+                    $innerStr = '<h2>
+                                    <span>No slots Available on </span>
+                                    <strong>'.$date.'</strong>
+                                    <span></span>
+                                </h2>';
+                }
+
                 $str .='<div class="container" style="width:100%;">
                             <div class="row">
                                 <div class="col-lg-2"><img class="doctor-image-calendar" src="'.asset($value->profile_pic).'"><br><span>Name : '.$value->name.'</span></div>
-                                <div class="col-lg-10"><div class="row">';
-                                $cnt = 0;
-                                while ($t1 < $t2) {
-
-                                    $startTime = date('H:i:s', $t1);
-                                    $endTime = date('H:i:s', $t1 + $duration);
-
-                                    $cnt++;
-                                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
-                                    $t1 = $t1 + $duration;
-                                    if($this->checkTime($startTime,$endTime,$dateValue) == 'false'){
-                                        continue;
-                                    }
-                                    if(!empty($appointments[$value->id])){
-                                        $check = $this->in_array_r($timeSlot,$appointments[$value->id]);
-                                        if($check!='not found'){
-                                            $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
-                                            $str .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
-                                                <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
-                                                    <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' not-available-slot">'.$appointments[$value->id][$check]['status'].'</span>
-                                                </div>';
-                                                continue;
-                                        }
-                                    }
-                                    $str .='<div class="col-lg-2">'.substr($timeSlot,0,11).'</div>
-                                    <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
-                                        <button class="new-appt button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'" data-bs-toggle="modal" data-bs-target="#registrationModal">
-                                            <span class="button-text">Book</span>
-                                        </button>
-                                        <button class="not-available button" data-el="'.$cnt.'_'.$value->id.'" data-date="'.$dateValue.'"  data-time="'.$timeSlot.'" data-doc="'.$value->id.'">
-                                            <span class="button-text">Not Available</span>
-                                        </button>
-                                    </div>';
-                                }
+                                <div class="col-lg-10"><div class="row">'.$innerStr;
+                                
 
                 $str .='</div></div>
                         </div>
