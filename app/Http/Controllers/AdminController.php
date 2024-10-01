@@ -785,8 +785,7 @@ class AdminController extends Controller
 
                 if($innerStr == ''){
                     $innerStr = '<h2>
-                                    <span>No slots Available on </span>
-                                    <strong>'.$date.'</strong>
+                                    <span>No slots Available for this doctor </span>
                                     <span></span>
                                 </h2>';
                 }
