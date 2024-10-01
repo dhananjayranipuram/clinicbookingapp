@@ -743,8 +743,8 @@ class AdminController extends Controller
                         <span></span>
                     </h2>';
             foreach ($docs as $key => $value) {
-                $t1 = strtotime($res[$value->id]['start_time']);
-                $t2 = strtotime($res[$value->id]['end_time']);
+                $t1 = strtotime($dateValue .' '. $res[$value->id]['start_time']);
+                $t2 = strtotime($dateValue .' '. $res[$value->id]['end_time']);
                 $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
 
                 $cnt = 0;
