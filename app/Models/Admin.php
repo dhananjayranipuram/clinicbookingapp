@@ -226,7 +226,7 @@ class Admin extends Model
             $condition .= " AND doc.specialization = $data[specId]";
         }
         $dayofweek = date('w', strtotime($data['date']));
-        return DB::select("SELECT doc.id,CONCAT(doc.honor,doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
+        return DB::select("SELECT doc.id,CONCAT(doc.honor,' ',doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
             LEFT JOIN doctor doc ON slab.doc_id=doc.id
             WHERE slab.working_days=$dayofweek AND doc.deleted=0 AND doc.active=1 $condition");
     }

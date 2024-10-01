@@ -730,6 +730,7 @@ class AdminController extends Controller
     }
 
     public function generateDoctorTimeSlot($docs,$res,$appointments,$request){
+        // print_r($res);
         // print_r($appointments);exit;
         $date = date("F d, Y", strtotime($request->post('date')));
         $dateValue = date("Y-m-d", strtotime($request->post('date')));
@@ -745,16 +746,23 @@ class AdminController extends Controller
                 $t1 = strtotime($res[$value->id]['start_time']);
                 $t2 = strtotime($res[$value->id]['end_time']);
                 $duration = strtotime($res[$value->id]['duration']) - strtotime('00:00:00');
-                
+
                 $str .='<div class="container" style="width:100%;">
                             <div class="row">
                                 <div class="col-lg-2"><img class="doctor-image-calendar" src="'.asset($value->profile_pic).'"><br><span>Name : '.$value->name.'</span></div>
                                 <div class="col-lg-10"><div class="row">';
                                 $cnt = 0;
                                 while ($t1 < $t2) {
+
+                                    $startTime = date('H:i:s', $t1);
+                                    $endTime = date('H:i:s', $t1 + $duration);
+
                                     $cnt++;
-                                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
-                                    $t1 = $duration+ $t1;
+                                    $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
+                                    $t1 = $t1 + $duration;
+                                    if($this->checkTime($startTime,$endTime,$dateValue) == 'false'){
+                                        continue;
+                                    }
                                     if(!empty($appointments[$value->id])){
                                         $check = $this->in_array_r($timeSlot,$appointments[$value->id]);
                                         if($check!='not found'){
@@ -808,6 +816,22 @@ class AdminController extends Controller
         }
     
         return 'not found';
+    }
+
+    public function checkTime($startTime,$endTime,$dateValue){
+        
+        date_default_timezone_set("Asia/Calcutta");
+        $currentTime = date('H:i:s', time());
+        $currentDate = date("Y-m-d", time());
+        date_default_timezone_set("UTC");
+
+        if($currentTime>$endTime && $dateValue==$currentDate){
+            return 'false';
+        }else if($currentTime>$endTime && $dateValue==$currentDate){
+            return 'false';
+        }else{
+            return 'true';
+        }
     }
 
     public function in_array_day($needle, $haystack, $strict = false) {

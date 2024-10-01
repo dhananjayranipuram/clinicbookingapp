@@ -89,11 +89,11 @@ class Site extends Model
 
     public function getDocAppointments($data){
         if(isset($data['docId'])){
-            return DB::select("SELECT book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]'
+            return DB::select("SELECT book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status > '-1'
                                 UNION
                                 SELECT book_time FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status>-1;");
         }else{
-            return DB::select("SELECT doc_id,book_time FROM appointments WHERE book_date='$data[date]'
+            return DB::select("SELECT doc_id,book_time FROM appointments WHERE book_date='$data[date]' AND status > '-1'
                                 UNION
                                 SELECT doc_id,book_time FROM slot_not_available WHERE book_date='$data[date]' AND status>-1;");
         }

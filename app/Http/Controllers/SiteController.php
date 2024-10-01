@@ -325,11 +325,15 @@ class SiteController extends Controller
     }
 
     public function checkTime($startTime,$endTime,$dateValue){
+        
         date_default_timezone_set("Asia/Calcutta");
-        $currentTime = date('h:i:s', time());
+        $currentTime = date('H:i:s', time());
         $currentDate = date("Y-m-d", time());
         date_default_timezone_set("UTC");
-        if(($currentTime<$endTime && $currentTime>$startTime || $endTime<$currentTime) && $dateValue==$currentDate){
+
+        if($currentTime>$endTime && $dateValue==$currentDate){
+            return 'false';
+        }else if($currentTime>$endTime && $dateValue==$currentDate){
             return 'false';
         }else{
             return 'true';
@@ -337,6 +341,8 @@ class SiteController extends Controller
     }
 
     public function generateTimeSlot($res,$appointments,$request){
+        // print_r($res);
+        // print_r($appointments);exit;
         $str = '';
         $date = date("F d, Y", strtotime($request->post('date')));
         $dateValue = date("Y-m-d", strtotime($request->post('date')));
@@ -354,12 +360,12 @@ class SiteController extends Controller
                     </h2>';
             while ($t1 < $t2) {
                     
-                $startTime = date('h:i:s', $t1);
-                $endTime = date('h:i:s', $duration+ $t1);
+                $startTime = date('H:i:s', $t1);
+                $endTime = date('H:i:s', $t1 + $duration);
                 
 
-                $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $duration+ $t1);
-                $t1 = $duration+ $t1;
+                $timeSlot = date('h:i:s A', $t1) .' - '.date('h:i:s A', $t1 + $duration);
+                $t1 = $t1 + $duration;
                 if(in_array($timeSlot,$appointments)){
                     continue;
                 }
