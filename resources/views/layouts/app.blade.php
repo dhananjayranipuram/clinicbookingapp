@@ -277,9 +277,45 @@
 .action .menu ul li:hover a {
   color: #ff5d94;
 }
-
+.mobile-menu{
+    display:none;
+}
+.normal-menu{
+    display:block;
+}
 @media screen and (min-width: 320px) and (max-width: 480px) { 
 /* smartphones, iPhone, portrait 480x320 phones */ 
+    .navbar{
+        display: ruby;
+    }
+    .mobile-menu{
+        display:block;
+        margin-top: 10px;
+    }
+    .normal-menu{
+        display:none;
+    }
+    .navbar-collapse{
+        width: 95%;
+        margin-left: 5px;
+    }
+    .overlay-container {
+        width: 90%;
+    }
+    .mb-4 {
+        margin-bottom: 0.1rem !important;
+    }
+    .model-select-icon{
+        padding-left: 0px;
+        width: 90%;
+    }
+    body table.booked-calendar .booked-appt-list {
+        padding: 15px 15px 10px !important;
+    }
+    .action{
+        display:none;
+    }
+
     .popup-box{
         width:90% !important;
     }
@@ -484,7 +520,13 @@
                     </div>
                 </div> -->
                 <a href="{{ url('/contact-us') }}" class="nav-item nav-link @if(Request::path() === 'contact-us') active @endif">Contact</a>
-                
+                @if(session()->has('userName'))
+                <a class="nav-item nav-link mobile-menu" href="{{ url('/appointments') }}">My Appointments</a>
+                <a class="nav-item nav-link mobile-menu" href="{{ url('/logout') }}">Logout</a>
+                @else 
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Login</a>
+                @endif
                 
             </div>
             <!-- <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>
@@ -508,8 +550,8 @@
                 </div>
                 </div>
                 @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Login</a>
                 @endif
     </nav>
     <!-- Navbar End -->
