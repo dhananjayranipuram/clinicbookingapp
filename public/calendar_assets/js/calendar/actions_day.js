@@ -34,7 +34,7 @@
                         $("#close-modal-reg").click();
                         $(".col-lg-4").each(function() {
                             if($(this).attr('data-el')==element){
-                                $("."+element+"").html('<span style="cursor:pointer;" data-id="'+res.appId+'" class="badge bg-success not-available-slot">Booked</span>');
+                                $("."+element+"").html('<span style="cursor:pointer;" data-id="'+res.appId+'" class="badge bg-success booked-slot">Booked</span>');
                             }
                         });
                         // location.reload();
