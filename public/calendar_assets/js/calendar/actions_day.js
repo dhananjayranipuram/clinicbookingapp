@@ -1,7 +1,9 @@
 (function($) {
     var xhr;
+    var element;
     $(document).ready(function () { 
         $(document).on("click", ".new-appt" , function(e) { 
+            element = $(this).attr('data-el');
             e.preventDefault();
             $("#appointmentDate").val($(this).attr('data-date'));
             $("#appointmentTime").val($(this).attr('data-time'));
@@ -10,7 +12,6 @@
 
         $(document).on("click", ".book_appointment" , function(e) { 
             e.preventDefault();
-            
             var datas = {
                 'firstName': $("#firstName").val(),
                 'lastName': $("#lastName").val(),
@@ -31,7 +32,12 @@
                 success: function(res) {
                     if(res.status == 200){
                         $("#close-modal-reg").click();
-                        location.reload();
+                        $(".col-lg-4").each(function() {
+                            if($(this).attr('data-el')==element){
+                                $("."+element+"").html('<span style="cursor:pointer;" data-id="'+res.appId+'" class="badge bg-success not-available-slot">Booked</span>');
+                            }
+                        });
+                        // location.reload();
                         // $('.new-appt').filter(`[data-date="' + datas.date + '"][data-doc="'+datas.docId+'"]`).parent().html('<span class="badge bg-success">Booked</span>');
 
                         // $("."+element+"").html('<span class="badge bg-success">Booked</span>');
@@ -68,6 +74,32 @@
                 var id = element.attr('data-id');
                 $.ajax({
                     url: baseUrl + '/admin/enable-slot',
+                    type: 'post',
+                    data: {'id':id},
+                    dataType: "json",
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function( html ) {
+                        var parentElement = element.parents('.col-lg-4');
+                        var elementAttr = parentElement.attr('data-el');
+                        var str = '<button class="new-appt button" data-el="'+elementAttr+'" data-date="'+html.book_date+'"  data-time="'+html.book_time+'" data-doc="'+html.doc_id+'" data-bs-toggle="modal" data-bs-target="#registrationModal">'+
+                                '<span class="button-text">Book</span>'+
+                                '</button> '+
+                                '<button class="not-available button" data-el="'+elementAttr+'" data-date="'+html.book_date+'"  data-time="'+html.book_time+'" data-doc="'+html.doc_id+'">'+
+                                '<span class="button-text">Not Available</span>'+
+                                '</button>';
+                                element.parents('.col-lg-4').html(str);
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", ".booked-slot" , function(e) { 
+            if(confirm("Do you want to cancel this appointment?")){
+                e.preventDefault();
+                var element = $(this);
+                var id = element.attr('data-id');
+                $.ajax({
+                    url: baseUrl + '/admin/cancel-appointment',
                     type: 'post',
                     data: {'id':id},
                     dataType: "json",

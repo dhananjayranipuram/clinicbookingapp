@@ -264,6 +264,11 @@ class Admin extends Model
         return DB::select("SELECT doc_id,book_date,book_time FROM slot_not_available WHERE id='$data[id]';");
     }
 
+    public function cancelAppointmentData($data){
+        DB::INSERT("UPDATE appointments ap SET ap.status='-1' WHERE ap.id='$data[id]';");
+        return DB::select("SELECT doc_id,book_date,book_time FROM appointments WHERE id='$data[id]';");
+    }
+
     public function saveUserAppointment($data){
         $res = DB::select("SELECT * FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND book_time='$data[time]' AND status > '-1';");
         if(empty($res)){

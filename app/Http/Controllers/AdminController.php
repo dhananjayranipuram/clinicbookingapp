@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\Site;
+use App\Mail\AppointmentConfirmed;
+use App\Mail\AppointmentCancelled;
 use Session;
 use Redirect;
 use Storage;
 use File;
 use \Illuminate\Http\UploadedFile;
 use URL;
+use Mail;
 
 class AdminController extends Controller
 {
@@ -77,6 +80,16 @@ class AdminController extends Controller
         return json_encode($docs);
     }
 
+    public function cancelAppointment(Request $request){
+        $admin = new Admin();
+        $site = new Site();
+        $input['id'] = $request->post('id');
+        $docs = $admin->cancelAppointmentData($input);
+        $emailData = $site->getEmailData($input['id']);
+        $this->sendCanceledEmails($emailData[0]);
+        return json_encode($docs);
+    }
+
     public function bookAppointment(Request $request){
         $site = new Site();
         $input['date'] = $request->post('date');
@@ -101,6 +114,8 @@ class AdminController extends Controller
                 $response['status'] = '200';
                 $response['message'] = 'User created succesfully.';
                 $response['appId'] = $this->saveAppointment($input);
+                $emailData = $site->getEmailData($response['appId']);
+                $this->sendEmails($emailData[0]);
             }else{
                 $response['status'] = '500';
                 $response['message'] = 'Something went wrong.';
@@ -111,6 +126,8 @@ class AdminController extends Controller
             $response['status'] = '200';
             $response['message'] = 'User already exist.';
             $response['appId'] = $this->saveAppointment($input);
+            $emailData = $site->getEmailData($response['appId']);
+            $this->sendEmails($emailData[0]);
         }
         return json_encode($response);
     }
@@ -775,7 +792,7 @@ class AdminController extends Controller
                             $classStstus = ($appointments[$value->id][$check]['status']=='Booked')?'badge bg-success':'badge bg-secondary';
                             $innerStr .='<div class="col-lg-2 '.$cnt.'_'.$value->id.'">'.substr($timeSlot,0,11).'</div>
                                 <div class="col-lg-4 '.$cnt.'_'.$value->id.'" data-el="'.$cnt.'_'.$value->id.'">
-                                    <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' not-available-slot">'.$appointments[$value->id][$check]['status'].'</span>
+                                    <span style="cursor:pointer;" data-id="'.$appointments[$value->id][$check]['id'].'" class="'.$classStstus.' '.str_replace(' ', '-',strtolower($appointments[$value->id][$check]['status'])).'-slot">'.$appointments[$value->id][$check]['status'].'</span>
                                 </div>';
                                 continue;
                         }
@@ -943,5 +960,15 @@ class AdminController extends Controller
             return Redirect::to('/admin/edit-patient?id='.base64_encode($credentials['id']));
         }   
         
+    }
+
+    public function sendEmails($emailData){
+        Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentConfirmed($emailData,'admin'));
+        Mail::to($emailData->email)->send(new AppointmentConfirmed($emailData,'customer'));
+    }
+
+    public function sendCanceledEmails($emailData){
+        Mail::to(config('app.constants.MAIL_TO_ADDRESS'))->send(new AppointmentCancelled($emailData,'admin'));
+        Mail::to($emailData->email)->send(new AppointmentCancelled($emailData,'customer'));
     }
 }

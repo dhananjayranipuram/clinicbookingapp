@@ -90,6 +90,7 @@ Route::any('/admin/calendar-view', [AdminController::class, 'appointmentCalendar
 Route::any('/admin/get-doctor-apointment', [AdminController::class, 'getDoctorAppointments']);
 Route::any('/admin/slot-not-available', [AdminController::class, 'slotNotAvailable']);
 Route::any('/admin/enable-slot', [AdminController::class, 'enableSlot']);
+Route::any('/admin/cancel-appointment', [AdminController::class, 'cancelAppointment']);
 Route::any('/admin/book-appointment', [AdminController::class, 'bookAppointment']);
 
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
