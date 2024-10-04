@@ -385,6 +385,29 @@
     .space {
         margin-right: 1rem !important;
     }
+
+    .otp-field-forgot {
+        display: flex;
+    }
+    .otp-field-forgot input {
+        height: 30px;
+        width: 100%;
+        font-size: 32px;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        background-color: #d3d3d388;
+        border: 2px solid #dad4e5;
+        margin: 2px;
+        font-weight: bold;
+        color: #181313;
+        outline: none;
+        transition: all 0.1s;
+    }
+    .otp-field-forgot input:focus {
+        border: 2px solid #878689;
+        box-shadow: 0 0 2px 2px #878689;
+    }
     @keyframes spin {
       100% {
         transform: rotate(360deg);
@@ -643,10 +666,62 @@
 
             <div class="mt-4 pt-2">
                 <label >Not registered? <a onclick="toggleRegistration();" style="cursor:pointer; color:blue;">Register here</a></label><br>
+                <label >Forgot password? <a onclick="toggleForgotPassword();" style="cursor:pointer; color:blue;">Click here</a></label><br>
                 <input class="btn btn-primary btn-lg" type="button" onclick="login();" value="Login" />
                 <input class="btn-close-popup" type="button" onclick="closeAllPopup();" value="Close" />
                 <div id="loginMessage" style="color:red;"></div>
             </div>            
+        </div>
+    </div>
+
+    <div id="popupForgotPassword" class="overlay-container">
+        <div class="login-box">
+            <h2>Forgot Password</h2>
+            <div class="row">
+                <div class="col-md-12 mb-12 pb-2">
+                    <div data-mdb-input-init class="form-outline">
+                        <input type="email" id="forgotEmailAddress" class="form-control form-control-lg" placeholder="Enter your email" />
+                        <!-- <label class="form-label" for="loginEmailAddress">Email</label> -->
+                    </div>
+                </div>
+                <div class="mt-4 pt-2 send-otp-section">
+                    <input class="btn btn-primary btn-lg" type="button" onclick="sendOtp();" value="Send OTP" />
+                    <div id="forgotPasswordError" style="color:red;"></div>
+                </div>
+                <div class="col-md-12 mb-12 pb-2">
+                    <div class="otpSection forgotOtpSection" style="display:none;">
+                        <p class="otpSentTo">OTP has been sent to your email address.</p>
+                        <!-- <p class="resend">Resend otp after <span class="countdown"></span></p> -->
+                        <h3>Enter OTP</h3>
+                        <div class="otp-field-forgot">
+                            <input type="text" maxlength="1" />
+                            <input type="text" maxlength="1" />
+                            <input class="space" type="text" maxlength="1" />
+                            <input type="text" maxlength="1" />
+                            <input type="text" maxlength="1" />
+                            <input type="text" maxlength="1" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="changePassword" class="overlay-container">
+        <div class="login-box">
+            <h2>Change Password</h2>
+            <div class="row">
+                <div class="col-md-12 mb-12 pb-2">
+                    <div data-mdb-input-init class="form-outline">
+                        <input type="password" id="newPassword" class="form-control form-control-lg" placeholder="Enter new password" />
+                    </div>
+                </div>
+                <div class="mt-4 pt-2">
+                    <input class="btn btn-primary btn-lg" type="button" onclick="updatePassword();" value="Update Password" />
+                    <input class="btn-close-popup" type="button" onclick="closeAllPopup();" value="Close" />
+                    <div id="updatePasswordError"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -737,22 +812,7 @@
         var baseUrl = "{{ url('/') }}";
     </script>
     <script>
-        function toggleRegistration() {
-            $('#popupRegistration').addClass('show');
-            $('#popupLogin').removeClass('show');
-            $('#popupMessage').removeClass('show');
-        }
-
-        function toggleLogin() {
-            $('#popupLogin').addClass('show');
-            $('#popupRegistration').removeClass('show');
-            $('#popupMessage').removeClass('show');
-        }
-
-        function closeAllPopup(){
-            $('#popupRegistration').removeClass('show');
-            $('#popupLogin').removeClass('show');
-        }
+        
         
         function registration(){
             var datas = {
@@ -1034,6 +1094,38 @@
             }
         }
 
+        const inputsForgot = document.querySelectorAll(".otp-field-forgot input");
+        inputsForgot.forEach((input, index) => {
+            input.dataset.index = index;
+            input.addEventListener("keyup", handleOtp);
+            input.addEventListener("paste", handleOnPasteOtp);
+        });
+        function handleOtp(e) {
+            const input = e.target;
+            let value = input.value;
+            let isValidInput = value.match(/[0-9a-z]/gi);
+            input.value = "";
+            input.value = isValidInput ? value[0] : "";
+            let fieldIndex = input.dataset.index;
+            if (fieldIndex < inputsForgot.length - 1 && isValidInput) {
+                input.nextElementSibling.focus();
+            }
+            if (e.key === "Backspace" && fieldIndex > 0) {
+                input.previousElementSibling.focus();
+            }
+            if (fieldIndex == inputsForgot.length - 1 && isValidInput) {
+                submitForgot();
+            }
+        }
+        function handleOnPasteOtp(e) {
+            const data = e.clipboardData.getData("text");
+            const value = data.split("");
+            if (value.length === inputsForgot.length) {
+                inputsForgot.forEach((input, index) => (input.value = value[index]));
+                submitForgot();
+            }
+        }
+
         function showResendotp(){
             $('.resend').html('Resend otp after <span class="countdown"></span>');
             var timer2 = "15:00";
@@ -1054,6 +1146,140 @@
                     clearInterval(interval);
                 }
             }, 1000);
+        }
+
+        function sendOtp(){
+            var email = $("#forgotEmailAddress").val();
+
+            var regex = new RegExp('^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$');
+
+            if (regex.test(email)) {
+                $(".overlay").show();
+                $.ajax({
+                    url: baseUrl + '/send-otp-forgot',
+                    type: 'post',
+                    data: {'emailAddress':email},
+                    dataType: "json",
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function(res) {
+                        if(res){
+                            $(".forgotOtpSection").show();
+                            $(".send-otp-section").hide();
+                        }else{
+                            $('#forgotPasswordError').append('<br><span style="color:red;">Something went wrong.</span>');
+                            setTimeout(function () {
+                                $('#forgotPasswordError').html('');
+                            }, 2500);
+                        }
+                        $(".overlay").hide();
+                    }
+                });
+            }else{
+                $('#forgotPasswordError').append('<span style="color:red;">Invalid email ID</span>');
+                setTimeout(function () {
+                     $('#forgotPasswordError').html('');
+                }, 2500);
+            }
+            
+        }
+
+        function submitForgot() {
+
+            let  otp = "";
+            inputsForgot.forEach((input) => {
+                otp += input.value;
+                input.disabled = true;
+                input.classList.add("disabled");
+            });
+            
+            $(".overlay").show();
+            $.ajax({
+                type: "POST",
+                url: baseUrl+'/verify-otp-forgot',
+                data: {'otp':otp},
+                dataType: "json",
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(html){
+                    
+                    if(html.status==200){
+                        $('#popupForgotPassword').removeClass('show');
+                        $('#changePassword').addClass('show');
+                        $(".overlay").hide();
+                    }else{
+                        inputsForgot.forEach((input) => {
+                            otp += input.value;
+                            input.value = '';
+                            input.disabled = false;
+                        });
+                        $('#forgotPasswordError').append('<br><span style="color:red;">Invalid OTP</span>');
+                        setTimeout(function () {
+                            $('#forgotPasswordError').html('');
+                        }, 5500);
+                        $(".overlay").hide();
+                    }
+                }
+            });
+        }
+
+        function updatePassword(){
+            $.ajax({
+                type: "POST",
+                url: baseUrl+'/change-password',
+                data: {'password':$("#newPassword").val()},
+                dataType: "json",
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(html){
+                    if(html.status==200){
+                        $('#updatePasswordError').append('<br><span style="color:green;">'+html.message+'</span>');
+                        setTimeout(function () {
+                            $('#updatePasswordError').html('');
+                            $('#changePassword').removeClass('show');
+                        }, 10000);
+                    }else{
+                        $('#updatePasswordError').append('<br><span style="color:green;">'+html.message+'</span>');
+                        setTimeout(function () {
+                            $('#updatePasswordError').html('');
+                        }, 10000);
+                    }
+                    
+                }
+            });
+        }
+
+        function toggleForgotPassword(){
+            $('#popupForgotPassword').addClass('show');
+            $('#popupLogin').removeClass('show');
+            $('#popupMessage').removeClass('show');
+            $('#popupRegistration').removeClass('show');
+            $("#forgotEmailAddress").val('');
+            $("#newPassword").val('');
+            $(".forgotOtpSection").hide();
+            $(".send-otp-section").show();
+            inputsForgot.forEach((input) => {
+                input.value = '';
+                input.disabled = false;
+            });
+        }
+
+        function toggleRegistration() {
+            $('#popupRegistration').addClass('show');
+            $('#popupLogin').removeClass('show');
+            $('#popupMessage').removeClass('show');
+            $('#popupForgotPassword').removeClass('show');
+        }
+
+        function toggleLogin() {
+            $('#popupLogin').addClass('show');
+            $('#popupRegistration').removeClass('show');
+            $('#popupMessage').removeClass('show');
+            $('#popupForgotPassword').removeClass('show');
+        }
+
+        function closeAllPopup(){
+            $('#popupRegistration').removeClass('show');
+            $('#popupLogin').removeClass('show');
+            $('#popupForgotPassword').removeClass('show');
+            $('#changePassword').removeClass('show');
         }
     </script>
 </body>

@@ -288,4 +288,29 @@ class Admin extends Model
         }
         return DB::select("SELECT first_name,last_name,mobile,gender,dob,email FROM enduser $condition;");
     }
+
+    public function getPatientData($data=[]){
+        $condition = '';
+        if(!empty($data->id)){
+            $condition .= " AND id = $data->id";
+        }
+        return DB::select("SELECT id,CONCAT(first_name,' ',last_name) patient_name,first_name,last_name,mobile,email,dob,gender,active,CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END 'activeName' FROM enduser WHERE deleted=0 $condition;");
+    }
+
+    public function deletePatientData($data){
+        return DB::UPDATE("UPDATE enduser SET deleted='1' WHERE id='$data[id]';");
+    }
+
+    public function getUserAppointments($data){
+        return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time,sp.name 'speciclity',CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name' FROM appointments ap
+                        LEFT JOIN doctor dc ON dc.id=ap.doc_id
+                        LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
+                        LEFT JOIN speciality sp ON sp.id=dc.specialization
+                        WHERE dc.active=1 AND ap.status > '-1' AND ap.enduser_id='$data->id'
+                        ORDER BY ap.book_date ASC;");
+    }
+
+    public function updatePatientData($data){
+        DB::UPDATE("UPDATE enduser SET first_name='$data[first_name]',last_name='$data[last_name]',email='$data[email]',gender='$data[gender]',mobile='$data[mobile]',active='$data[active]' WHERE id='$data[id]';");
+    }
 }

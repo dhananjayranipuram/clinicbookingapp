@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Mail\AppointmentConfirmed;
 use App\Mail\AppointmentConfirmedCustomer;
 use App\Mail\OtpVerification;
+use App\Mail\ForgotPasswordVerification;
 use Illuminate\Http\Request;
 use App\Models\Site;
 use App\Models\Admin;
@@ -581,7 +582,7 @@ class SiteController extends Controller
                         continue;
                     }
                 }
-                $slotStr .= '<option value="'.$timeSlot.'">'.$timeSlot.'</option>';
+                $slotStr .= '<option value="'.$timeSlot.'">'.substr($timeSlot,0,11).'</option>';
                 
             }
             $slotStr .= '</select>';
@@ -686,6 +687,59 @@ class SiteController extends Controller
         }else{
             $response['status'] = '401';
             $response['message'] = 'Invalid OTP.';
+        }
+        return json_encode($response);
+    }
+
+    public function sendOtpForgot(Request $request){
+        $site = new Site();
+        $res = [];
+        $credentials = $request->validate([
+            'emailAddress' => ['required'],
+        ]);
+        
+        $credentials['otp'] = mt_rand(100000,999999);
+        $credentials['token'] = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'),1,20);
+        Session::put('userTokenData', $credentials['token']);
+        $res = $site->saveOtp($credentials);
+        if($res){
+            Mail::to($credentials['emailAddress'])->send(new ForgotPasswordVerification((object)$credentials));
+        }
+        
+        return json_encode($res);
+    }
+
+    public function verifyOtpForgot(Request $request){
+        $site = new Site();
+        $response = [];
+        $credentials = $request->validate([
+            'otp' => []
+        ]);
+        $res = $site->verifyOtp($credentials);
+        if($res){
+            $response['status'] = '200';
+            $response['message'] = 'Valid OTP.';
+        }else{
+            $response['status'] = '401';
+            $response['message'] = 'Invalid OTP.';
+        }
+        return json_encode($response);
+    }
+
+    public function changePassword(Request $request){
+        $site = new Site();
+        $response = [];
+        $credentials = $request->validate([
+            'password' => []
+        ]);
+        $credentials['token'] = Session::get('userTokenData');
+        $res = $site->updatePassword($credentials);
+        if($res){
+            $response['status'] = '200';
+            $response['message'] = 'Password changed successfully.';
+        }else{
+            $response['status'] = '401';
+            $response['message'] = 'Password not changed.';
         }
         return json_encode($response);
     }

@@ -454,7 +454,7 @@ class AdminController extends Controller
                         continue;
                     }
                 }
-                $slotStr .= '<option value="'.$timeSlot.'">'.$timeSlot.'</option>';
+                $slotStr .= '<option value="'.$timeSlot.'">'.substr($timeSlot,0,11).'</option>';
                 
             }
             $slotStr .= '</select>';
@@ -884,5 +884,64 @@ class AdminController extends Controller
         ]);
         $data = $admin->getDoctorsData($credentials);
         return json_encode($data);
+    }
+
+    public function showPatientList(){
+        if(Session::get('userAdminData')){
+            $admin = new Admin();
+            $data['list'] = $admin->getPatientData();
+            // print_r($data);exit;
+            return view('admin/patient-list',$data);
+        }else{
+            return view('admin/pagenotfound');
+        }
+    }
+
+    public function deletePatient(){
+        $input['id'] = $_POST['id'];
+        $admin = new Admin();
+        $data = $admin->deletePatientData($input);
+        return json_encode($data);
+    }
+
+    public function editPatient(){
+        if(Session::get('userAdminData')){
+            $queries = [];
+            parse_str($_SERVER['QUERY_STRING'], $queries);
+            $admin = new Admin();
+            $input['id'] = base64_decode($queries['id']);
+            $details = $admin->getPatientData((object)$input);
+            $data['data'] = $admin->getUserAppointments((object)$input);
+            // print_r($data);exit;
+            return view('admin/edit-patient',(array)$details[0],$data);
+        }else{
+            return view('admin/pagenotfound');
+        }
+    }
+
+    public function updatePatientProfile(Request $request){
+        
+        $admin = new Admin();
+        if($request->method() == 'POST'){
+
+            $request->flash();
+            $credentials = $request->validate([
+                'id' => ['required'],
+                'first_name' => ['required'],
+                'last_name' => [],
+                'gender' => ['required'],
+                'email' => ['required', 'email'],
+                'mobile' => ['required'],
+                'status' => [],
+            ]);
+            if($request->post('status')=='on'){
+                $credentials['active'] = 1;
+            }else{
+                $credentials['active'] = 0;
+            }
+            $res = $admin->updatePatientData($credentials);
+            return Redirect::to('/admin/edit-patient?id='.base64_encode($credentials['id']));
+        }   
+        
     }
 }

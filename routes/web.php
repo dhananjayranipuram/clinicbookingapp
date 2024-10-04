@@ -46,6 +46,10 @@ Route::any('/send-otp', [SiteController::class, 'sendOtp']);
 Route::any('/verify-otp', [SiteController::class, 'verifyOtp']);
 // Route::any('/send-email', [SiteController::class, 'sendTestEmail']);
 
+Route::any('/send-otp-forgot', [SiteController::class, 'sendOtpForgot']);
+Route::any('/verify-otp-forgot', [SiteController::class, 'verifyOtpForgot']);
+Route::any('/change-password', [SiteController::class, 'changePassword']);
+
 Route::get('/doctor/login', [DoctorController::class, 'login']);
 Route::any('/doctor/dashboard', [DoctorController::class, 'dashboard']);
 Route::any('/doctor/appointments', [DoctorController::class, 'getAppointments']);
@@ -91,6 +95,11 @@ Route::any('/admin/book-appointment', [AdminController::class, 'bookAppointment'
 Route::any('/admin/get-dashboard-booking-data', [AdminController::class, 'getDashboardBooking']);
 
 Route::any('/admin/get-user-data', [AdminController::class, 'getUserData']);
+
+Route::any('/admin/patients', [AdminController::class, 'showPatientList']);
+Route::any('/admin/delete-patient', [AdminController::class, 'deletePatient']);
+Route::any('/admin/edit-patient', [AdminController::class, 'editPatient']);
+Route::any('/admin/update-patient-profile', [AdminController::class, 'updatePatientProfile']);
 
 Route::get('/admin/logout', [AdminController::class, 'logout']);
 

@@ -134,6 +134,7 @@ class Site extends Model
     }
 
     public function saveOtp($data){
+        DB::UPDATE("UPDATE enduser SET update_token='$data[token]' WHERE email='$data[emailAddress]';");
         return DB::INSERT("INSERT INTO otp (otp) VALUES ('$data[otp]');");
     }
 
@@ -145,6 +146,10 @@ class Site extends Model
 
     public function getUserRegLoginCheck($data){
         return DB::select("SELECT CONCAT(first_name,' ',last_name) user_name,id FROM enduser WHERE id='$data';");
+    }
+
+    public function updatePassword($data){
+        return DB::UPDATE("UPDATE enduser SET pword='$data[password]' WHERE update_token='$data[token]';");
     }
 
     

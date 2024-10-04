@@ -296,6 +296,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url('/admin/patients') }}">
+          <i class="bi bi-menu-button-wide"></i>
+          <span>Patients</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url('/admin/add-specialization') }}">
           <i class="bi bi-menu-button-wide"></i>
           <span>Specialities</span>
