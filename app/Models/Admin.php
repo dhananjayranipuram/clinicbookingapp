@@ -24,7 +24,7 @@ class Admin extends Model
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id 
                         LEFT JOIN speciality sp ON sp.id=dc.specialization
                         WHERE dc.active=1 AND ap.status > '-1' $condition
-                        ORDER BY ap.book_date ASC;");
+                        ORDER BY ap.id DESC;");
     }
 
     public function getAppointmentDataDetailed($data){

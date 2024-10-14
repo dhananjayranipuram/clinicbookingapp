@@ -16,7 +16,7 @@ class Doctor extends Model
         return DB::select("SELECT ap.id appointment_id,CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.mobile patient_mobile,DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
-                        WHERE ap.doc_id=$data[id] $condition;");
+                        WHERE ap.doc_id=$data[id] $condition ORDER BY ap.id DESC;");
     }
 
     public function getDocProfile($data){

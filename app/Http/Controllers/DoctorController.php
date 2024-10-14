@@ -29,6 +29,7 @@ class DoctorController extends Controller
     }
 
     public function getAppointments(Request $request){
+        $request->flash();
         if(Session::get('userDoctorData')){
             $data = [];
             $doc = new Doctor();

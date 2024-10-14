@@ -60,9 +60,19 @@
     <script type="text/javascript">
     $(function() {
     
-        // var start = moment().subtract(29, 'days');
-        var start = moment();
-        var end = moment();
+        var fromDate = "{{old('from')}}";
+        var toDate = "{{old('to')}}";
+
+        if(fromDate === '' ){
+          var start = moment();
+        }else{
+          var start = moment(fromDate);
+        }
+        if(fromDate === ''){
+          var end = moment();
+        }else{
+          var end = moment(toDate);
+        }
     
         function cb(start, end) {
             $('#reportrange span').html(start.format('DD-MM-Y') + ' - ' + end.format('DD-MM-Y'));
@@ -86,6 +96,12 @@
     
         cb(start, end);
     
+    });
+
+    $(document).ready(function () { 
+        $('.ranges').click(function(){
+            $(".needs-validation").submit();
+        });
     });
     </script>      
 @endsection
