@@ -10,7 +10,7 @@
             <div class="card-body">
               <div>
                 <h5 class="card-title" style="display:inline-block">All Appointments</h5>
-                <a type="button" style="display:inline-block;float: right;margin-top: 20px;" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar"></i></a>
+                <a type="button" style="display:inline-block;float: right;margin-top: 20px;" href ="{{url('/admin/calendar-view')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-calendar"></i> Book Appointment</a>
                 <a type="button" style="display:inline-block;float: right;margin-top: 20px;margin-right: 20px;" href ="{{url('/admin/appointments')}}" class="btn btn-primary" style="text-align:right;position: absolute; right: 25px;"><i class="bi bi-card-list"></i></a>
                 <!-- <div class="row g-5"> -->
               </div>
