@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{asset('calendar_assets/css/calendar/calendar-style-one.css')}}">
  
 <link rel='stylesheet' id='booked-icons-css' href="{{asset('calendar_assets/css/calendar/icons.css')}}" media='all' />
-<link rel='stylesheet' id='booked-styles-css' href="{{asset('calendar_assets/css/calendar/styles.css')}}" media='all' />
+<link rel='stylesheet' id='booked-styles-css' href="{{asset('calendar_assets/css/calendar/styles.css')}}?v={{time()}}" media='all' />
 <style rel='stylesheet' href="{{asset('calendar_assets/css/calendar/calendar-style.css')}}"></style>
 <link rel='stylesheet' id='brivona-servicebox-animation-css' href="{{asset('calendar_assets/css/calendar/servicebox-animation.min.css')}}" media='all' />
 <link rel='stylesheet' id='brivona-responsive-style-css' href="{{asset('calendar_assets/css/calendar/responsive.min.css')}}" media='all' />
