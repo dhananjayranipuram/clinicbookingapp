@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Booking <span>| Today</span></h5>
+                  <h5 class="card-title">Booking <span class="booking-day-label">| Today</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Customers <span>| This Year</span></h5>
+                  <h5 class="card-title">Customers <span class="customer-day-label">| Today</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -126,7 +126,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Recent Appointment <span>| Today</span></h5>
+                  <h5 class="card-title">Recent Appointment <span class="recent-appt-day-label">| Today</span></h5>
 
                   <table class="table table-borderless datatable" id="recent-appt">
                     <thead>
@@ -182,7 +182,7 @@
                 </div>
 
                 <div class="card-body pb-0">
-                  <h5 class="card-title">Doc wise Appt <span>| Today</span></h5>
+                  <h5 class="card-title">Doc wise Appt <span class="doc-wise-day-label">| Today</span></h5>
 
                   <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
 
