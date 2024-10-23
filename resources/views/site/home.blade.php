@@ -256,4 +256,29 @@
     </div>
 </div>
 <!-- Testimonial End -->
+
+
+<script>
+    $('.nav-item').each(function() {
+            alert()
+            $(this).removeClass('active');
+        });
+    $(document).ready(function () {
+        
+        $(".nav-item-home").addClass('active');
+        $(".nav-item-home").click(function () {
+            $('.nav-item').each(function() {
+                $(this).removeClass('active');
+            });
+            $(".nav-item-home").addClass('active');
+        });
+
+        $(".nav-item-about").click(function () {
+            $('.nav-item').each(function() {
+                $(this).removeClass('active');
+            });
+            $(".nav-item-about").addClass('active');
+        });
+    });
+</script>
 @endsection
