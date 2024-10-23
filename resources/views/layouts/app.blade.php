@@ -450,7 +450,11 @@
       }
     }
 
-    
+    @media only screen and (max-width: 600px) {
+        .ms-3 {
+            margin-left: 0rem !important;
+        }
+    }
   </style>    
 </head>
 
@@ -501,7 +505,7 @@
 
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
-        <a href="{{ url('/home') }}" class="navbar-brand p-0">
+        <a href="index.html" class="navbar-brand p-0">
             <h1 class="m-0 text-primary"><i class="fas fa-user-md me-2"></i>Clinic Booking</h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -510,53 +514,17 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
                 <a href="{{ url('/home') }}" class="nav-item nav-link @if(Request::path() === 'home') active @endif">Home</a>
-                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link @if(Request::path() === 'home') active @endif">About</a>
+                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link">About</a>
                 <a href="{{ url('/speciality') }}" class="nav-item nav-link @if(Request::path() === 'speciality') active @endif">Book Appointment</a>
-                <!-- <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Book Appointment</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="{{ url('/doctors') }}" class="dropdown-item">Search by Doctor</a>
-                        <a href="{{ url('/calendar') }}" class="dropdown-item">Search by Day</a>
-                    </div>
-                </div> -->
                 <a href="{{ url('/contact-us') }}" class="nav-item nav-link @if(Request::path() === 'contact-us') active @endif">Contact</a>
-                @if(session()->has('userName'))
-                <a class="nav-item nav-link mobile-menu" href="{{ url('/appointments') }}">My Appointments</a>
-                <a class="nav-item nav-link mobile-menu" href="{{ url('/logout') }}">Logout</a>
-                @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Login</a>
-                @endif
-                
             </div>
-            <!-- <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>
-            <a href="appointment.html" class="btn btn-primary py-2 px-4 ms-3">Appointment</a> -->
+            <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
+            <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
         </div>
-        @if(session()->has('userName'))
-                <div class="action">
-                <div class="profile" onclick="menuToggle();">
-                    <i class="fa fa-user" style="font-size:36px"></i>
-                </div>
-                <div class="menu">
-                    <h3>{{ Session::get('userName')}}<br /></h3>
-                    <ul style="padding-left: 0px;">
-                    <li>
-                        <a href="{{ url('/appointments') }}">My Appointments</a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/logout') }}">Logout</a>
-                    </li>
-                    </ul>
-                </div>
-                </div>
-                @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Login</a>
-                @endif
     </nav>
-    <!-- Navbar End -->
+    <!-- Navbar End -->
 
-    <main class="py-4">
+    <main>
         @yield('content')
     </main>
     <div id="popupRegistration" class="overlay-container">
