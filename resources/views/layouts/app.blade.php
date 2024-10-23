@@ -556,7 +556,7 @@
     </nav>
     <!-- Navbar End -->
 
-    <main class="py-4">
+    <main>
         @yield('content')
     </main>
     <div id="popupRegistration" class="overlay-container">
