@@ -347,11 +347,6 @@
 @media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
 @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
 @media (min-width:1281px) { /* hi-res laptops and desktops */ }
-@media only screen and (max-width: 600px) {
-    .ms-3 {
-        margin-left: 0rem !important;
-    }
-}
     </style>
 
 <style>
@@ -514,8 +509,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{{ url('/home') }}" class="nav-item nav-link @if(Request::path() === 'home') active @endif nav-item-home">Home</a>
-                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link @if(Request::path() === 'home') active @endif nav-item-about">About</a>
+                <a href="{{ url('/home') }}" class="nav-item nav-link @if(Request::path() === 'home') active @endif">Home</a>
+                <a href="{{ url('/home') }}?#aboutus-section" class="nav-item nav-link @if(Request::path() === 'home') active @endif">About</a>
                 <a href="{{ url('/speciality') }}" class="nav-item nav-link @if(Request::path() === 'speciality') active @endif">Book Appointment</a>
                 <!-- <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Book Appointment</a>
@@ -529,7 +524,8 @@
                 <a class="nav-item nav-link mobile-menu" href="{{ url('/appointments') }}">My Appointments</a>
                 <a class="nav-item nav-link mobile-menu" href="{{ url('/logout') }}">Logout</a>
                 @else 
-                    
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 mobile-menu">Login</a>
                 @endif
                 
             </div>
@@ -554,13 +550,13 @@
                 </div>
                 </div>
                 @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Login</a>
                 @endif
     </nav>
     <!-- Navbar End -->
 
-    <main>
+    <main class="py-4">
         @yield('content')
     </main>
     <div id="popupRegistration" class="overlay-container">
