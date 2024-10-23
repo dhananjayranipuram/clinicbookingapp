@@ -529,8 +529,7 @@
                 <a class="nav-item nav-link mobile-menu" href="{{ url('/appointments') }}">My Appointments</a>
                 <a class="nav-item nav-link mobile-menu" href="{{ url('/logout') }}">Logout</a>
                 @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
+                    
                 @endif
                 
             </div>
@@ -555,8 +554,8 @@
                 </div>
                 </div>
                 @else 
-                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Register</a>
-                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3 normal-menu">Login</a>
+                    <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
+                    <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
                 @endif
     </nav>
     <!-- Navbar End -->
