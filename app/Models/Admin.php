@@ -41,8 +41,7 @@ class Admin extends Model
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id
                         WHERE (ap.book_date between '$data[from]' and '$data[to]') AND ap.status > '-1'
-                        ORDER BY ap.book_date ASC
-                        LIMIT 5;");
+                        ORDER BY ap.book_date ASC;");
     }
 
     public function getDocWiseAppointmentData($data){

@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+<!-- <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" rel="stylesheet"> -->
     <div class="pagetitle">
       <h1>Dashboard</h1>
       <nav>
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Customers <span class="customer-day-label">| Today</span></h5>
+                  <h5 class="card-title">Patients <span class="customer-day-label">| Today</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -128,7 +128,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Recent Appointment <span class="recent-appt-day-label">| Today</span></h5>
 
-                  <table class="table table-borderless datatable" id="recent-appt">
+                  <table class="table datatable" id="recent-appt">
                     <thead>
                       <tr>
                         <th scope="col">ID</th>
@@ -238,5 +238,7 @@
       </div>
     </section>
     
+<script src="{{asset('assets/js/jquery-3.4.1.min.js')}}"></script>
+<!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script> -->
 
 @endsection

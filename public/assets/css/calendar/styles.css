@@ -88,7 +88,7 @@ body table.booked-calendar td .date { background:#fff; display:block; width:100%
 body table.booked-calendar td .date .number { display:inline-block; -moz-border-radius:30px; -webkit-border-radius:30px; border-radius:30px; width: 50px; height: 50px; line-height:49px; }
 
 body table.booked-calendar td:hover .date { cursor:pointer; background:#fafafa; }
-body table.booked-calendar td:hover .date span { color:#fff; }
+body table.booked-calendar td:hover .date span { color:#31afea; }
 body table.booked-calendar tr.week td.active { border-bottom-color:#ddd; }
 body table.booked-calendar tr.week td.active .date { background:#ddd; color:#555; }
 body table.booked-calendar tr.week td.active .date .number { border:none; background:#fff; color:#000; }

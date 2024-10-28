@@ -32,7 +32,7 @@
                   <div class="col-sm-6">
                     <label class="col-sm-12 col-form-label">Speciality</label>
                     <div class="col-sm-12">
-                      <select class="form-select" aria-label="Default select example" disabled>
+                      <select class="form-select" aria-label="Default select example" id="specId">
                       @foreach($spec as $key => $value)
                           <option value="{{$value->id}}" @if($value->id == $det[0]->spec_id) selected @endif>{{$value->name}}</option>
                       @endforeach
@@ -101,7 +101,25 @@ $(document).ready(function () {
             });
     });
 
-    
+    $('#specId').change(function(){
+        $.ajax({
+            url: baseUrl + '/admin/get-doctors',
+            type: 'post',
+            data: {'spec':$(this).val()},
+            dataType: "json",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function( html ) {
+                $("#doctorId").html('');
+                if(html.length>0){
+                    $.each(html, function() {
+                        $("#doctorId").append($("<option />").val(this.id).text(this.doctor_name));
+                    });
+                }else{
+                    $("#doctorId").html('<option disabled selected>Doctors not available</option>');
+                }
+            }
+        });
+    });
 });
 </script>
 @endsection

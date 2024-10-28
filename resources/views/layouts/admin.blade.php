@@ -344,7 +344,7 @@
               <div class="col-md-6 mb-4">
 
               <div data-mdb-input-init class="form-outline">
-                  <input type="text" id="firstName" class="form-control form-control-lg" placeholder="First Name" />
+                  <input type="text" id="firstName" class="form-control form-control-lg" placeholder="First Name" autocomplete="off"/>
                   <!-- <label class="form-label" for="firstName">First Name</label> -->
               </div>
 
@@ -352,7 +352,7 @@
               <div class="col-md-6 mb-4">
 
               <div data-mdb-input-init class="form-outline">
-                  <input type="text" id="lastName" class="form-control form-control-lg" placeholder="Last Name" />
+                  <input type="text" id="lastName" class="form-control form-control-lg" placeholder="Last Name" autocomplete="off"/>
                   <!-- <label class="form-label" for="lastName">Last Name</label> -->
               </div>
 
@@ -362,7 +362,7 @@
                 <div class="col-md-6 mb-4 pb-2">
 
                 <div data-mdb-input-init class="form-outline">
-                    <input type="email" id="emailAddress" class="form-control form-control-lg" placeholder="Email" />
+                    <input type="email" id="emailAddress" class="form-control form-control-lg" placeholder="Email" autocomplete="off"/>
                     <!-- <label class="form-label" for="emailAddress">Email</label> -->
                 </div>
 
@@ -370,7 +370,7 @@
                 <div class="col-md-6 mb-4 pb-2">
 
                 <div data-mdb-input-init class="form-outline">
-                    <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Phone Number" />
+                    <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Phone Number" autocomplete="off"/>
                     <!-- <label class="form-label" for="phoneNumber">Phone Number</label> -->
                 </div>
 

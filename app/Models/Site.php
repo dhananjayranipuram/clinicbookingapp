@@ -23,7 +23,7 @@ class Site extends Model
     }
 
     public function getDoctors(){
-        return DB::select("SELECT d.id,CONCAT(d.honor,d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
+        return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
                             FROM doctor d
                             LEFT JOIN speciality sp ON d.specialization = sp.id
                             LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
@@ -46,7 +46,7 @@ class Site extends Model
             $condition .= " AND d.gender = '$data[gender]'";
         }
         // echo $condition;exit;
-        return DB::select("SELECT d.id,CONCAT(d.honor,d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
+        return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
                             FROM doctor d
                             LEFT JOIN speciality sp ON d.specialization = sp.id
                             LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
@@ -100,13 +100,13 @@ class Site extends Model
     }
     public function getAvailableDocs($data){
         $dayofweek = date('w', strtotime($data['date']));
-        return DB::select("SELECT doc.id,CONCAT(doc.honor,doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
+        return DB::select("SELECT doc.id,CONCAT(doc.honor,' ',doc.first_name,' ',doc.last_name) 'name',profile_pic FROM duty_slab slab
             LEFT JOIN doctor doc ON slab.doc_id=doc.id
             WHERE slab.working_days=$dayofweek AND doc.deleted=0 AND doc.active=1");
     }
 
     public function getDoctorDetains($data){
-        return DB::select("SELECT d.id,CONCAT(d.honor,d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
+        return DB::select("SELECT d.id,CONCAT(d.honor,' ',d.first_name,' ',d.last_name) 'name',gender,profile_pic,sp.name 'specialized',GROUP_CONCAT(l.name) AS languages
                             FROM doctor d
                             LEFT JOIN speciality sp ON d.specialization = sp.id
                             LEFT JOIN doctor_languages dl ON d.id=dl.doctor_id
@@ -117,7 +117,7 @@ class Site extends Model
     }
 
     public function getEmailData($id){
-        return DB::select("SELECT CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.email,CONCAT(dc.honor,dc.first_name,' ',dc.last_name) 'doctor_name',sp.name 'speciality',DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
+        return DB::select("SELECT CONCAT(eu.first_name,' ',eu.last_name) patient_name,eu.email,CONCAT(dc.honor,' ',dc.first_name,' ',dc.last_name) 'doctor_name',sp.name 'speciality',DATE_FORMAT(ap.book_date, '%d-%b-%Y') book_date,LEFT(ap.book_time,11) book_time FROM appointments ap
                         LEFT JOIN doctor dc ON dc.id=ap.doc_id
                         LEFT JOIN speciality sp ON dc.specialization = sp.id
                         LEFT JOIN enduser eu ON eu.id=ap.enduser_id

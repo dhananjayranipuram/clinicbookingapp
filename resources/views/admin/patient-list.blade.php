@@ -53,7 +53,7 @@ $(document).ready(function () {
     
 
     $('.deleteDoc').click(function(){
-        if(confirm("Do you want to delete this Doctor?")){
+        if(confirm("Do you want to delete this Patient?")){
             $.ajax({
                 url: baseUrl + '/admin/delete-patient',
                 type: 'post',

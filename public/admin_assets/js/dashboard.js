@@ -159,6 +159,7 @@ $(document).ready(function () {
                         str +='</tr>';
                     });
                     $("#recent-appt tbody").html(str);
+                    
                     // $("#recent-appt").dataTable().fnDestroy();
                     // $("#recent-appt").dataTable();
                 }
