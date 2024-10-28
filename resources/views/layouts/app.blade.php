@@ -518,8 +518,27 @@
                 <a href="{{ url('/speciality') }}" class="nav-item nav-link @if(Request::path() === 'speciality') active @endif">Book Appointment</a>
                 <a href="{{ url('/contact-us') }}" class="nav-item nav-link @if(Request::path() === 'contact-us') active @endif">Contact</a>
             </div>
-            <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
-            <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
+            @if(session()->has('userName'))
+            <div class="action">
+                <div class="profile" onclick="menuToggle();">
+                    <i class="fa fa-user" style="font-size:36px"></i>
+                </div>
+                <div class="menu">
+                    <h3>{{ Session::get('userName')}}<br /></h3>
+                    <ul style="padding-left: 0px;">
+                    <li>
+                        <a href="{{ url('/appointments') }}">My Appointments</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/logout') }}">Logout</a>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+            @else
+                <a onclick="toggleRegistration();" class="btn btn-primary py-2 px-4 ms-3">Register</a>
+                <a onclick="toggleLogin();" class="btn btn-primary py-2 px-4 ms-3">Login</a>
+            @endif
         </div>
     </nav>
     <!-- Navbar End -->
