@@ -285,9 +285,7 @@
 }
 @media screen and (min-width: 320px) and (max-width: 480px) { 
 /* smartphones, iPhone, portrait 480x320 phones */ 
-    .navbar{
-        display: ruby;
-    }
+    
     .mobile-menu{
         display:block;
         margin-top: 10px;
