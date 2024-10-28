@@ -310,9 +310,6 @@
     body table.booked-calendar .booked-appt-list {
         padding: 15px 15px 10px !important;
     }
-    .action{
-        display:none;
-    }
 
     .popup-box{
         width:90% !important;
