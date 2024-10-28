@@ -342,6 +342,50 @@
 @media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
 @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
 @media (min-width:1281px) { /* hi-res laptops and desktops */ }
+@media only screen and (max-width: 600px) {
+  .action .menu.active {
+        top: 70px;
+        visibility: visible;
+        opacity: 1;
+        z-index: 10;
+    }
+    .action .menu {
+        position: absolute;
+        right: 10px;
+        padding: 5px 6px;
+        background: #e5f0f6;
+        width: 150px;
+        border-radius: 10px;
+        transition: 0.5s;
+    }
+    .action .menu h3 {
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        padding: 5px 0;
+        color: #000000;
+        line-height: 1.5em;
+    }
+    .action .menu ul li {
+        list-style: none;
+        padding: 10px 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+    }               
+}
+@media only screen and (max-width: 600px) {
+    .action .menu::before {
+        content: "";
+        position: absolute;
+        top: 156px;
+        right: 134px;
+        width: 25px;
+        height: 20px;
+        background: #e5f0f6;
+        transform: rotate(220deg);
+    }
+}
     </style>
 
 <style>
