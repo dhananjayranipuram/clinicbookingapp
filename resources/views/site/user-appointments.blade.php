@@ -109,9 +109,8 @@
 new DataTable('#appointments');
 
 $(document).ready(function () { 
-    
 
-    $('.deleteAppt').click(function(){
+    $('#appointments').on('click', '.deleteAppt', function() {
         if(confirm("Do you want to delete this Appointment?")){
             $.ajax({
                 url: baseUrl + '/admin/delete-appt',
@@ -127,7 +126,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.editAppt').click(function(){
+    $('#appointments').on('click', '.editAppt', function() {
         $.ajax({
             url: baseUrl + '/edit-appt',
             type: 'post',
@@ -151,7 +150,6 @@ $(document).ready(function () {
         $("#apptId").val($(this).attr("data-id"));
 
     });
-
     $('.updateAppointment').click(function(){
         $.ajax({
             url: baseUrl + '/update-appointment',
@@ -218,6 +216,7 @@ $(document).ready(function () {
     });
 
 });
+
 </script>
 <!-- Contact End -->
 @endsection

@@ -243,7 +243,12 @@ class Admin extends Model
     }
 
     public function getDocAppointments($data){
-        if(isset($data['docId'])){
+        
+        if(isset($data['docId']) && isset($data['id'])){
+            return DB::select("SELECT doc_id,book_time FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND enduser_id<>'$data[id]' AND status > '-1'
+                                UNION
+                                SELECT doc_id,book_time FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status>-1;");
+        }else if(isset($data['docId'])){
             return DB::select("SELECT book_time,'Booked' as 'status',id FROM appointments WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status > '-1'
                                 UNION
                                 SELECT book_time,'Not Available' as 'status',id FROM slot_not_available WHERE doc_id='$data[docId]' AND book_date='$data[date]' AND status>-1;");

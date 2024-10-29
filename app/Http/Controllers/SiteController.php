@@ -547,15 +547,17 @@ class SiteController extends Controller
 
         $input['id'] = $input['docId'] = $data['det'][0]->doc_id;
         $input['date'] = $data['det'][0]->book_date;
+        $input['time'] = $data['det'][0]->book_time;
         $res = $admin->getSlots((object)$input);
+        $input['id'] = Session::get('userData')->id;
         $app = $admin->getDocAppointments($input);
-        
+        // print_r($data['det']);exit;
         $data['timeslotselect'] = $this->generateTimeSlotSelect($res,$app,$input);
         return json_encode($data);
     }
 
     public function generateTimeSlotSelect($res,$app,$input){
-
+        
         $timestamp = strtotime($input['date']);
         $day = date('l', $timestamp);
         $dayKey = $this->in_array_day($day,$res);
@@ -582,7 +584,11 @@ class SiteController extends Controller
                         continue;
                     }
                 }
-                $slotStr .= '<option value="'.$timeSlot.'">'.substr($timeSlot,0,11).'</option>';
+                $selectedStr = '';
+                if($input['time'] == substr($timeSlot,0,11)){
+                    $selectedStr = 'selected';
+                }
+                $slotStr .= '<option value="'.$timeSlot.'" '.$selectedStr.'>'.substr($timeSlot,0,11).'</option>';
                 
             }
             $slotStr .= '</select>';
