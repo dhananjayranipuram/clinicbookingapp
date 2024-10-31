@@ -19,12 +19,13 @@
   <link href="{{asset('admin_assets/vendor/quill/quill.snow.css')}}" rel="stylesheet">
   <link href="{{asset('admin_assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
   <link href="{{asset('admin_assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
-  <link href="{{asset('admin_assets/vendor/simple-datatables/style.css')}}" rel="stylesheet">
+  <!-- <link href="{{asset('admin_assets/vendor/simple-datatables/style.css')}}" rel="stylesheet"> -->
 
   <!-- Template Main CSS File -->
   <link href="{{asset('admin_assets/css/style.css')}}" rel="stylesheet">
   
   <link href="{{asset('admin_assets/css/daterangepicker.css')}}" rel="stylesheet">
+  <link href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet">
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
@@ -442,7 +443,7 @@
   <script src="{{asset('admin_assets/vendor/chart.js/chart.umd.js')}}"></script>
   <script src="{{asset('admin_assets/vendor/echarts/echarts.min.js')}}"></script>
   <script src="{{asset('admin_assets/vendor/quill/quill.js')}}"></script>
-  <script src="{{asset('admin_assets/vendor/simple-datatables/simple-datatables.js')}}"></script>
+  <!-- <script src="{{asset('admin_assets/vendor/simple-datatables/simple-datatables.js')}}"></script> -->
   <script src="{{asset('admin_assets/vendor/tinymce/tinymce.min.js')}}"></script>
   <script src="{{asset('admin_assets/vendor/php-email-form/validate.js')}}"></script>
 
@@ -452,6 +453,8 @@
 
   <script src="{{asset('admin_assets/js/moment.min.js')}}"></script>
   <script src="{{asset('admin_assets/js/daterangepicker.min.js')}}"></script>
+  <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
   <script src="{{asset('admin_assets/js/dashboard.js')}}?v={{time()}}"></script>
 </body>
 </html>

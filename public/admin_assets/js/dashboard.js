@@ -158,10 +158,9 @@ $(document).ready(function () {
                             str +='<td><span class="badge bg-success">Booked</span></td>';
                         str +='</tr>';
                     });
+                    $('#recent-appt').DataTable().destroy();
                     $("#recent-appt tbody").html(str);
-                    
-                    // $("#recent-appt").dataTable().fnDestroy();
-                    // $("#recent-appt").dataTable();
+                    $("#recent-appt").dataTable();
                 }
                 $(".overlay").hide();
             }

@@ -239,6 +239,11 @@
     </section>
     
 <script src="{{asset('assets/js/jquery-3.4.1.min.js')}}"></script>
-<!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script> -->
+
+<script>
+$(document).ready(function () { 
+    $("#recent-appt").DataTable();
+});
+</script>
 
 @endsection
